@@ -23,11 +23,24 @@ import '@/permission' // permission control
  * it will intercept your request, so you won't see the request in the network.
  * If you remove `../mock` it will automatically request easy-mock data.
  */
-import '../mock' // simulation data
+// import '../mock' // simulation data
 
-Vue.use(ElementUI, { locale })
+Vue.use(ElementUI, {
+  locale
+})
 
 Vue.config.productionTip = false
+
+router.beforeEach((to, from, next) => {
+  console.log(to)
+
+  if (to.path === '/login') {
+    document.title = '登录 | 作业管理系统'
+  } else {
+    document.title = '作业管理系统'
+  }
+  next()
+})
 
 new Vue({
   el: '#app',
