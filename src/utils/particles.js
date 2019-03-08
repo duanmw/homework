@@ -1,19 +1,21 @@
 /**
  * 产生粒子背景
  */
-function particle() {
-  const doc = document
-  const rootEl = doc.documentElement
-  const body = doc.body
-  /* global ScrollReveal */
-  // const sr = window.sr = ScrollReveal({ mobile: false })
+function particle(colorsArr = ['69,183,135', '240,74,58', '14,176,201', '250,211,55', '154,190,175', '238,72,99', '147,181,207', '210,118,163']) {
+  const colors = colorsArr
+  // const colors =
+  // const doc = document
+  // const rootEl = doc.documentElement
+  // const body = doc.body
+  // /* global ScrollReveal */
+  // // const sr = window.sr = ScrollReveal({ mobile: false })
 
-  rootEl.classList.remove('no-js')
-  rootEl.classList.add('js')
+  // rootEl.classList.remove('no-js')
+  // rootEl.classList.add('js')
 
-  window.addEventListener('load', function() {
-    body.classList.add('is-loaded')
-  })
+  // window.addEventListener('load', function() {
+  //   body.classList.add('is-loaded')
+  // })
 
   // Reveal animations
   // function revealAnimations() {
@@ -33,9 +35,9 @@ function particle() {
   //   })
   // }
 
-  if (body.classList.contains('has-animations')) {
-    // window.addEventListener('load', revealAnimations)
-  }
+  // if (body.classList.contains('has-animations')) {
+  //   // window.addEventListener('load', revealAnimations)
+  // }
 
   // Particle animation
   const Bubble = function(parentNode) {
@@ -79,7 +81,8 @@ function particle() {
 
   Bubble.prototype.randomise = function() {
     const self = this
-    self.colors = ['85,107,139', '38,141,247', '66,52,248', '255,108,80', '243, 244, 255', '96, 100, 131']
+    // self.colors = ['85,107,139', '38,141,247', '66,52,248', '255,108,80', '243, 244, 255', '96, 100, 131']
+    self.colors = colors
     self.velocity = 30 // Bubble levitation velocity (the higher the slower)
     self.smoothFactor = 50 // The higher, the smoother
     self.staticity = 30 // Increase value to make bubbles move slower on mousemove
@@ -158,16 +161,16 @@ function particle() {
     }
   }
 
-  Background.prototype.bubbleDensity = function() {
-    return 15
+  Background.prototype.bubbleDensity = function() { // 气泡密度
+    return 18
   }
 
-  window.addEventListener('load', function() {
-    const heroParticles = new Background('bg-particles') // 传入canvas的id
-    // const footerParticles = new Background('footer-particles')
-    heroParticles.start()
-    // footerParticles.start()
-  })
+  // window.addEventListener('load', function() {
+  const heroParticles = new Background('bg-particles') // 传入canvas的id
+  // const footerParticles = new Background('footer-particles')
+  heroParticles.start()
+  // footerParticles.start()
+  // })
 
   window.requestAnimFrame = (function() {
     return (

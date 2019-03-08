@@ -27,6 +27,20 @@
   transform: translateX(30px);
 }
 
+/*fade-right*/
+.fade-right-leave-active,
+.fade-right-enter-active {
+  transition: all .4s;
+}
+.fade-right-enter {
+  opacity: 0;
+  transform: translateX(-20px);
+}
+.fade-right-leave-to {
+  opacity: 0;
+  transform: translateX(20px);
+}
+
 /*fade*/
 .breadcrumb-enter-active,
 .breadcrumb-leave-active {
@@ -45,4 +59,15 @@
 
 .breadcrumb-leave-active {
   position: absolute;
+}
+
+/*scale-transform*/
+.scale-transform-leave-active,
+.scale-transform-enter-active {
+  transition: all .5s;
+}
+
+.scale-transform-enter , .scale-transform-leave-to{
+  opacity: 0;
+  transform: scale(1.2);
 }
