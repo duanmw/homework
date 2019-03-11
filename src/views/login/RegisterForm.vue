@@ -12,7 +12,14 @@
       <span class="svg-container">
         <svg-icon icon-class="email"/>
       </span>
-      <el-input clearable v-model="registerForm.email" name="email" type="text" placeholder="邮箱"/>
+      <el-input
+        auto-complete="on"
+        clearable
+        v-model="registerForm.email"
+        name="email"
+        type="text"
+        placeholder="邮箱"
+      />
     </el-form-item>
     <el-form-item prop="verifyCode" class="code">
       <span class="svg-container">
@@ -25,7 +32,7 @@
         type="text"
         placeholder="验证码"
       />
-      <el-button plain class="get-btn">获取</el-button>
+      <el-button :disabled="!(isEmail&&btnControll)" @click="sendEmail" class="get-btn">{{getBtn}}</el-button>
     </el-form-item>
     <el-form-item prop="password">
       <span class="svg-container">
@@ -57,6 +64,9 @@
 </template>
 <script>
 import { isvalidEmail, isvalidVerifyCode } from "@/utils/validate";
+import { register, sendVCode } from "@/api/register";
+import Cookies from "js-cookie";
+import md5 from "blueimp-md5";
 export default {
   name: "RegisterForm",
   data() {
@@ -88,8 +98,9 @@ export default {
       }
     };
     return {
+      // vCode: "",
       registerForm: {
-        email: "",
+        email: "505839245@qq.com",
         verifyCode: "",
         password: ""
       },
@@ -100,12 +111,56 @@ export default {
         ],
         password: [{ required: true, trigger: "blur", validator: validatePass }]
       },
+      getBtn: "获取",
+      btnControll: true, // 控制“获取”按钮禁用状态
       loading: false,
       pwdType: "password",
       redirect: undefined
     };
   },
+  computed: {
+    isEmail() {
+      // 根据email值的变化返回bool值
+      return isvalidEmail(this.registerForm.email);
+    }
+  },
+  watch: {
+    "registerForm.email": {
+      handler: function(value) {
+        // Cookies.set("vcode", md5(res.data.vcode));
+        //   Cookies.set("time", res.data.lasttime);
+      },
+      immediate: true
+    }
+  },
   methods: {
+    sendEmail() {
+      this.$message.info("验证码将发送至您的邮箱：" + this.registerForm.email);
+      this.btnControll = false; // 禁用按钮
+
+      sendVCode(this.registerForm.email)
+        .then(res => {
+          this.$message.success(res.message);
+          // const data = res.data
+          console.log("res:", res);
+
+          Cookies.set("code", res.data.vcode + res.data.email);
+          Cookies.set("time", res.data.lasttime);
+        })
+        .catch(error => {
+          this.$message.error(error);
+        });
+
+      let num = 10;
+      const timeId = setInterval(() => {
+        this.getBtn = `${--num}s`;
+        if (num == 0) {
+          clearInterval(timeId);
+          this.getBtn = "重新获取";
+          this.btnControll = true; // 恢复按钮可用
+        }
+      }, 1000);
+    },
     showPwd() {
       if (this.pwdType === "password") {
         this.pwdType = "";
@@ -116,18 +171,49 @@ export default {
     handleRegister() {
       this.$refs.registerForm.validate(valid => {
         if (valid) {
-          this.loading = true;
-          this.$store
-            .dispatch("Login", this.loginForm)
-            .then(() => {
-              this.loading = false;
-              this.$router.push({ path: this.redirect || "/" });
-            })
-            .catch(() => {
-              this.loading = false;
-            });
+          // console.log(new Date().getTime() < Cookies.get("time"));
+          let time = Cookies.get("time");
+          if (!time) {
+            this.$message.error("验证码不正确");
+            return;
+          }
+          if (
+            md5(this.registerForm.verifyCode) + this.registerForm.email ===
+            Cookies.get("code")
+          ) {
+            if (new Date().getTime() < time) {
+              //正确
+              this.$message.success("验证码正确");
+              register(this.registerForm)
+                .then(res => {
+                  console.log("res:", res);
+                  this.$message.success(res.message);
+                  //注册了应该跳转到登录界面
+                  // Cookies.set("code", md5(res.data.vcode) + res.data.email);
+                  // Cookies.set("time", res.data.lasttime);
+                })
+                .catch(error => {
+                  this.$message.error(error);
+                });
+            } else {
+              this.$message.error("验证码过期啦！请重新获取");
+            }
+          } else {
+            this.$message.error("验证码不正确！");
+          }
+
+          // this.loading = true;
+          // this.$store
+          //   .dispatch("Login", this.loginForm)
+          //   .then(() => {
+          //     this.loading = false;
+          //     this.$router.push({ path: this.redirect || "/" });
+          //   })
+          //   .catch(() => {
+          //     this.loading = false;
+          //   });
         } else {
-          console.log("error submit!!");
+          this.$message.info("error submit");
           return false;
         }
       });
@@ -136,27 +222,34 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-$light: rgba(236, 236, 236, 0.9);
-$blue: rgba(64, 158, 255, 0.9);
+$light: #c0c4cc;
+$gray: rgba(175, 175, 175, 0.6);
+$blue: #409eff;
 .code {
-  width: calc(100% - 80px);
+  width: calc(100% - 110px);
 }
 .get-btn {
   position: absolute;
+  width: 98px;
   top: 3px;
-  right: -80px;
+  right: -110px;
   background: transparent;
   border-color: $light;
   color: $light;
 }
-.el-button.is-plain:focus {
-  background: transparent;
-  border-color: $light;
-  color: $light;
-}
-.el-button.is-plain:hover {
-  background: transparent;
-  border-color: $blue;
+.el-button:active {
   color: $blue;
+  border-color: $blue;
+  outline: 0;
+}
+.el-button.is-disabled {
+  color: $gray;
+  background-color: transparent;
+  border-color: $gray;
+}
+.el-button.is-disabled:hover {
+  color: $gray;
+  background-color: transparent;
+  border-color: $gray;
 }
 </style>

@@ -14,6 +14,7 @@ import router from './router'
 
 import '@/icons' // icon
 import '@/permission' // permission control
+
 import animate from 'animate.css'
 Vue.use(animate)
 /**
