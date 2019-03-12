@@ -147,9 +147,10 @@ export default {
   watch: {
     $route: {
       handler: function(route) {
+        // console.log("route",route);
         this.redirect = route.query && route.query.redirect;
+        this.loginForm.email=route.query.email||""
         if (route.path == "/register") {
-          console.log("rerereregister");
           this.isRegister = true;
           this.loginForm.role = "teacher";
         } else {

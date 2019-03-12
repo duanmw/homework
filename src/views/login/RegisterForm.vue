@@ -32,7 +32,7 @@
         type="text"
         placeholder="验证码"
       />
-      <el-button :disabled="!(isEmail&&btnControll)" @click="sendEmail" class="get-btn">{{getBtn}}</el-button>
+      <el-button :disabled="!(isEmail&&btnControll)" @click="getVCode" class="get-btn">{{getBtn}}</el-button>
     </el-form-item>
     <el-form-item prop="password">
       <span class="svg-container">
@@ -64,9 +64,10 @@
 </template>
 <script>
 import { isvalidEmail, isvalidVerifyCode } from "@/utils/validate";
-import { register, sendVCode } from "@/api/register";
+import { register, isExist, sendVCode } from "@/api/register";
 import Cookies from "js-cookie";
 import md5 from "blueimp-md5";
+
 export default {
   name: "RegisterForm",
   data() {
@@ -98,7 +99,6 @@ export default {
       }
     };
     return {
-      // vCode: "",
       registerForm: {
         email: "505839245@qq.com",
         verifyCode: "",
@@ -124,20 +124,17 @@ export default {
       return isvalidEmail(this.registerForm.email);
     }
   },
-  watch: {
-    "registerForm.email": {
-      handler: function(value) {
-        // Cookies.set("vcode", md5(res.data.vcode));
-        //   Cookies.set("time", res.data.lasttime);
-      },
-      immediate: true
-    }
-  },
+  // watch: {
+  //   "registerForm.email": {
+  //     handler: function(value) {
+  //       // Cookies.set("vcode", md5(res.data.vcode));
+  //       //   Cookies.set("time", res.data.lasttime);
+  //     },
+  //     immediate: true
+  //   }
+  // },
   methods: {
     sendEmail() {
-      this.$message.info("验证码将发送至您的邮箱：" + this.registerForm.email);
-      this.btnControll = false; // 禁用按钮
-
       sendVCode(this.registerForm.email)
         .then(res => {
           this.$message.success(res.message);
@@ -150,16 +147,31 @@ export default {
         .catch(error => {
           this.$message.error(error);
         });
+    },
+    getVCode() {
+      isExist(this.registerForm.email).then(res => {
+        if (res.message == "yes") {
+          this.$message.warning("此邮箱已被注册啦！请更换邮箱");
+        } else {
+          this.$message.info(
+            "验证码将发送至您的邮箱：" + this.registerForm.email
+          );
+          this.sendEmail();//调用发邮件
 
-      let num = 10;
-      const timeId = setInterval(() => {
-        this.getBtn = `${--num}s`;
-        if (num == 0) {
-          clearInterval(timeId);
-          this.getBtn = "重新获取";
-          this.btnControll = true; // 恢复按钮可用
+          this.btnControll = false; // 禁用按钮
+
+          let num = 15; //num秒倒计时
+          const timeId = setInterval(() => {
+            //使用箭头函数避免this问题
+            this.getBtn = `${--num}s`;
+            if (num == 0) {
+              clearInterval(timeId);
+              this.getBtn = "重新获取";
+              this.btnControll = true; // 恢复按钮可用
+            }
+          }, 1000);
         }
-      }, 1000);
+      });
     },
     showPwd() {
       if (this.pwdType === "password") {
@@ -168,50 +180,54 @@ export default {
         this.pwdType = "password";
       }
     },
+    judgeVCode() {
+      let time = Cookies.get("time");
+      if (!time) {
+        this.$message.error("验证码不正确");
+        return false;
+      }
+      if (
+        md5(this.registerForm.verifyCode) + this.registerForm.email ===
+        Cookies.get("code")
+      ) {
+        if (new Date().getTime() < time) {
+          // this.$message.success("验证码正确");
+          return true;
+        } else {
+          this.$message.error("验证码过期啦！请重新获取");
+          return false;
+        }
+      } else {
+        this.$message.error("验证码不正确！");
+        return false;
+      }
+    },
     handleRegister() {
       this.$refs.registerForm.validate(valid => {
         if (valid) {
-          // console.log(new Date().getTime() < Cookies.get("time"));
-          let time = Cookies.get("time");
-          if (!time) {
-            this.$message.error("验证码不正确");
-            return;
+          if (this.judgeVCode()) {
+          // if (true) {
+            //test
+            this.loading = true;
+            register(this.registerForm.email, this.registerForm.password)
+              .then(res => {
+                this.loading = false;
+                console.log("res:", res);
+                this.$message.success(res.message);
+                //自动跳转到登录
+                const tid = setTimeout(() => {
+                  this.$router.push({
+                    path: "/login",
+                    query: { email: this.registerForm.email }
+                  });
+                  clearTimeout(tid);
+                }, 1600);
+              })
+              .catch(error => {
+                this.loading = false;
+                this.$message.error(error);
+              });
           }
-          if (
-            md5(this.registerForm.verifyCode) + this.registerForm.email ===
-            Cookies.get("code")
-          ) {
-            if (new Date().getTime() < time) {
-              //正确
-              this.$message.success("验证码正确");
-              register(this.registerForm)
-                .then(res => {
-                  console.log("res:", res);
-                  this.$message.success(res.message);
-                  //注册了应该跳转到登录界面
-                  // Cookies.set("code", md5(res.data.vcode) + res.data.email);
-                  // Cookies.set("time", res.data.lasttime);
-                })
-                .catch(error => {
-                  this.$message.error(error);
-                });
-            } else {
-              this.$message.error("验证码过期啦！请重新获取");
-            }
-          } else {
-            this.$message.error("验证码不正确！");
-          }
-
-          // this.loading = true;
-          // this.$store
-          //   .dispatch("Login", this.loginForm)
-          //   .then(() => {
-          //     this.loading = false;
-          //     this.$router.push({ path: this.redirect || "/" });
-          //   })
-          //   .catch(() => {
-          //     this.loading = false;
-          //   });
         } else {
           this.$message.info("error submit");
           return false;
