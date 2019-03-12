@@ -1,19 +1,31 @@
 import request from '@/utils/request'
-
-export function login(username, password) {
+import md5 from 'blueimp-md5'
+import qs from 'qs'
+export function studentLogin(sid, password) {
   return request({
-    url: '/user/login',
+    url: '/api/student/login',
     method: 'post',
-    data: {
-      username,
-      password
-    }
+    data: qs.stringify({
+      sid,
+      password: md5(password)
+    })
+  })
+}
+
+export function teacherLogin(email, password) {
+  return request({
+    url: '/api/teacher/login',
+    method: 'post',
+    data: qs.stringify({
+      email,
+      password: md5(password)
+    })
   })
 }
 
 export function getInfo(token) {
   return request({
-    url: '/user/info',
+    url: '/api/teacher/info',
     method: 'get',
     params: { token }
   })
@@ -21,7 +33,7 @@ export function getInfo(token) {
 
 export function logout() {
   return request({
-    url: '/user/logout',
+    url: '/api/teacher/logout',
     method: 'post'
   })
 }

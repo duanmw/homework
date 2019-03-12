@@ -1,11 +1,20 @@
-import { login, logout, getInfo } from '@/api/login'
-import { getToken, setToken, removeToken } from '@/utils/auth'
+import {
+  studentLogin,
+  teacherLogin,
+  logout,
+  getInfo
+} from '@/api/login'
+import {
+  getToken,
+  setToken,
+  removeToken
+} from '@/utils/auth'
 
 const user = {
   state: {
     token: getToken(),
     name: '',
-    avatar: '',
+    avatar: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif', // 暂时写死
     roles: []
   },
 
@@ -26,22 +35,39 @@ const user = {
 
   actions: {
     // 登录
-    Login({ commit }, userInfo) {
-      const username = userInfo.username.trim()
+    Login({
+      commit
+    }, loginForm) {
       return new Promise((resolve, reject) => {
-        login(username, userInfo.password).then(response => {
-          const data = response.data
-          setToken(data.token)
-          commit('SET_TOKEN', data.token)
-          resolve()
-        }).catch(error => {
-          reject(error)
-        })
+        if (loginForm.role === 'student') {
+          const id = loginForm.studentId.trim()
+          studentLogin(id, loginForm.password).then(response => {
+            const data = response.data
+            setToken(data.token)
+            commit('SET_TOKEN', data.token)
+            resolve()
+          }).catch(error => {
+            reject(error)
+          })
+        } else if (loginForm.role === 'teacher') {
+          const email = loginForm.email.trim()
+          teacherLogin(email, loginForm.password).then(response => {
+            const data = response.data
+            setToken(data.token)
+            commit('SET_TOKEN', data.token)
+            resolve()
+          }).catch(error => {
+            reject(error)
+          })
+        }
       })
     },
 
     // 获取用户信息
-    GetInfo({ commit, state }) {
+    GetInfo({
+      commit,
+      state
+    }) {
       return new Promise((resolve, reject) => {
         getInfo(state.token).then(response => {
           const data = response.data
@@ -60,7 +86,10 @@ const user = {
     },
 
     // 登出
-    LogOut({ commit, state }) {
+    LogOut({
+      commit,
+      state
+    }) {
       return new Promise((resolve, reject) => {
         logout(state.token).then(() => {
           commit('SET_TOKEN', '')
@@ -74,7 +103,9 @@ const user = {
     },
 
     // 前端 登出
-    FedLogOut({ commit }) {
+    FedLogOut({
+      commit
+    }) {
       return new Promise(resolve => {
         commit('SET_TOKEN', '')
         removeToken()
