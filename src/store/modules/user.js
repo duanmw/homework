@@ -40,7 +40,7 @@ const user = {
     }, loginForm) {
       return new Promise((resolve, reject) => {
         if (loginForm.role === 'student') {
-          const id = loginForm.studentId.trim()
+          const id = loginForm.studentId
           studentLogin(id, loginForm.password).then(response => {
             const data = response.data
             setToken(data.token)
@@ -50,7 +50,7 @@ const user = {
             reject(error)
           })
         } else if (loginForm.role === 'teacher') {
-          const email = loginForm.email.trim()
+          const email = loginForm.email
           teacherLogin(email, loginForm.password).then(response => {
             const data = response.data
             setToken(data.token)

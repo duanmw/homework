@@ -27,7 +27,7 @@
             <el-input
               clearable
               auto-complete="on"
-              v-model="loginForm.studentId"
+              v-model.trim="loginForm.studentId"
               name="studentId"
               type="text"
               placeholder="学号"
@@ -40,7 +40,7 @@
             <el-input
               clearable
               auto-complete="on"
-              v-model="loginForm.email"
+              v-model.trim="loginForm.email"
               name="email"
               type="text"
               placeholder="教师账号"

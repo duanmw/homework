@@ -15,7 +15,7 @@
       <el-input
         auto-complete="on"
         clearable
-        v-model="registerForm.email"
+        v-model.trim="registerForm.email"
         name="email"
         type="text"
         placeholder="邮箱"
@@ -27,7 +27,7 @@
       </span>
       <el-input
         clearable
-        v-model="registerForm.verifyCode"
+        v-model.trim="registerForm.verifyCode"
         name="verifyCode"
         type="text"
         placeholder="验证码"
