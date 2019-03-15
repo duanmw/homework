@@ -33,9 +33,9 @@ service.interceptors.response.use(
     const res = response.data
     if (res.code !== 20000) {
       Message({
-        message: res.message,
+        message: res.message || '遇到错误',
         type: 'error',
-        duration: 5 * 1000
+        duration: 4.5 * 1000
       })
 
       // 50008:非法的token; 50012:其他客户端登录了;  50014:Token 过期了;

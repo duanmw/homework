@@ -65,7 +65,7 @@
 <script>
 import { isvalidEmail, isvalidVerifyCode } from "@/utils/validate";
 import { register, isExist, sendVCode } from "@/api/register";
-import Cookies from "js-cookie";
+// import Cookies from "js-cookie";
 import md5 from "blueimp-md5";
 
 export default {
@@ -127,8 +127,6 @@ export default {
   // watch: {
   //   "registerForm.email": {
   //     handler: function(value) {
-  //       // Cookies.set("vcode", md5(res.data.vcode));
-  //       //   Cookies.set("time", res.data.lasttime);
   //     },
   //     immediate: true
   //   }
@@ -140,9 +138,8 @@ export default {
           this.$message.success(res.message);
           // const data = res.data
           console.log("res:", res);
-
-          Cookies.set("code", res.data.vcode + res.data.email);
-          Cookies.set("time", res.data.lasttime);
+          localStorage.setItem("code", res.data.vcode + res.data.email);
+          localStorage.setItem("time", res.data.lasttime);
         })
         .catch(error => {
           this.$message.error(error);
@@ -156,7 +153,7 @@ export default {
           this.$message.info(
             "验证码将发送至您的邮箱：" + this.registerForm.email
           );
-          this.sendEmail();//调用发邮件
+          this.sendEmail(); //调用发邮件
 
           this.btnControll = false; // 禁用按钮
 
@@ -181,14 +178,14 @@ export default {
       }
     },
     judgeVCode() {
-      let time = Cookies.get("time");
+      let time = localStorage.getItem("time");
       if (!time) {
         this.$message.error("验证码不正确");
         return false;
       }
       if (
         md5(this.registerForm.verifyCode) + this.registerForm.email ===
-        Cookies.get("code")
+        localStorage.getItem("code")
       ) {
         if (new Date().getTime() < time) {
           // this.$message.success("验证码正确");
@@ -205,29 +202,41 @@ export default {
     handleRegister() {
       this.$refs.registerForm.validate(valid => {
         if (valid) {
-          if (this.judgeVCode()) {
-          // if (true) {
-            //test
-            this.loading = true;
-            register(this.registerForm.email, this.registerForm.password)
-              .then(res => {
-                this.loading = false;
-                console.log("res:", res);
-                this.$message.success(res.message);
-                //自动跳转到登录
-                const tid = setTimeout(() => {
-                  this.$router.push({
-                    path: "/login",
-                    query: { email: this.registerForm.email }
-                  });
-                  clearTimeout(tid);
-                }, 1600);
-              })
-              .catch(error => {
-                this.loading = false;
-                this.$message.error(error);
-              });
-          }
+          //判断邮箱是否存在
+          isExist(this.registerForm.email).then(res => {
+            if (res.message == "yes") {
+              this.$message.warning("此邮箱已被注册啦！请更换邮箱");
+              return;
+              //邮箱不存在，再判断验证码
+            } else if (this.judgeVCode()) {
+              // } else if (true) {
+              //test 验证通过
+              //所有验证完成，进行注册
+              this.loading = true;
+              register(this.registerForm.email, this.registerForm.password)
+                .then(res => {
+                  this.loading = false;
+                  console.log("res:", res);
+                  if (res.code == 20000) {
+                    //只有注册成功才跳转
+                    this.$message.success(res.message);
+                    //自动跳转到登录
+                    const tid = setTimeout(() => {
+                      this.$router.push({
+                        path: "/login",
+                        query: { email: this.registerForm.email }
+                      });
+                      clearTimeout(tid);
+                    }, 1600);
+                  }
+                })
+                .catch(error => {
+                  this.loading = false;
+                  this.$message.error(error + " 注册失败");
+                });
+            }
+          });
+          // if (this.judgeVCode())
         } else {
           this.$message.info("error submit");
           return false;
