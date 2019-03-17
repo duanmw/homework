@@ -147,7 +147,7 @@ export default {
     },
     getVCode() {
       isExist(this.registerForm.email).then(res => {
-        if (res.message == "yes") {
+        if (res.message == "true") {
           this.$message.warning("此邮箱已被注册啦！请更换邮箱");
         } else {
           this.$message.info(
@@ -204,7 +204,7 @@ export default {
         if (valid) {
           //判断邮箱是否存在
           isExist(this.registerForm.email).then(res => {
-            if (res.message == "yes") {
+            if (res.message == "true") {
               this.$message.warning("此邮箱已被注册啦！请更换邮箱");
               return;
               //邮箱不存在，再判断验证码

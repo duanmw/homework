@@ -6,7 +6,7 @@ export function studentLogin(sid, password) {
     url: '/api/student/login',
     method: 'post',
     data: qs.stringify({
-      sid,
+      number: sid,
       password: md5(password)
     })
   })
@@ -23,13 +23,13 @@ export function teacherLogin(email, password) {
   })
 }
 
-export function getInfo(token) {
-  return request({
-    url: '/api/teacher/info',
-    method: 'get',
-    params: { token }
-  })
-}
+// export function getTeacherInfo(token) {
+//   return request({
+//     url: '/api/teacher/info',
+//     method: 'get',
+//     params: { token }
+//   })
+// }
 
 export function logout() {
   return request({
