@@ -60,9 +60,9 @@ const user = {
             // sessionStorage.setItem('s_number', data.number)
             sessionStorage.setItem('hmw', md5('hmw' + sid))
             sessionStorage.setItem('hmwid', sid)
-            commit('SET_NUMBER', data.number)
-            commit('SET_NAME', data.name)
-            commit('SET_ROLES', data.roles)
+            // commit('SET_NUMBER', data.number)
+            // commit('SET_NAME', data.name)
+            // commit('SET_ROLES', data.roles)
             resolve()
           }).catch(error => {
             reject(error)
@@ -79,9 +79,9 @@ const user = {
             sessionStorage.setItem('hmw', md5('hmw' + tid))
             sessionStorage.setItem('hmwid', tid)
 
-            commit('SET_EMAIL', data.email)
-            commit('SET_NAME', data.name)
-            commit('SET_ROLES', data.roles)
+            // commit('SET_EMAIL', data.email)
+            // commit('SET_NAME', data.name)
+            // commit('SET_ROLES', data.roles)
             resolve()
           }).catch(error => {
             reject(error)

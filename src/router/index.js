@@ -37,48 +37,37 @@ export const constantRouterMap = [{
   path: '/404',
   component: () => import('@/views/404'),
   hidden: true
+}
+]
+export const asyncRouterMap = [{
+  path: '/',
+  component: Layout,
+  redirect: '/home',
+  children: [{
+    path: 'home',
+    component: () => import('@/views/home/teacher')
+  }],
+  name: 'Home',
+  meta: {
+    title: '首页',
+    icon: 'home',
+    roles: ['teacher']
+  }
 },
-
 {
   path: '/',
   component: Layout,
-  redirect: '/dashboard',
-  name: 'Dashboard',
-  hidden: true,
+  redirect: '/home',
   children: [{
-    path: 'dashboard',
-    component: () => import('@/views/dashboard/index')
-  }]
-},
-
-{
-  path: '/example',
-  component: Layout,
-  redirect: '/example/table',
-  name: 'Example',
+    path: 'home',
+    component: () => import('@/views/home/student')
+  }],
+  name: 'Home',
   meta: {
-    title: 'Example',
-    icon: 'example'
-  },
-  children: [{
-    path: 'table',
-    name: 'Table',
-    component: () => import('@/views/table/index'),
-    meta: {
-      title: 'Table',
-      icon: 'table'
-    }
-  },
-  {
-    path: 'tree',
-    name: 'Tree',
-    component: () => import('@/views/tree/index'),
-    meta: {
-      title: 'Tree',
-      icon: 'tree'
-    }
+    title: '首页',
+    icon: 'home',
+    roles: ['student']
   }
-  ]
 },
 
 {
