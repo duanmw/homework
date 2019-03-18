@@ -17,7 +17,7 @@ const whiteList = ['/login', '/register'] // 不重定向白名单
 router.beforeEach((to, from, next) => {
   NProgress.start()
   // if (getToken()) {
-  if (sessionStorage.getItem('roles')) {
+  if (sessionStorage.getItem('hmwid')) {
     if (to.path === '/login') {
       next({
         path: '/'
@@ -25,21 +25,19 @@ router.beforeEach((to, from, next) => {
       NProgress.done() // if current page is dashboard will not trigger	afterEach hook, so manually handle it
     } else {
       if (store.getters.roles.length === 0) {
-        getInfo() // 拉取用户信息
-        // next()
+        if (getInfo()) { // 拉取用户信息
+          next()
+        } else {
+          store.dispatch('FedLogOut').then(() => {
+            Message.error('身份验证失败，请重新登录')
+            next({
+              path: '/'
+            })
+          })
+        }
+      } else {
+        next()
       }
-      // if (store.getters.roles.length === 0) {
-      //   store.dispatch('GetInfo').then(res => { // 拉取用户信息
-      //     next()
-      //   }).catch((err) => {
-      //     store.dispatch('FedLogOut').then(() => {
-      //       Message.error(err || 'Verification failed, please login again')
-      //       next({ path: '/' })
-      //     })
-      //   })
-      // } else {
-      next()
-      // }
     }
   } else {
     if (whiteList.indexOf(to.path) !== -1) {

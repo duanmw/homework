@@ -3,80 +3,80 @@
     <canvas id="bg-particles" width="100%" height="100%"></canvas>
     <transition name="scale-transform" appear>
       <div class="panel">
-         <!-- <transition enter-active-class="animated slideInLeft" mode="out-in"> -->
-         <transition name="fade-right" mode="out-in">
-        <el-form
-          v-if="!isRegister"
-          ref="loginForm"
-          :model="loginForm"
-          :rules="loginRules"
-          auto-complete="on"
-          label-position="left"
-        >
-          <h3 class="title">vue-admin-template</h3>
-          <div style="margin-top: 20px">
-            <el-radio-group v-model="loginForm.role">
-              <el-radio-button label="student">学生</el-radio-button>
-              <el-radio-button label="teacher">教师</el-radio-button>
-            </el-radio-group>
-          </div>
-          <el-form-item v-if="loginForm.role === 'student'" prop="studentId">
-            <span class="svg-container">
-              <svg-icon icon-class="user"/>
-            </span>
-            <el-input
-              clearable
-              auto-complete="on"
-              v-model.trim="loginForm.studentId"
-              name="studentId"
-              type="text"
-              placeholder="学号"
-            />
-          </el-form-item>
-          <el-form-item v-else prop="email">
-            <span class="svg-container">
-              <svg-icon icon-class="email"/>
-            </span>
-            <el-input
-              clearable
-              auto-complete="on"
-              v-model.trim="loginForm.email"
-              name="email"
-              type="text"
-              placeholder="教师账号"
-            />
-          </el-form-item>
-          <el-form-item prop="password">
-            <span class="svg-container">
-              <svg-icon icon-class="password"/>
-            </span>
-            <el-input
-              :type="pwdType"
-              auto-complete="on"
-              v-model="loginForm.password"
-              name="password"
-              placeholder="密码"
-              @keyup.enter.native="handleLogin"
-            />
-            <span class="show-pwd" @mousedown="pwdType=''" @mouseup="pwdType='password'">
-              <svg-icon :icon-class="pwdType === 'password' ? 'eye' : 'eye-open'"/>
-            </span>
-          </el-form-item>
-          <el-form-item>
-            <el-button
-              :loading="loading"
-              type="primary"
-              style="width:100%;"
-              @click.native.prevent="handleLogin"
-            >登 录</el-button>
-          </el-form-item>
+        <!-- <transition enter-active-class="animated slideInLeft" mode="out-in"> -->
+        <transition name="fade-right" mode="out-in">
+          <el-form
+            v-if="!isRegister"
+            ref="loginForm"
+            :model="loginForm"
+            :rules="loginRules"
+            auto-complete="on"
+            label-position="left"
+          >
+            <h3 class="title">vue-admin-template</h3>
+            <div style="margin-top: 20px">
+              <el-radio-group v-model="loginForm.role">
+                <el-radio-button label="student">学生</el-radio-button>
+                <el-radio-button label="teacher">教师</el-radio-button>
+              </el-radio-group>
+            </div>
+            <el-form-item v-if="loginForm.role === 'student'" prop="studentId">
+              <span class="svg-container">
+                <svg-icon icon-class="user"/>
+              </span>
+              <el-input
+                clearable
+                auto-complete="on"
+                v-model.trim="loginForm.studentId"
+                name="studentId"
+                type="text"
+                placeholder="学号"
+              />
+            </el-form-item>
+            <el-form-item v-else prop="email">
+              <span class="svg-container">
+                <svg-icon icon-class="email"/>
+              </span>
+              <el-input
+                clearable
+                auto-complete="on"
+                v-model.trim="loginForm.email"
+                name="email"
+                type="text"
+                placeholder="教师账号"
+              />
+            </el-form-item>
+            <el-form-item prop="password">
+              <span class="svg-container">
+                <svg-icon icon-class="password"/>
+              </span>
+              <el-input
+                :type="pwdType"
+                auto-complete="on"
+                v-model="loginForm.password"
+                name="password"
+                placeholder="密码"
+                @keyup.enter.native="handleLogin"
+              />
+              <span class="show-pwd" @mousedown="pwdType=''" @mouseup="pwdType='password'">
+                <svg-icon :icon-class="pwdType === 'password' ? 'eye' : 'eye-open'"/>
+              </span>
+            </el-form-item>
+            <el-form-item>
+              <el-button
+                :loading="loading"
+                type="primary"
+                style="width:100%;"
+                @click.native.prevent="handleLogin"
+              >登 录</el-button>
+            </el-form-item>
 
-          <div class="tips">
-            <router-link v-if="loginForm.role === 'teacher'" to="/register" class="link">无账号？前往注册</router-link>
-          </div>
-        </el-form>
-        <RegisterForm v-else></RegisterForm>
-         </transition>
+            <div class="tips">
+              <router-link v-if="loginForm.role === 'teacher'" to="/register" class="link">无账号？前往注册</router-link>
+            </div>
+          </el-form>
+          <RegisterForm v-else></RegisterForm>
+        </transition>
       </div>
     </transition>
     <br>
@@ -130,7 +130,7 @@ export default {
         studentId: "",
         email: "",
         password: "",
-        role: "student"
+        role: ""
       },
       loginRules: {
         studentId: [
@@ -149,7 +149,7 @@ export default {
       handler: function(route) {
         // console.log("route",route);
         this.redirect = route.query && route.query.redirect;
-        this.loginForm.email=route.query.email||""
+        this.loginForm.email = route.query.email || "";
         if (route.path == "/register") {
           this.isRegister = true;
           this.loginForm.role = "teacher";
@@ -163,7 +163,7 @@ export default {
       this.resetForm();
 
       if (val === "teacher") {
-        console.log("is teacher");
+        localStorage.setItem("user", "teacher");
         this.$nextTick(() => {
           particles([
             "3,62,126",
@@ -175,6 +175,7 @@ export default {
           ]);
         });
       } else {
+        localStorage.setItem("user", "student");
         this.$nextTick(() => {
           particles();
         });
@@ -215,6 +216,7 @@ export default {
 
   created() {
     // console.log("--"+this.$route)
+    this.loginForm.role = localStorage.getItem("user") || "student";
     this.$nextTick(() => {
       particles();
     });
@@ -223,7 +225,6 @@ export default {
 </script>
 
 <style rel="stylesheet/scss" lang="scss">
-
 $light_gray: #eee;
 $dark_gray: #889aa4;
 .box-container {

@@ -9,6 +9,7 @@ import {
 //   setToken,
 //   removeToken
 // } from '@/utils/auth'
+import md5 from 'blueimp-md5'
 
 const user = {
   state: {
@@ -53,9 +54,12 @@ const user = {
             const data = response.data
             // setToken(data.token)
             // commit('SET_TOKEN', data.token)
-            sessionStorage.setItem('roles', data.roles)
-            sessionStorage.setItem('s_number', data.number)
-            sessionStorage.setItem('s_name', data.name)
+            // md5('hmw'+id)
+            const sid = data.number + '|' + data.name + '|' + data.roles
+            // sessionStorage.setItem('roles', data.roles)
+            // sessionStorage.setItem('s_number', data.number)
+            sessionStorage.setItem('hmw', md5('hmw' + sid))
+            sessionStorage.setItem('hmwid', sid)
             commit('SET_NUMBER', data.number)
             commit('SET_NAME', data.name)
             commit('SET_ROLES', data.roles)
@@ -67,11 +71,13 @@ const user = {
           const email = loginForm.email
           teacherLogin(email, loginForm.password).then(response => {
             const data = response.data
-            console.log(data)
-
-            sessionStorage.setItem('roles', data.roles)
-            sessionStorage.setItem('t_name', data.name)
-            sessionStorage.setItem('t_email', data.email)
+            // console.log(data)
+            const tid = data.email + '|' + data.name + '|' + data.roles
+            // sessionStorage.setItem('roles', data.roles)
+            // sessionStorage.setItem('t_name', data.name)
+            // sessionStorage.setItem('t_email', data.email)
+            sessionStorage.setItem('hmw', md5('hmw' + tid))
+            sessionStorage.setItem('hmwid', tid)
 
             commit('SET_EMAIL', data.email)
             commit('SET_NAME', data.name)
@@ -117,7 +123,8 @@ const user = {
           // commit('SET_TOKEN', '')
           commit('SET_NAME', '')
           commit('SET_ROLES', [])
-          sessionStorage.removeItem('roles')
+          // sessionStorage.removeItem('roles')
+          sessionStorage.clear()
           resolve()
         }).catch(error => {
           reject(error)
