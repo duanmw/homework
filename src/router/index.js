@@ -43,33 +43,108 @@ export const asyncRouterMap = [{
   path: '/',
   component: Layout,
   redirect: '/home',
-  children: [{
-    path: 'home',
-    component: () => import('@/views/home/teacher')
-  }],
   name: 'Home',
   meta: {
     title: '首页',
     icon: 'home',
     roles: ['teacher']
-  }
+  },
+  children: [{
+    path: 'home',
+    component: () => import('@/views/home/teacher')
+  }]
 },
 {
   path: '/',
   component: Layout,
   redirect: '/home',
-  children: [{
-    path: 'home',
-    component: () => import('@/views/home/student')
-  }],
   name: 'Home',
   meta: {
     title: '首页',
     icon: 'home',
     roles: ['student']
-  }
+  },
+  children: [{
+    path: 'home',
+    component: () => import('@/views/home/student')
+  }]
 },
-
+{
+  path: '/course',
+  redirect: '/course/index',
+  component: Layout,
+  children: [{
+    path: 'index',
+    name: 'Course',
+    component: () => import('@/views/course/teacher'),
+    meta: {
+      title: '课程',
+      icon: 'course',
+      roles: ['teacher']
+    }
+  }]
+},
+{
+  path: '/homework',
+  redirect: '/homework/index',
+  component: Layout,
+  children: [{
+    path: 'index',
+    name: 'Homework',
+    component: () => import('@/views/home/teacher'),
+    meta: {
+      title: '作业',
+      icon: 'homework',
+      roles: ['teacher']
+    }
+  }]
+},
+{
+  path: '/student',
+  redirect: '/student/index',
+  component: Layout,
+  children: [{
+    path: 'index',
+    name: 'Student',
+    component: () => import('@/views/home/teacher'),
+    meta: {
+      title: '学生',
+      icon: 'student',
+      roles: ['teacher']
+    }
+  }]
+},
+{
+  path: '/profile',
+  redirect: '/profile/index',
+  component: Layout,
+  children: [{
+    path: 'index',
+    name: 'Profile',
+    component: () => import('@/views/home/teacher'),
+    meta: {
+      title: '个人中心',
+      icon: 'profile'
+    }
+  }]
+},
+{
+  path: '/manage',
+  redirect: '/manage/index',
+  component: Layout,
+  meta:{
+    roles: ['admin']
+  },
+  children: [{
+    path: 'index',
+    name: 'Manage',
+    component: () => import('@/views/home/teacher'),
+    meta: {
+      title: '管理',
+      icon: 'manage'
+    }
+  }]
+},
 {
   path: '/form',
   component: Layout,
