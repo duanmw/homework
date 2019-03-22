@@ -191,7 +191,7 @@ export default {
           // this.$message.success("验证码正确");
           return true;
         } else {
-          this.$message.error("验证码过期啦！请重新获取");
+          this.$message.error("验证码失效啦！请重新获取");
           return false;
         }
       } else {
