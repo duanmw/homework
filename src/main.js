@@ -1,3 +1,4 @@
+import 'babel-polyfill' // 浏览器兼容性
 import Vue from 'vue'
 
 import 'normalize.css/normalize.css' // A modern alternative to CSS resets
