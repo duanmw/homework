@@ -49,14 +49,14 @@
         </div>
       </div>
     </el-card>
-    <el-dialog title="添加课程" :visible.sync="dialogFormVisible">
+    <el-dialog custom-class="add-course" width="40%" title="添加课程" :visible.sync="dialogFormVisible">
       <el-form :model="form">
-        <el-form-item label="课程名称" :label-width="formLabelWidth">
-          <el-input v-model="form.name"></el-input>
+        <el-form-item label="课程名称：">
+          <el-input clearable maxlength="20" v-model="form.name"></el-input>
         </el-form-item>
 
-        <el-form-item label="课程描述" :label-width="formLabelWidth">
-          <el-input type="textarea" v-model="form.desc"></el-input>
+        <el-form-item label="课程简介：">
+          <el-input maxlength="50" type="textarea" v-model="form.info"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -80,16 +80,15 @@ export default {
       dialogFormVisible: false,
       form: {
         name: "",
-        desc: ""
+        info: ""
       },
-      formLabelWidth: "120px",
+      // formLabelWidth: "120px",
       colorStyle: [
         {
           color: "#30BA78"
         },
         {
           color: "#30DECE"
-          // color: "#4BA2FC"
         },
         {
           color: "YellowGreen"
@@ -143,11 +142,31 @@ export default {
     },
     handleAdd() {
       this.dialogFormVisible = false;
-      this.$message.success("删除成功!");
+      this.$message.success("添加成功!");
     }
   }
 };
 </script>
+<style>
+@media screen and (max-width: 992px){
+  .add-course {
+    min-width: 60%;
+  }
+}
+@media screen and (max-width: 768px){
+  .add-course {
+    min-width: 80%;
+  }
+}
+@media screen and (max-width: 600px){
+  .add-course {
+    min-width: 98%;
+  }
+}
+.add-course .el-dialog__body{
+  padding: 20px;
+}
+</style>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
 .card {
