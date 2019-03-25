@@ -8,7 +8,7 @@
           </span>
           课程名称课程名称课程名称{{index}}
         </span>
-        <el-dropdown @command="handleCommand" @visible-change="changeIcon">
+        <el-dropdown @command="handleCommand" :show-timeout="150" @visible-change="changeIcon">
           <el-button :icon="operateIcon" style="padding: 0" type="text">操作</el-button>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item command="update">修改课程</el-dropdown-item>
