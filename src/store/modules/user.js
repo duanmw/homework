@@ -14,6 +14,7 @@ import md5 from 'blueimp-md5'
 const user = {
   state: {
     // token: getToken(),
+    id: '',
     name: '',
     number: '',
     email: '',
@@ -22,9 +23,9 @@ const user = {
   },
 
   mutations: {
-    // SET_TOKEN: (state, token) => {
-    //   state.token = token
-    // },
+    SET_ID: (state, id) => {
+      state.id = id
+    },
     SET_NAME: (state, name) => {
       state.name = name
     },
@@ -55,7 +56,7 @@ const user = {
             // setToken(data.token)
             // commit('SET_TOKEN', data.token)
             // md5('hmw'+id)
-            const sid = data.number + '|' + data.name + '|' + data.roles
+            const sid = data.id + '|' + data.number + '|' + data.name + '|' + data.roles
             // sessionStorage.setItem('roles', data.roles)
             // sessionStorage.setItem('s_number', data.number)
             sessionStorage.setItem('hmw', md5('hmw' + sid))
@@ -72,7 +73,7 @@ const user = {
           teacherLogin(email, loginForm.password).then(response => {
             const data = response.data
             // console.log(data)
-            const tid = data.email + '|' + data.name + '|' + data.roles
+            const tid = data.id + '|' + data.email + '|' + data.name + '|' + data.roles
             // sessionStorage.setItem('roles', data.roles)
             // sessionStorage.setItem('t_name', data.name)
             // sessionStorage.setItem('t_email', data.email)

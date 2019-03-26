@@ -164,21 +164,21 @@ export default {
 
       if (val === "teacher") {
         localStorage.setItem("user", "teacher");
-        this.$nextTick(() => {
-          particles([
-            "3,62,126",
-            "85,107,139",
-            "66,52,178",
-            "255,108,80",
-            "96, 100, 131",
-            "111,155,152"
-          ]);
-        });
+        // this.$nextTick(() => { //点击角色按钮后重绘背景
+        //   particles([
+        //     "3,62,126",
+        //     "85,107,139",
+        //     "66,52,178",
+        //     "255,108,80",
+        //     "96, 100, 131",
+        //     "111,155,152"
+        //   ]);
+        // });
       } else {
         localStorage.setItem("user", "student");
-        this.$nextTick(() => {
-          particles();
-        });
+        // this.$nextTick(() => {
+        //   particles();
+        // });
       }
     }
   },

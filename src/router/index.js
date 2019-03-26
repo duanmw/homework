@@ -73,14 +73,16 @@ export const asyncRouterMap = [{
   path: '/course',
   redirect: '/course/index',
   component: Layout,
+  meta: {
+    roles: ['teacher']
+  },
   children: [{
     path: 'index',
     name: 'Course',
     component: () => import('@/views/course/teacher'),
     meta: {
       title: '课程',
-      icon: 'course',
-      roles: ['teacher']
+      icon: 'course'
     }
   }]
 },
@@ -88,14 +90,16 @@ export const asyncRouterMap = [{
   path: '/homework',
   redirect: '/homework/index',
   component: Layout,
+  meta: {
+    roles: ['teacher']
+  },
   children: [{
     path: 'index',
     name: 'Homework',
     component: () => import('@/views/home/teacher'),
     meta: {
       title: '作业',
-      icon: 'homework',
-      roles: ['teacher']
+      icon: 'homework'
     }
   }]
 },
@@ -103,14 +107,16 @@ export const asyncRouterMap = [{
   path: '/student',
   redirect: '/student/index',
   component: Layout,
+  meta: {
+    roles: ['teacher']
+  },
   children: [{
     path: 'index',
     name: 'Student',
     component: () => import('@/views/home/teacher'),
     meta: {
       title: '学生',
-      icon: 'student',
-      roles: ['teacher']
+      icon: 'student'
     }
   }]
 },
@@ -132,7 +138,7 @@ export const asyncRouterMap = [{
   path: '/manage',
   redirect: '/manage/index',
   component: Layout,
-  meta:{
+  meta: {
     roles: ['admin']
   },
   children: [{
