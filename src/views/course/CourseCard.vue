@@ -181,7 +181,9 @@ export default {
     position: relative;
     .left-body {
       display: inline-block;
-      max-width: 60%;
+      // max-width: 60%;
+      width: 60%;
+      max-width: calc(100% - 100px);
       max-height: 72px;
       overflow: hidden;
       color: #666666;
@@ -197,7 +199,7 @@ export default {
       display: inline-block;
       font-size: 14px;
       color: #444444;
-      min-width: 102px;
+      min-width: 107px;
       width: 39%;
       line-height: 28px;
       padding-left: 10%;
