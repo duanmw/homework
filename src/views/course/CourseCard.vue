@@ -6,7 +6,7 @@
           <span class="title-icon" :style="colorStyle[index%4]">
             <svg-icon icon-class="course-title"/>
           </span>
-          课程名称课程名称课程名称{{index}}
+          {{courseData.name}}
         </span>
         <el-dropdown @command="handleCommand" :show-timeout="100" @visible-change="changeIcon">
           <el-button :icon="operateIcon" style="padding: 0" type="text">操作</el-button>
@@ -21,14 +21,9 @@
             </el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
-        <!-- <el-button
-        icon="el-icon-circle-plus-outline"
-        style="float: right; padding: 0px 0"
-        type="text"
-        >操作</el-button>-->
       </div>
-      <div class="body clearfix">
-        <div class="left-body">介暂介暂无课程简介暂无课程简介123课程简介暂无课程简介123课程简介123456789</div>
+      <div class="cardbody clearfix">
+        <div class="left-body">{{courseData.info}}</div>
         <!-- <div
         class="left-body"
         >暂无课程简介123</div>-->
@@ -41,7 +36,8 @@
           <router-link :to="'/student?can='+index" tag="a">
             <span class="inner-icon" :style="colorStyle[index%4]">
               <svg-icon icon-class="student"/>
-            </span> 学生：30
+            </span>
+            学生：{{courseData.stucount}}
           </router-link>
           <!-- <div class="textitem">
           <span :style="colorStyle[index%4]"><svg-icon icon-class="student"/></span> 学生：30
@@ -49,7 +45,12 @@
         </div>
       </div>
     </el-card>
-    <el-dialog custom-class="add-course" width="40%" title="添加课程" :visible.sync="dialogFormVisible">
+    <el-dialog
+      custom-class="course-form"
+      width="40%"
+      title="修改课程"
+      :visible.sync="dialogFormVisible"
+    >
       <el-form :model="form">
         <el-form-item label="课程名称：">
           <el-input clearable maxlength="20" v-model="form.name"></el-input>
@@ -68,10 +69,11 @@
 </template>
 
 <script>
+import { addCourse } from "@/api/course";
 export default {
   name: "CourseCard",
   props: {
-    data: Array, //传入的数据需为数组,
+    courseData: Object,
     index: Number
   },
   data() {
@@ -79,10 +81,9 @@ export default {
       operateIcon: "el-icon-circle-plus-outline",
       dialogFormVisible: false,
       form: {
-        name: "",
-        info: ""
+        name: this.courseData.name,
+        info: this.courseData.info
       },
-      // formLabelWidth: "120px",
       colorStyle: [
         {
           color: "#30BA78"
@@ -113,10 +114,6 @@ export default {
           })
             .then(() => {
               this.$message.success("删除成功!");
-              // this.$message({
-              //   type: "success",
-              //   message: "删除成功!"
-              // });
             })
             .catch(() => {
               this.$message({
@@ -142,30 +139,22 @@ export default {
     },
     handleAdd() {
       this.dialogFormVisible = false;
-      this.$message.success("添加成功!");
+      addCourse(this.$store.getters.id, this.form.name, this.form.info)
+        .then(res => {
+          const data = res.data;
+          console.log(data);
+          this.$message.success("添加成功!");
+
+          resolve();
+        })
+        .catch(error => {
+          reject(error);
+        });
     }
   }
 };
 </script>
 <style>
-@media screen and (max-width: 992px){
-  .add-course {
-    min-width: 60%;
-  }
-}
-@media screen and (max-width: 768px){
-  .add-course {
-    min-width: 80%;
-  }
-}
-@media screen and (max-width: 600px){
-  .add-course {
-    min-width: 98%;
-  }
-}
-.add-course .el-dialog__body{
-  padding: 20px;
-}
 </style>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
@@ -184,10 +173,10 @@ export default {
       color: #409eff;
     }
   }
-  .el-dropdown{
+  .el-dropdown {
     right: -8px;
   }
-  .body {
+  .cardbody {
     height: 72px;
     position: relative;
     .left-body {

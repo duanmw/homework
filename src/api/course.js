@@ -1,21 +1,24 @@
-// 待修改
 import request from '@/utils/request'
-import md5 from 'blueimp-md5'
+import {
+  createDate
+} from '@/utils/date'
 import qs from 'qs'
-export function register(email, password) {
+export function addCourse(tid, name, info) {
   return request({
-    url: '/api/teacher/addTeacher',
+    url: '/api/course/addCourse',
     method: 'post',
     data: qs.stringify({
-      email,
-      password: md5(password)
+      tid,
+      name,
+      info,
+      createtime: createDate()
     })
   })
 }
 
-export function isExist(email) {
+export function allCourseByTid(tid) {
   return request({
-    url: '/api/teacher/findByEmail?email=' + email,
+    url: '/api/course/allByTid?tid=' + tid,
     method: 'get'
   })
 }

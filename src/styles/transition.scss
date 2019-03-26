@@ -12,6 +12,10 @@
 }
 
 /*fade-transform*/
+.fade-transform-move{
+  opacity: 0.3;
+  transition: transform 0.5s;
+}
 .fade-transform-leave-active,
 .fade-transform-enter-active {
   transition: all .5s;
