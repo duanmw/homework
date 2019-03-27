@@ -13,7 +13,7 @@
 
 /*fade-transform*/
 .fade-transform-move{
-  opacity: 0.3;
+  // opacity: 0.8;
   transition: transform 0.5s;
 }
 .fade-transform-leave-active,
@@ -30,7 +30,19 @@
   opacity: 0;
   transform: translateX(30px);
 }
-
+/*fade-up*/
+// .fade-up-move{
+//   // opacity: 0.8;
+//   transition: transform 0.8s;
+// }
+// .fade-up-enter-active
+.fade-up-leave-active{
+  display: none;
+}
+.fade-up-enter {
+  opacity: 0;
+  transform: translateY(30px);
+}
 /*fade-right*/
 .fade-right-leave-active,
 .fade-right-enter-active {

@@ -1,5 +1,5 @@
 <template>
-  <div class="card">
+  <div class="card" v-loading="loading">
     <el-card shadow="hover">
       <div slot="header">
         <span class="text-overflow course-name">
@@ -23,7 +23,7 @@
         </el-dropdown>
       </div>
       <div class="cardbody clearfix">
-        <div class="left-body">{{courseData.info}}</div>
+        <div class="left-body">{{courseData.info? courseData.info:"暂无简介"}}</div>
         <!-- <div
         class="left-body"
         >暂无课程简介123</div>-->
@@ -50,9 +50,11 @@
       width="40%"
       title="修改课程"
       :visible.sync="dialogFormVisible"
+      @open="handleOpen"
+      @close="handleClose"
     >
-      <el-form :model="form">
-        <el-form-item label="课程名称：">
+      <el-form :model="form" :rules="rules" ref="updateCourseForm">
+        <el-form-item label="课程名称：" prop="name">
           <el-input clearable maxlength="20" v-model="form.name"></el-input>
         </el-form-item>
 
@@ -62,14 +64,14 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="handleAdd">确 定</el-button>
+        <el-button type="primary" @click="handleUpdate">确 定</el-button>
       </div>
     </el-dialog>
   </div>
 </template>
 
 <script>
-import { addCourse } from "@/api/course";
+import { updateCourse, deleteCourse, allCourseByTid } from "@/api/course";
 export default {
   name: "CourseCard",
   props: {
@@ -78,11 +80,23 @@ export default {
   },
   data() {
     return {
+      loading: false,
       operateIcon: "el-icon-circle-plus-outline",
       dialogFormVisible: false,
       form: {
         name: this.courseData.name,
         info: this.courseData.info
+      },
+      rules: {
+        name: [
+          { required: true, message: "课程名不能为空", trigger: "blur" },
+          {
+            min: 2,
+            max: 20,
+            message: "课程名长度在 2 到 20 个字符",
+            trigger: "blur"
+          }
+        ]
       },
       colorStyle: [
         {
@@ -107,26 +121,36 @@ export default {
           this.dialogFormVisible = true;
           break;
         case "delete":
-          this.$confirm("此操作将永久删除该文件, 是否继续?", "提示", {
-            confirmButtonText: "确定",
-            cancelButtonText: "取消",
-            type: "warning"
-          })
+          this.$confirm(
+            "此操作将永久删除课程：" +
+              this.courseData.name +
+              "，以及课程内的作业，是否继续？",
+            "提示",
+            {
+              confirmButtonText: "确定",
+              cancelButtonText: "取消",
+              type: "warning"
+            }
+          )
             .then(() => {
-              this.$message.success("删除成功!");
+              this.$emit("before-delete");
+              return deleteCourse(this.courseData);
+            })
+            .then(res => {
+              this.$emit("after-delete", this.index); //传数据过去
             })
             .catch(() => {
+              this.$emit("after-delete");
               this.$message({
                 type: "info",
+                duration: 2000,
                 message: "已取消删除"
               });
             });
           break;
-
         default:
           break;
       }
-      // this.$message("click on item " + command);
     },
     changeIcon(bool) {
       if (bool) {
@@ -137,19 +161,40 @@ export default {
         this.operateIcon = "el-icon-circle-plus-outline";
       }
     },
-    handleAdd() {
-      this.dialogFormVisible = false;
-      addCourse(this.$store.getters.id, this.form.name, this.form.info)
-        .then(res => {
-          const data = res.data;
-          console.log(data);
-          this.$message.success("添加成功!");
-
-          resolve();
-        })
-        .catch(error => {
-          reject(error);
-        });
+    handleUpdate() {
+      this.$refs.updateCourseForm.validate(valid => {
+        if (valid) {
+          console.log("right submit!!");
+          this.dialogFormVisible = false;
+          this.loading = true;
+          let obj = Object.assign({}, this.courseData, this.form); //合并对象
+          updateCourse(obj)
+            .then(res => {
+              let theCourse = { index: this.index, data: this.form };
+              this.$emit("after-update", theCourse);
+              this.loading = false;
+              this.$message.success("修改成功!");
+            })
+            .catch(error => {
+              this.loading = false;
+              this.$message.error(error + " 修改失败！");
+            });
+        } else {
+          console.log("error submit!!");
+          return false;
+        }
+      });
+    },
+    handleOpen() {
+      // 每次打开，重新设置form值，防止值为上一次未保存修改的
+      this.form.name = this.courseData.name;
+      this.form.info = this.courseData.info;
+    },
+    handleClose() {
+      // 每次关闭，移除校验结果，以免下一次打开仍显示
+      this.$refs.updateCourseForm.clearValidate();
+      //移除校验结果并重置表单为初始值
+      // this.$refs.updateCourseForm.resetFields();
     }
   }
 };

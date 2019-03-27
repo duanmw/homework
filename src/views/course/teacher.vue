@@ -4,9 +4,23 @@
     <div class="course">
       <el-row :gutter="24">
         <!-- <transition-group enter-active-class="animated fadeInDown" tag="div" appear> -->
-        <transition-group name="fade-transform" tag="div" appear>
-          <el-col v-for="(course,index) in courses" :key="index" :xs="24" :sm="12" :md="8">
-            <courseCard :index="index" :key="index" :courseData="course"></courseCard>
+        <transition-group name="fade-up" tag="div" appear>
+          <el-col
+            v-for="(course,index) in courses"
+            :ref="'card'+index"
+            :key="index"
+            :xs="24"
+            :sm="12"
+            :md="8"
+          >
+            <courseCard
+              @after-update="afterUpdate"
+              @before-delete="loading=true"
+              @after-delete="afterDelete"
+              :index="index"
+              :key="index"
+              :courseData="course"
+            ></courseCard>
           </el-col>
           <el-col key="addC" :xs="24" :sm="12" :md="8">
             <el-card shadow="hover" header="添加课程">
@@ -23,9 +37,10 @@
         width="40%"
         title="添加课程"
         :visible.sync="dialogFormVisible"
+        @closed="handleClose"
       >
-        <el-form :model="form">
-          <el-form-item label="课程名称：">
+        <el-form :model="form" :rules="rules" ref="addCourseForm">
+          <el-form-item label="课程名称：" prop="name">
             <el-input clearable maxlength="20" v-model="form.name"></el-input>
           </el-form-item>
 
@@ -46,28 +61,34 @@
 import { mapGetters } from "vuex";
 import CourseCard from "./CourseCard";
 import { addCourse, allCourseByTid } from "@/api/course";
+
 // import FormDialog from "./FormDialog";
 export default {
   name: "Course",
   components: {
     CourseCard
-    // FormDialog
   },
   data() {
     return {
+      noshow: false,
       loading: false,
       dialogFormVisible: false,
       form: {
         name: "",
         info: ""
       },
+      rules: {
+        name: [
+          { required: true, message: "课程名不能为空", trigger: "blur" },
+          {
+            min: 2,
+            max: 20,
+            message: "课程名长度在 2 到 20 个字符",
+            trigger: "blur"
+          }
+        ]
+      },
       courses: []
-      // courses: [
-      //   {
-      //     name: "Hello World",
-      //     info: "some info"
-      //   }
-      // ]
     };
   },
   computed: {
@@ -75,22 +96,46 @@ export default {
   },
   methods: {
     handleAdd() {
-      this.dialogFormVisible = false;
-      this.loading = true;
-      addCourse(this.$store.getters.id, this.form.name, this.form.info)
-        .then(res => {
-          return allCourseByTid(this.$store.getters.id);
-        })
-        .then(res => {
-          this.courses = res.data.courses;
-          console.log(this.courses);
-          this.loading = false;
-          this.$message.success("添加成功!");
-        })
-        .catch(error => {
-          this.loading = false;
-          this.$message.error(error + " 添加失败");
-        });
+      this.$refs.addCourseForm.validate(valid => {
+        if (valid) {
+          this.dialogFormVisible = false;
+          this.loading = true;
+          addCourse(this.$store.getters.id, this.form.name, this.form.info)
+            .then(res => {
+              return allCourseByTid(this.$store.getters.id);
+            })
+            .then(res => {
+              this.courses = res.data.courses;
+              // console.log(this.courses);
+              this.loading = false;
+              this.$message.success("添加成功！"); //添加成功！
+            })
+            .catch(error => {
+              this.loading = false;
+              this.$message.error(error + " 添加失败！");
+            });
+        } else {
+          console.log("error submit!!");
+          return false;
+        }
+      });
+    },
+    handleClose() {
+      // 每次关闭，移除校验结果，以免下一次打开仍显示
+      // this.$refs.addCourseForm.clearValidate();
+      //移除校验结果并重置表单为初始值
+      this.$refs.addCourseForm.resetFields();
+    },
+    afterUpdate(val) {
+      this.courses[val.index].name = val.data.name;
+      this.courses[val.index].info = val.data.info;
+    },
+    afterDelete(index) {
+      this.loading = false;
+      if (index) {
+        this.courses.splice(index, 1); //删除一个
+        this.$message.success("删除成功！"); //删除成功！
+      }
     }
   },
   created() {
@@ -133,6 +178,7 @@ export default {
   margin: 30px;
   .el-col {
     margin-bottom: 24px;
+    transition: all 0.7s; //进入离开过渡动画均有效，在.fade-up-move设置进入无动画
   }
   .el-card {
     border: 1px solid #dbdfe6;

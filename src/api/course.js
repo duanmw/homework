@@ -15,6 +15,20 @@ export function addCourse(tid, name, info) {
     })
   })
 }
+export function updateCourse(course) {
+  return request({
+    url: '/api/course/updateCourse',
+    method: 'post',
+    data: qs.stringify(course)
+  })
+}
+export function deleteCourse(course) {
+  return request({
+    url: '/api/course/deleteCourse',
+    method: 'post',
+    data: qs.stringify(course)
+  })
+}
 
 export function allCourseByTid(tid) {
   return request({
