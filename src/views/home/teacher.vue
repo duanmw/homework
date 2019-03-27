@@ -1,36 +1,14 @@
 <template>
   <div class="dashboard-container">
     <h3>laoshi</h3>
+    <div class="dashboard-text">
+      <countTo :startVal="startVal" :endVal="endVal" :duration="2000"></countTo>
+    </div>
     <div class="course">
-      <el-row :gutter="24">
-        <el-col :xs="24" :sm="12" :md="8">
-          <el-card shadow="hover">
-            <div slot="header" class="clearfix">
-              <span>卡片名称</span>
-              <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button>
-            </div>
-            <div v-for="o in 4" :key="o" class="text item">{{'列表内容 ' + o }}</div>
-          </el-card>
-        </el-col>
-        <el-col :xs="24" :sm="12" :md="8">
-          <el-card shadow="hover">
-            <div slot="header" class="clearfix">
-              <span>卡片名称</span>
-              <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button>
-            </div>
-            <div v-for="o in 4" :key="o" class="text item">{{'列表内容 ' + o }}</div>
-          </el-card>
-        </el-col>
-        <el-col :xs="24" :sm="12" :md="8">
-          <el-card shadow="hover">
-            <div slot="header" class="clearfix">
-              <span>卡片名称</span>
-              <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button>
-            </div>
-            <div v-for="o in 4" :key="o" class="text item">{{'列表内容 ' + o }}</div>
-          </el-card>
-        </el-col>
-      </el-row>
+      <el-row :gutter="24"></el-row>
+      <!-- <transition-group name="fade-up" tag="div" appear>
+        <span v-for="item in items" v-bind:key="item" class="list-complete-item">{{ item }}</span>
+      </transition-group>-->
     </div>
     <div class="dashboard-text">name:{{ name=='null'? '': name }}</div>
     <div class="dashboard-text">email:{{ email }}</div>
@@ -44,9 +22,19 @@
 
 <script>
 import { mapGetters } from "vuex";
-
+import countTo from "vue-count-to"; //https://github.com/PanJiaChen/vue-countTo
 export default {
   name: "Dashboard",
+  components: {
+    countTo
+  },
+  data() {
+    return {
+      startVal: 0,
+      endVal: 27
+    };
+  },
+  methods: {},
   computed: {
     ...mapGetters(["name", "roles", "email", "number"])
   }
@@ -54,11 +42,9 @@ export default {
 </script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
-.dashboard {
-  &-container {
-    margin: 30px;
-  }
-  &-text {
+.dashboard-container {
+  margin: 30px;
+  .dashboard-text {
     font-size: 30px;
     line-height: 46px;
   }
