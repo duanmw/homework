@@ -8,7 +8,7 @@
           <el-col
             v-for="(course,index) in courses"
             :ref="'card'+index"
-            :key="index"
+            :key="'cou'+index"
             :xs="24"
             :sm="12"
             :md="8"
@@ -167,6 +167,13 @@ export default {
 @media screen and (max-width: 600px) {
   .course-form {
     min-width: 98%;
+  }
+  .el-message{
+    width: 94%;
+    min-width: 260px;
+  }
+  .el-message-box{
+    width: 98%;
   }
 }
 .course-form .el-dialog__body {

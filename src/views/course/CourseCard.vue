@@ -2,7 +2,7 @@
   <div class="card" v-loading="loading">
     <el-card shadow="hover">
       <div slot="header">
-        <span class="text-overflow course-name">
+        <span class="text-overflow course-name" :title="'创建于'+courseData.createtime">
           <span class="title-icon" :style="colorStyle[index%4]">
             <svg-icon icon-class="course-title"/>
           </span>
@@ -31,7 +31,7 @@
           <router-link :to="'/homework?can='+index" tag="a">
             <span class="inner-icon" :style="colorStyle[index%4]">
               <svg-icon icon-class="homework"/>
-            </span> 作业：2/3
+            </span> 作业：{{courseData.workcount}}
           </router-link>
           <router-link :to="'/student?can='+index" tag="a">
             <span class="inner-icon" :style="colorStyle[index%4]">
