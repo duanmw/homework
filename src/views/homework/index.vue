@@ -21,46 +21,53 @@
         </el-col>
       </el-row>
     </div>
-    <el-collapse v-model="activeName" accordion>
-      <transition-group name="fade-up" tag="div" appear>
-        <el-collapse-item v-for="i in homeworks" :key="'work'+i.id" :name="i.id">
-          <div slot="title" class="panel-title">
-            <span v-if="i.state==1" class="wait-state">未开放</span>
-            <span v-else-if="i.state==2" class="opening-state">开放中</span>
-            <span v-else class="closed-state">已关闭</span>
-            <span class="work-name">{{i.name}}</span>
-            <span class="create-time">创建于 {{i.createtime}}</span>
-            <!-- <router-link :to="'/homework?id='+6" tag="a">习题数量：xx</router-link> -->
-          </div>
-          <div>
-            <!-- <el-date-picker :readonly="true" v-model="value1" type="datetime" placeholder="选择日期时间"></el-date-picker> -->
-          </div>
-          <el-row>
-            <el-col :xs="24" :sm="12">开始时间：{{i.starttime}}</el-col>
-            <el-col :xs="24" :sm="12">关闭时间：{{i.closetime}}</el-col>
-            <el-col :xs="24" :sm="12">关闭后是否显示答案：{{i.showanswer}}</el-col>
-            <el-col :xs="24" :sm="12">最大提交次数：{{i.maxsubmit}}</el-col>
-            <el-col :xs="24" :sm="12">
-              <router-link :to="'/homework?id='+6" tag="a">习题数量：xx</router-link>
-              <el-button size="small">查看习题</el-button>
-            </el-col>
-            <el-col :xs="24" :sm="12">
-              <el-button size="small" icon="el-icon-view">查看成绩</el-button>
-              <el-button size="small" icon="el-icon-edit" :disabled="!i.state">修改设置</el-button>
-              <el-button size="small" icon="el-icon-delete">删除作业</el-button>
-            </el-col>
-          </el-row>
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-        </el-collapse-item>
-      </transition-group>
-    </el-collapse>
-    <br>
-    <el-alert v-if="!courseId" title="请先选择一个课程" type="warning" center show-icon></el-alert>
-    <el-alert v-else-if="homeworks.length==0" title="此课程暂无作业" type="info" center show-icon></el-alert>
+    <div class="content-area" v-loading="loading">
+      <el-collapse v-model="activeName" accordion>
+        <transition-group name="fade-up" tag="div" appear>
+          <el-collapse-item v-for="i in homeworks" :key="'work'+i.id" :name="i.id">
+            <div slot="title" class="panel-title">
+              <span v-if="i.state==1" class="wait-state">未开放</span>
+              <span v-else-if="i.state==2" class="opening-state">开放中</span>
+              <span v-else class="closed-state">已关闭</span>
+              <span class="work-name">{{i.name}}</span>
+              <span class="create-time">创建于 {{i.createtime}}</span>
+              <!-- <router-link :to="'/homework?id='+6" tag="a">习题数量：xx</router-link> -->
+            </div>
+            <div>
+              <!-- <el-date-picker :readonly="true" v-model="value1" type="datetime" placeholder="选择日期时间"></el-date-picker> -->
+            </div>
+            <el-row>
+              <el-col :xs="24" :sm="12">开始时间：{{i.starttime}}</el-col>
+              <el-col :xs="24" :sm="12">关闭时间：{{i.closetime}}</el-col>
+              <el-col :xs="24" :sm="12">关闭后是否显示答案：{{i.showanswer}}</el-col>
+              <el-col :xs="24" :sm="12">最大提交次数：{{i.maxsubmit}}</el-col>
+              <el-col :xs="24" :sm="12">
+                <!-- <router-link :to="'/homework?id='+6" tag="a"></router-link> -->
+                习题数量：xx&nbsp;&nbsp;<router-link :to="'/homework?id='+6" tag="span"><el-button size="small">查看习题</el-button></router-link>
+                <!-- <el-button size="small">查看习题</el-button> -->
+                <!-- <el-button size="small">查看习题</el-button> -->
+              </el-col>
+              <el-col :xs="24" :sm="12">
+                <el-button size="small" icon="el-icon-view">查看成绩</el-button>
+                <el-button size="small" icon="el-icon-edit" :disabled="!i.state">修改设置</el-button>
+                <el-button size="small" icon="el-icon-delete">删除作业</el-button>
+              </el-col>
+            </el-row>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+          </el-collapse-item>
+        </transition-group>
+      </el-collapse>
+      <br>
+      <el-alert v-if="!courseId" title="请先选择一个课程" type="warning" center show-icon></el-alert>
+      <!-- <el-alert  title="此课程暂无作业" type="info" center show-icon></el-alert> -->
+      <div v-else-if="homeworks.length==0" class="tip">
+        <svg-icon icon-class="nodata"/>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -72,6 +79,7 @@ export default {
   computed: {},
   data() {
     return {
+      loading: false,
       courses: [],
       homeworks: [],
       activeName: "1",
@@ -83,13 +91,12 @@ export default {
   },
   methods: {
     getWork() {
+      this.loading = true;
       allWorkByCid(this.courseId).then(res => {
+        this.loading = false;
         this.homeworks = res.data.works;
         console.log(this.homeworks);
         let now = new Date();
-        // let time=new Date(this.homeworks[1].starttime)
-        // console.log(now,time);
-        // console.log(now<time);
 
         this.homeworks.forEach(item => {
           let start = new Date(item.starttime);
@@ -157,6 +164,14 @@ export default {
     padding: 0 0 20px;
     & > .el-row > .el-col {
       margin-bottom: 8px;
+    }
+  }
+  .content-area {
+    height: calc(100vh - 150px); // for v-loading
+    .tip {
+      text-align: center;
+      font-size: 8em;
+      color: #409eff;
     }
   }
   .panel-title {

@@ -321,10 +321,12 @@ $light_gray: #eee;
     background: #292e49;
   }
   25% {
-    background: #0a3b67;
+    background: #0f5867;
+    
   }
   50% {
-    background: #0f5867;
+    // background: #0f5867;
+    background: #174266;
   }
   75% {
     background: #444f5a;
@@ -337,7 +339,7 @@ $light_gray: #eee;
   min-height: 100%;
   width: 100%;
   // background-color: $bg;
-  animation: bgcolor-change 12s linear infinite;
+  animation: bgcolor-change 15s linear infinite;
   display: flex;
   flex-direction: column;
   justify-content: center;
