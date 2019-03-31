@@ -60,7 +60,7 @@
 <script>
 import { mapGetters } from "vuex";
 import CourseCard from "./CourseCard";
-import { addCourse, allCourseByTid } from "@/api/course";
+import { isExist, addCourse, allCourseByTid } from "@/api/course";
 
 // import FormDialog from "./FormDialog";
 export default {
@@ -98,9 +98,20 @@ export default {
     handleAdd() {
       this.$refs.addCourseForm.validate(valid => {
         if (valid) {
-          this.dialogFormVisible = false;
-          this.loading = true;
-          addCourse(this.$store.getters.id, this.form.name, this.form.info)
+          isExist(this.$store.getters.id, this.form.name)
+            .then(res => {
+              if (res.message == "true") {
+                return Promise.reject("exist");
+              } else {
+                this.dialogFormVisible = false;
+                this.loading = true;
+                return addCourse(
+                  this.$store.getters.id,
+                  this.form.name,
+                  this.form.info
+                );
+              }
+            })
             .then(res => {
               return allCourseByTid(this.$store.getters.id);
             })
@@ -112,7 +123,11 @@ export default {
             })
             .catch(error => {
               this.loading = false;
-              this.$message.error(error + " 添加失败！");
+              if (error == "exist") {
+                this.$message.warning("此课程名已存在！请更换");
+              } else {
+                this.$message.error(error + " 添加失败！");
+              }
             });
         } else {
           console.log("error submit!!");
@@ -168,11 +183,11 @@ export default {
   .course-form {
     min-width: 98%;
   }
-  .el-message{
+  .el-message {
     width: 94%;
     min-width: 260px;
   }
-  .el-message-box{
+  .el-message-box {
     width: 98%;
   }
 }

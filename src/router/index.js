@@ -101,6 +101,17 @@ export const asyncRouterMap = [{
       title: '作业',
       icon: 'homework'
     }
+  },
+  {
+    path: ':wid',
+    // redirect: ':wid/question',
+    name: 'Question',
+    component: () => import('@/views/homework/question'),
+    hidden: true,
+    meta: {
+      title: '作业习题'
+    // icon: 'homework'
+    }
   }]
 },
 {

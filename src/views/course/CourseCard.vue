@@ -28,10 +28,15 @@
         class="left-body"
         >暂无课程简介123</div>-->
         <div class="right-body">
-          <router-link :to="'/homework?can='+index" tag="a">
+          <!-- <router-link :to="'/homework?can='+index" tag="a"> -->
+          <router-link
+            :to="{ name: 'Homework', params: { courseId:courseData.id,courseName:courseData.name }}"
+            tag="a"
+          >
             <span class="inner-icon" :style="colorStyle[index%4]">
               <svg-icon icon-class="homework"/>
-            </span> 作业：{{courseData.workcount}}
+            </span>
+            作业：{{courseData.workcount}}
           </router-link>
           <router-link :to="'/student?can='+index" tag="a">
             <span class="inner-icon" :style="colorStyle[index%4]">

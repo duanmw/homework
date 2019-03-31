@@ -32,6 +32,9 @@ export default {
 
       const first = matched[0]
       if (first && first.name !== 'Home') {
+        if(first && first.name == 'Question'){
+        matched = [{ path: '/homework/index', meta: { title: '作业' }}].concat(matched)
+        }
         matched = [{ path: '/home', meta: { title: '首页' }}].concat(matched)
       }
 
