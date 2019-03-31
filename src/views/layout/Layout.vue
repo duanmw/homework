@@ -6,19 +6,25 @@
       <navbar/>
       <app-main/>
     </div>
+    <!--可自定义按钮的样式、show/hide临界点、返回的位置  -->
+    <!--如需文字提示，可在外部添加element的<el-tooltip></el-tooltip>元素  -->
+    <el-tooltip placement="top" content="回到顶部">
+      <back-to-top :visibility-height="300" transition-name="fade" />
+    </el-tooltip>
   </div>
 </template>
 
 <script>
 import { Navbar, Sidebar, AppMain } from './components'
 import ResizeMixin from './mixin/ResizeHandler'
-
+import BackToTop from '@/components/BackToTop'
 export default {
   name: 'Layout',
   components: {
     Navbar,
     Sidebar,
-    AppMain
+    AppMain,
+    BackToTop
   },
   mixins: [ResizeMixin],
   computed: {
