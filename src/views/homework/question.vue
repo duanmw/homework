@@ -89,12 +89,9 @@ export default {
     }
   },
   created() {
-    this.courseId = this.$route.params.cid;
-    if (this.courseId) {
-      getOneCourse(this.courseId).then(res => {
-        this.courseName = res.data.course.name;
-        // console.log(res.data);
-      });
+    if (this.$route.params.courseId && this.$route.params.courseName) {
+      this.courseId = this.$route.params.courseId;
+      this.courseName = this.$route.params.courseName;
     }
     if (this.$route.params.wid) {
       this.works.push({

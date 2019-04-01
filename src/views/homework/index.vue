@@ -15,13 +15,11 @@
           </el-select>
         </el-col>
         <el-col :xs="24" :sm="12">
-          <el-button
-            size="medium"
-            icon="el-icon-circle-plus-outline"
-            @click="WorkFormVisible = true"
-          >添加作业</el-button>
+          <router-link :to="{ name: 'addHomework', params: { courseId,courseName }}" tag="span">
+            <el-button :disabled="!courseId" size="medium" icon="el-icon-circle-plus-outline">添加作业</el-button>
+          </router-link>
           <!-- <el-button size="medium" icon="el-icon-view">查看成绩</el-button> -->
-          <el-button size="medium" icon="el-icon-printer">统计成绩</el-button>
+          <el-button :disabled="!courseId" size="medium" icon="el-icon-printer">统计成绩</el-button>
         </el-col>
       </el-row>
     </div>
@@ -49,7 +47,7 @@
                 <!-- <router-link :to="'/homework?id='+6" tag="a"></router-link> -->
                 习题数量：{{i.quescount}}&nbsp;&nbsp;
                 <router-link
-                  :to="{ name: 'Question', params: { wid:i.id,wname:i.name,cid:courseId }}"
+                  :to="{ name: 'Question', params: { wid:i.id,wname:i.name,courseId,courseName }}"
                   tag="span"
                 >
                   <el-button size="small" icon="el-icon-tickets">查看习题</el-button>
@@ -74,29 +72,71 @@
         </div>
       </transition>
     </div>
-    <!-- 类course-form做了响应式,所以加上此类名 -->
+    <!-- 类course-form宽度做了响应式,所以加上此类名 -->
+    <!-- :fullscreen="true" -->
     <el-dialog
       top="10vh"
       custom-class="course-form"
       width="40%"
-      title="添加作业-设置信息"
-      :visible.sync="WorkFormVisible"
+      title="添加作业 - 设置信息"
+      :visible.sync="formVisible.one"
       @closed="handleClose"
     >
-      <el-form :model="form" :rules="rules" ref="addWorkForm" label-width="100px">
+      <el-form :model="form" :rules="rules" ref="addWorkForm" size="medium" label-width="100px">
+        <el-form-item label="作业名称：" prop="name">
+          <el-input clearable maxlength="20" v-model="form.name"></el-input>
+        </el-form-item>
+        <el-form-item label-width="156px" label="作业允许提交次数：" prop="maxSubmit">
+          <el-input-number v-model="form.maxSubmit" :min="1" :max="10"></el-input-number>
+        </el-form-item>
+        <el-form-item label-width="170px" label="作业关闭后显示答案：">
+          <el-switch v-model="form.showAnswer"></el-switch>
+        </el-form-item>
+      </el-form>
+      <div slot="footer">
+        <el-button @click="formVisible.one = false">取 消</el-button>
+        <el-button type="primary" @click="toStepTwo">下一步</el-button>
+      </div>
+    </el-dialog>
+    <!-- <el-dialog
+      :append-to-body="true"
+      top="10vh"
+      :fullscreen="true"
+      width="40%"
+      :visible.sync="formVisible.two"
+      @closed="handleClose"
+    >
+      <AddQuestion/>
+        <div slot="title">
+          {{'作业（'+form.name+'） - 添加习题'}}&nbsp;&nbsp;&nbsp;&nbsp;
+          <el-button size="medium" @click="formVisible.two = false;formVisible.one = true">上一步</el-button>
+          <el-button size="medium" type="primary" @click="toStepThree">下一步</el-button>
+        </div>
+    </el-dialog>
+    <el-dialog
+      top="10vh"
+      custom-class="course-form"
+      width="40%"
+      :title="'确认添加（'+form.name+'）'"
+      :close-on-click-modal="false"
+      :visible.sync="formVisible.three"
+      @closed="handleClose"
+    >
+      <el-form :model="form" :rules="rules" ref="submitWorkForm" size="medium" label-width="100px">
         <el-form-item label="作业名称：" prop="name">
           <el-input clearable maxlength="20" v-model="form.name"></el-input>
         </el-form-item>
 
-        <el-form-item label="开始时间：">
+        <el-form-item label="开放时间：" prop="startTime">
           <el-date-picker
             v-model="form.startTime"
             type="datetime"
             placeholder="选择日期时间"
+            :picker-options="pickerOptions0"
             default-time="00:00:00"
           ></el-date-picker>
         </el-form-item>
-        <el-form-item label="关闭时间：">
+        <el-form-item label="关闭时间：" prop="closeTime">
           <el-date-picker
             v-model="form.closeTime"
             type="datetime"
@@ -105,24 +145,30 @@
           ></el-date-picker>
         </el-form-item>
       </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="WorkFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="handleAddWork">下一步</el-button>
+      <div slot="footer">
+        <el-button @click="formVisible.three = false;formVisible.two = true">上一步</el-button>
+        <el-button type="primary" @click="handleAddWork">确认添加</el-button>
       </div>
-    </el-dialog>
-    
+    </el-dialog>-->
   </div>
 </template>
 
 <script>
 import { allCourseByTid } from "@/api/course";
 import { addWork, allWorkByCid } from "@/api/homework";
+// import AddQuestion from "./AddQuestion";
 export default {
   name: "Homework",
-  computed: {},
+  components: {
+    // AddQuestion
+  },
   data() {
     return {
-      WorkFormVisible: false,
+      formVisible: {
+        one: false,
+        two: false,
+        three: false
+      },
       loading: false,
       courses: [],
       homeworks: [],
@@ -140,14 +186,47 @@ export default {
       },
       rules: {
         name: [
-          { required: true, message: "课程名不能为空", trigger: "blur" },
+          { required: true, message: "作业名不能为空", trigger: "blur" },
           {
             min: 2,
             max: 20,
-            message: "课程名长度在 2 到 20 个字符",
+            message: "作业名长度在 2 到 20 个字符",
+            trigger: "blur"
+          }
+        ],
+        startTime: [
+          {
+            type: "date",
+            required: true,
+            message: "请选择开放时间",
+            trigger: "blur"
+          }
+        ],
+        closeTime: [
+          {
+            type: "date",
+            required: true,
+            message: "请选择关闭时间",
+            trigger: "blur"
+          }
+        ],
+        maxSubmit: [
+          {
+            required: true,
+            message: "提交次数不能为空",
             trigger: "blur"
           }
         ]
+      },
+      pickerOptions0: {
+        disabledDate(time) {
+          // if (this.form.closeTime != "") {
+          //   return time.getTime() > Date.now() || time.getTime() > this.form.closeTime;
+          // } else {
+          //   return time.getTime() > Date.now();
+          // }
+          return time.getTime() < Date.now() - 8.64e7; //如果没有后面的-8.64e7就是不可以选择今天
+        }
       }
     };
   },
@@ -162,6 +241,11 @@ export default {
   },
   methods: {
     getWork(courseId) {
+      let obj = {};
+      obj = this.courses.find(item => {
+        return item.id === courseId; //筛选出匹配id的课程
+      });
+      this.courseName = obj.name; //设置对应课程名
       this.loading = true;
       allWorkByCid(courseId)
         .then(res => {
@@ -188,21 +272,45 @@ export default {
           this.$message.error(error + " 数据获取失败");
         });
     },
+    toStepTwo() {
+      this.$refs.addWorkForm.validate(valid => {
+        if (valid) {
+          this.formVisible.one = false;
+          // this.formVisible.two = true;
+          this.$router.push({
+            path: "/homework/addhomework",
+            meta: { workinfo: this.form }
+          });
+        }
+      });
+    },
+    toStepThree() {
+      // this.$refs.addQuestionForm.validate(valid => {
+      // if (valid) {
+      this.formVisible.two = false;
+      this.formVisible.three = true;
+      // }
+      // });
+    },
     handleClose() {},
-    handleAddWork() {}
+    handleAddWork() {
+      // this.$router.push({
+      //   name: "addHomework",
+      //   params: { courseId:this.courseId, courseName:this.courseName }
+      // });
+    }
   },
   created() {
-    if (this.$route.params.courseId) {
+    if (this.$route.params.courseId && this.$route.params.courseName) {
       this.courseId = this.$route.params.courseId;
-      if (this.$route.params.courseName) {
-        this.courseName = this.$route.params.courseName;
-        this.courses.push({
-          id: this.courseId,
-          name: this.courseName
-        });
-      }
+      this.courseName = this.$route.params.courseName;
+      this.courses.push({
+        id: this.courseId,
+        name: this.courseName
+      });
       this.getWork(this.courseId);
     }
+
     allCourseByTid(this.$store.getters.id)
       .then(res => {
         this.courses = res.data.courses;
@@ -228,6 +336,9 @@ export default {
         // font-weight: 600;
       }
     }
+  }
+  .course-form .el-dialog__body {
+    padding: 20px;
   }
   .el-date-editor.el-input {
     width: 100%;
@@ -257,8 +368,9 @@ export default {
     }
   }
   .content-area {
-    height: calc(100vh - 150px); // for v-loading
+    min-height: calc(100vh - 200px); // for v-loading
     .tip {
+      margin-top: 4vh;
       text-align: center;
       font-size: 8em;
       color: #409eff;
