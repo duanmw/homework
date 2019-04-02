@@ -57,7 +57,7 @@
               <el-col :xs="24" :sm="12">
                 <el-button size="small" icon="el-icon-view">查看成绩</el-button>
                 <el-button size="small" icon="el-icon-edit" :disabled="!i.state">修改设置</el-button>
-                <el-button size="small" icon="el-icon-delete">删除作业</el-button>
+                <el-button plain type="danger" size="small" icon="el-icon-delete">删除作业</el-button>
               </el-col>
             </el-row>
           </el-collapse-item>
