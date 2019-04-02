@@ -10,11 +10,8 @@
             <span class="classname">给课程：{{$route.params.courseName}} 添加作业习题</span>
           </el-col>
           <el-col :xs="24" :sm="12">
-            单选:{{dynamicFormOne.questions.length}}&nbsp;
-            多选:{{dynamicFormTwo.questions.length}}&nbsp;
-            判断:{{dynamicFormTwo.questions.length}}&nbsp;
-            填空:{{dynamicFormTwo.questions.length}}&nbsp;
-            &nbsp;&nbsp;
+            题目总数：{{dynamicFormOne.questions.length+dynamicFormTwo.questions.length+dynamicFormThree.questions.length+dynamicFormFour.questions.length}}
+            &nbsp;&nbsp;&nbsp;
             <el-button
               :disabled="courseName==''"
               size="medium"
@@ -26,7 +23,16 @@
       </div>
     </sticky>
     <el-tabs v-model="activeName" @tab-click="handleClick">
-      <el-tab-pane label="单选题" name="first">
+      <el-tab-pane name="first">
+        <span slot="label">
+          单选题
+          <transition name="slow-fade" leave-active-class="animated rollOut">
+            <span
+              v-if="dynamicFormOne.questions.length"
+              class="little-badge"
+            >{{dynamicFormOne.questions.length}}</span>
+          </transition>
+        </span>
         <div
           class="question-box"
           v-for="(question, index) in dynamicFormOne.questions"
@@ -131,7 +137,16 @@
           @click="addOneQ('a')"
         >添加题目</el-button>
       </el-tab-pane>
-      <el-tab-pane label="多选题" name="second">
+      <el-tab-pane name="second">
+        <span slot="label">
+          多选题
+          <transition name="slow-fade" leave-active-class="animated rollOut">
+            <span
+              v-if="dynamicFormTwo.questions.length"
+              class="little-badge"
+            >{{dynamicFormTwo.questions.length}}</span>
+          </transition>
+        </span>
         <div
           class="question-box"
           v-for="(question, index) in dynamicFormTwo.questions"
@@ -228,10 +243,130 @@
             </el-col>
           </el-row>
         </div>
-        <el-button size="medium" type="primary" icon="el-icon-plus" @click="addOneQ('b')">添加题目</el-button>
+        <el-button
+          :disabled="courseName==''"
+          size="medium"
+          type="primary"
+          icon="el-icon-plus"
+          @click="addOneQ('b')"
+        >添加题目</el-button>
       </el-tab-pane>
-      <el-tab-pane label="判断题" name="third">角色管理</el-tab-pane>
-      <el-tab-pane label="填空题" name="fourth">定时任务补偿</el-tab-pane>
+      <el-tab-pane name="third">
+        <span slot="label">
+          判断题
+          <transition name="slow-fade" leave-active-class="animated rollOut">
+            <span
+              v-if="dynamicFormThree.questions.length"
+              class="little-badge"
+            >{{dynamicFormThree.questions.length}}</span>
+          </transition>
+        </span>
+        <div
+          class="question-box third-panel"
+          v-for="(question, index) in dynamicFormThree.questions"
+          :key="question.key"
+        >
+          <span class="left-name">{{'判断题 ' + (index+1)}}</span>
+          <div class="right-btn">
+            <el-button
+              size="small"
+              type="primary"
+              plain
+              icon="el-icon-edit"
+              @click.once="question.showDesc=true"
+            >添加解析</el-button>
+            <el-button
+              size="small"
+              type="danger"
+              plain
+              icon="el-icon-delete"
+              @click.prevent="removeOne('c',question)"
+            >删除</el-button>
+          </div>
+          <el-input
+            type="textarea"
+            maxlength="300"
+            :autosize="{ minRows: 1, maxRows: 4}"
+            placeholder="请输入题目"
+            v-model="question.title"
+          ></el-input>
+          <el-input
+            v-if="question.showDesc"
+            type="textarea"
+            maxlength="300"
+            :autosize="{ minRows: 1, maxRows: 4}"
+            placeholder="请输入答案解析（选填）"
+            v-model="question.desc"
+          ></el-input>
+          <div class="radio-group">
+            <el-radio v-model="question.option.isRight" label="yes">正确</el-radio>
+            <el-radio v-model="question.option.isRight" label="no">错误</el-radio>
+          </div>
+        </div>
+        <el-button
+          :disabled="courseName==''"
+          size="medium"
+          type="primary"
+          icon="el-icon-plus"
+          @click="addOneQ('c')"
+        >添加题目</el-button>
+      </el-tab-pane>
+      <el-tab-pane name="fourth">
+        <span slot="label">
+          填空题
+          <transition name="slow-fade" leave-active-class="animated rollOut">
+            <span
+              v-if="dynamicFormFour.questions.length"
+              class="little-badge last-badge"
+            >{{dynamicFormFour.questions.length}}</span>
+          </transition>
+        </span>
+        <div
+          class="question-box"
+          v-for="(question, index) in dynamicFormFour.questions"
+          :key="question.key"
+        >
+          <span class="left-name">{{'填空题 ' + (index+1)}}</span>
+          <div class="right-btn">
+            <el-button
+              size="small"
+              type="primary"
+              plain
+              icon="el-icon-edit"
+              @click.once="question.showDesc=true"
+            >添加解析</el-button>
+            <el-button
+              size="small"
+              type="danger"
+              plain
+              icon="el-icon-delete"
+              @click.prevent="removeOne('d',question)"
+            >删除</el-button>
+          </div>
+          <el-input
+            type="textarea"
+            maxlength="300"
+            :autosize="{ minRows: 2, maxRows: 4}"
+            placeholder="请输入题目"
+            v-model="question.title"
+          ></el-input>
+          <el-input
+            v-if="question.showDesc"
+            type="textarea"
+            maxlength="300"
+            :autosize="{ minRows: 1, maxRows: 4}"
+            placeholder="请输入答案解析（选填）"
+            v-model="question.desc"
+          ></el-input>
+        </div>
+        <el-button
+          :disabled="courseName==''"
+          size="medium"
+          type="primary"
+          icon="el-icon-plus"
+          @click="addOneQ('d')"
+        >添加题目</el-button>
+      </el-tab-pane>
     </el-tabs>
   </div>
 </template>
@@ -247,7 +382,6 @@ export default {
       activeName: "first",
       courseId: "",
       courseName: "",
-      showDot: [false, false, false, false],
       qObj: {
         showDesc: false,
         title: "",
@@ -347,6 +481,32 @@ export default {
         }
       });
     },
+    validateFormThree() {
+      return this.dynamicFormThree.questions.every(item => {
+        if (item.title != "") {
+          return true;
+        } else {
+          this.$message.warning("存在判断题题目为空情况！请检查");
+          return false;
+        }
+      });
+    },
+    validateFormFour() {
+      return this.dynamicFormFour.questions.every(item => {
+        if (item.title != "") {
+          for (let i = 0; i < item.options.length; i++) {
+            if (item.options[i].content == "") {
+              this.$message.warning("存在填空题答案内容为空情况！请检查");
+              return false;
+            }
+          }
+          return true;
+        } else {
+          this.$message.warning("存在填空题题目为空情况！请检查");
+          return false;
+        }
+      });
+    },
     handleAdd() {
       if (this.validateFormOne()) {
         this.validateFormTwo();
@@ -373,30 +533,60 @@ export default {
           }
           break;
         case "c":
-          // this.dynamicFormThree.questions.push(this.qObj);
+          if (this.validateFormThree()) {
+            let newObj = {
+              showDesc: false,
+              title: "",
+              desc: "",
+              option: { content: "正确", isRight: "yes" },
+              key: "" + Date.now()
+            };
+            this.dynamicFormThree.questions.push(newObj);
+          }
           break;
         case "d":
-          // this.dynamicFormFour.questions.push(this.qObj);
+          if (this.validateFormFour()) {
+            let newObj = {
+              showDesc: false,
+              title: "",
+              desc: "",
+              options: [{ content: "", isRight: "yes" }],
+              key: "" + Date.now()
+            };
+            this.dynamicFormFour.questions.push(newObj);
+          }
           break;
         default:
           break;
       }
     },
     removeOne(type, item) {
+      let index;
       switch (type) {
         case "a":
-          var index = this.dynamicFormOne.questions.indexOf(item);
+          index = this.dynamicFormOne.questions.indexOf(item);
           if (index !== -1) {
             this.dynamicFormOne.questions.splice(index, 1);
           }
           break;
         case "b":
-          var index = this.dynamicFormTwo.questions.indexOf(item);
+          index = this.dynamicFormTwo.questions.indexOf(item);
           if (index !== -1) {
             this.dynamicFormTwo.questions.splice(index, 1);
           }
           break;
-
+        case "c":
+          index = this.dynamicFormThree.questions.indexOf(item);
+          if (index !== -1) {
+            this.dynamicFormThree.questions.splice(index, 1);
+          }
+          break;
+        case "d":
+          index = this.dynamicFormFour.questions.indexOf(item);
+          if (index !== -1) {
+            this.dynamicFormFour.questions.splice(index, 1);
+          }
+          break;
         default:
           break;
       }
@@ -437,6 +627,26 @@ export default {
   }
   .el-tabs {
     margin: 20px 30px;
+    .little-badge {
+      position: absolute;
+      top: 12px;
+      right: 18px;
+      transform: translateY(-50%) translateX(100%);
+      background-color: rgba(64, 158, 255, 0.7);
+      border-radius: 10px;
+      color: #fff;
+      display: inline-block;
+      font-size: 12px;
+      height: 18px;
+      line-height: 18px;
+      padding: 0 6px;
+      text-align: center;
+      white-space: nowrap;
+      border: 1px solid #fff;
+      &.last-badge{
+        right: -1px;
+      }
+    }
     .question-box {
       padding: 12px 0;
       // border-bottom: 1px dashed #d1d6e2;
@@ -453,6 +663,15 @@ export default {
       .el-textarea,
       .el-input {
         margin-bottom: 6px;
+      }
+    }
+    .third-panel {
+      .el-textarea {
+        margin-bottom: 10px;
+      }
+      .radio-group {
+        padding-left: 1px;
+        padding-bottom: 4px;
       }
     }
   }
