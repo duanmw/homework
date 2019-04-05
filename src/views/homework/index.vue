@@ -15,7 +15,10 @@
           </el-select>
         </el-col>
         <el-col :xs="24" :sm="12">
-          <router-link :to="{ name: 'addHomework', params: { courseId,courseName }}" tag="span">
+          <router-link
+            :to="{ name: 'addHomework', params: { courseId,courseName,suggestName}}"
+            tag="span"
+          >
             <el-button :disabled="!courseId" size="medium" icon="el-icon-circle-plus-outline">添加作业</el-button>
           </router-link>
           <!-- <el-button size="medium" icon="el-icon-view">查看成绩</el-button> -->
@@ -24,7 +27,7 @@
       </el-row>
     </div>
     <div class="content-area" v-loading="loading">
-      <el-collapse v-model="activeName" accordion>
+      <el-collapse v-model="activeName">
         <transition-group name="fade-up" tag="div" appear>
           <el-collapse-item v-for="i in homeworks" :key="'work'+i.id" :name="i.id">
             <div slot="title" class="panel-title">
@@ -57,7 +60,13 @@
               <el-col :xs="24" :sm="12">
                 <el-button size="small" icon="el-icon-view">查看成绩</el-button>
                 <el-button size="small" icon="el-icon-edit" :disabled="!i.state">修改设置</el-button>
-                <el-button plain type="danger" size="small" icon="el-icon-delete">删除作业</el-button>
+                <el-button
+                  plain
+                  type="danger"
+                  size="small"
+                  icon="el-icon-delete"
+                  @click="handleDelete(i)"
+                >删除作业</el-button>
               </el-col>
             </el-row>
           </el-collapse-item>
@@ -65,97 +74,25 @@
       </el-collapse>
       <br>
       <transition name="slow-fade" appear>
-        <el-alert v-if="!courseId" title="请先选择一个课程" type="warning" center show-icon></el-alert>
+        <el-alert
+          v-if="courses.length!=0&&!courseId"
+          title="请先选择一个课程"
+          type="warning"
+          center
+          show-icon
+        ></el-alert>
         <!-- <el-alert  title="此课程暂无作业" type="info" center show-icon></el-alert> -->
-        <div v-else-if="homeworks.length==0" class="tip">
+        <div v-else-if="courses.length==0||homeworks.length==0" class="nodata-tip">
           <svg-icon icon-class="nodata"/>
         </div>
       </transition>
     </div>
-    <!-- 类course-form宽度做了响应式,所以加上此类名 -->
-    <!-- :fullscreen="true" -->
-    <el-dialog
-      top="10vh"
-      custom-class="course-form"
-      width="40%"
-      title="添加作业 - 设置信息"
-      :visible.sync="formVisible.one"
-      @closed="handleClose"
-    >
-      <el-form :model="form" :rules="rules" ref="addWorkForm" size="medium" label-width="100px">
-        <el-form-item label="作业名称：" prop="name">
-          <el-input clearable maxlength="20" v-model="form.name"></el-input>
-        </el-form-item>
-        <el-form-item label-width="156px" label="作业允许提交次数：" prop="maxSubmit">
-          <el-input-number v-model="form.maxSubmit" :min="1" :max="10"></el-input-number>
-        </el-form-item>
-        <el-form-item label-width="170px" label="作业关闭后显示答案：">
-          <el-switch v-model="form.showAnswer"></el-switch>
-        </el-form-item>
-      </el-form>
-      <div slot="footer">
-        <el-button @click="formVisible.one = false">取 消</el-button>
-        <el-button type="primary" @click="toStepTwo">下一步</el-button>
-      </div>
-    </el-dialog>
-    <!-- <el-dialog
-      :append-to-body="true"
-      top="10vh"
-      :fullscreen="true"
-      width="40%"
-      :visible.sync="formVisible.two"
-      @closed="handleClose"
-    >
-      <AddQuestion/>
-        <div slot="title">
-          {{'作业（'+form.name+'） - 添加习题'}}&nbsp;&nbsp;&nbsp;&nbsp;
-          <el-button size="medium" @click="formVisible.two = false;formVisible.one = true">上一步</el-button>
-          <el-button size="medium" type="primary" @click="toStepThree">下一步</el-button>
-        </div>
-    </el-dialog>
-    <el-dialog
-      top="10vh"
-      custom-class="course-form"
-      width="40%"
-      :title="'确认添加（'+form.name+'）'"
-      :close-on-click-modal="false"
-      :visible.sync="formVisible.three"
-      @closed="handleClose"
-    >
-      <el-form :model="form" :rules="rules" ref="submitWorkForm" size="medium" label-width="100px">
-        <el-form-item label="作业名称：" prop="name">
-          <el-input clearable maxlength="20" v-model="form.name"></el-input>
-        </el-form-item>
-
-        <el-form-item label="开放时间：" prop="startTime">
-          <el-date-picker
-            v-model="form.startTime"
-            type="datetime"
-            placeholder="选择日期时间"
-            :picker-options="pickerOptions0"
-            default-time="00:00:00"
-          ></el-date-picker>
-        </el-form-item>
-        <el-form-item label="关闭时间：" prop="closeTime">
-          <el-date-picker
-            v-model="form.closeTime"
-            type="datetime"
-            placeholder="选择日期时间"
-            default-time="00:00:00"
-          ></el-date-picker>
-        </el-form-item>
-      </el-form>
-      <div slot="footer">
-        <el-button @click="formVisible.three = false;formVisible.two = true">上一步</el-button>
-        <el-button type="primary" @click="handleAddWork">确认添加</el-button>
-      </div>
-    </el-dialog>-->
   </div>
 </template>
 
 <script>
 import { allCourseByTid } from "@/api/course";
-import { addWork, allWorkByCid } from "@/api/homework";
+import { addWork, deleteWork, allWorkByCid } from "@/api/homework";
 // import AddQuestion from "./AddQuestion";
 export default {
   name: "Homework",
@@ -177,6 +114,7 @@ export default {
       courseId: "",
       courseName: "",
       value1: "2018-10-21",
+      suggestName: "",
       form: {
         name: "",
         startTime: "",
@@ -232,11 +170,8 @@ export default {
   },
   watch: {
     homeworks(newValue) {
-      this.form.name =
+      this.suggestName =
         this.courseName + "第" + (newValue.length + 1) + "次作业";
-      // console.log(newValue)
-      // },
-      // deep: true
     }
   },
   methods: {
@@ -251,7 +186,7 @@ export default {
         .then(res => {
           this.loading = false;
           this.homeworks = res.data.works;
-          console.log(this.homeworks);
+          // console.log(this.homeworks);
           let now = new Date();
 
           this.homeworks.forEach(item => {
@@ -272,32 +207,35 @@ export default {
           this.$message.error(error + " 数据获取失败");
         });
     },
-    toStepTwo() {
-      this.$refs.addWorkForm.validate(valid => {
-        if (valid) {
-          this.formVisible.one = false;
-          // this.formVisible.two = true;
-          this.$router.push({
-            path: "/homework/addhomework",
-            meta: { workinfo: this.form }
-          });
+    handleDelete(item) {
+      this.$confirm(
+        "此操作将永久删除作业：" + item.name + "，不可撤销，是否继续？",
+        "提示",
+        {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
         }
-      });
-    },
-    toStepThree() {
-      // this.$refs.addQuestionForm.validate(valid => {
-      // if (valid) {
-      this.formVisible.two = false;
-      this.formVisible.three = true;
-      // }
-      // });
-    },
-    handleClose() {},
-    handleAddWork() {
-      // this.$router.push({
-      //   name: "addHomework",
-      //   params: { courseId:this.courseId, courseName:this.courseName }
-      // });
+      )
+        .then(() => {
+          // this.$emit("before-delete");
+          this.loading = true;
+          return deleteWork(item);
+        })
+        .then(res => {
+          // this.$emit("after-delete", this.index); //传数据过去
+          this.$message.success("删除成功！");
+          this.getWork(item.cid);
+        })
+        .catch(() => {
+          // this.$emit("after-delete");
+          this.loading = false;
+          this.$message({
+            type: "info",
+            duration: 2000,
+            message: "已取消删除"
+          });
+        });
     }
   },
   created() {
@@ -327,17 +265,23 @@ export default {
 };
 </script>
 <style lang="scss">
+.nodata-tip {
+  /*全局可用*/
+  margin-top: 4vh;
+  text-align: center;
+  font-size: 8em;
+  color: #409eff;
+}
 .work-container {
   .el-collapse-item__header {
     // font-size: 14px;
     &.is-active {
       .work-name {
         color: #409eff;
-        // font-weight: 600;
       }
     }
   }
-  .course-form .el-dialog__body {
+  .my-dialog .el-dialog__body {
     padding: 20px;
   }
   .el-date-editor.el-input {
@@ -369,12 +313,6 @@ export default {
   }
   .content-area {
     min-height: calc(100vh - 200px); // for v-loading
-    .tip {
-      margin-top: 4vh;
-      text-align: center;
-      font-size: 8em;
-      color: #409eff;
-    }
   }
   .panel-title {
     .opening-state {
@@ -387,7 +325,6 @@ export default {
       @include work-state(#909399);
     }
     .work-name {
-      // vertical-align: top;
       font-size: 14px;
     }
     .create-time {

@@ -1,3 +1,4 @@
+<!-- no use -->
 <template>
   <div>
     <el-dialog custom-class="add-course" width="40%" title="添加课程" :visible.sync="dialogFormVisible">

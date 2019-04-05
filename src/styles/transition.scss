@@ -13,7 +13,7 @@
 
 /*slow-fade*/
 .slow-fade-enter-active {
-  transition: opacity 1s;
+  transition: opacity 1.4s;
 }
 
 .slow-fade-leave-active {
@@ -23,6 +23,17 @@
 .slow-fade-enter,
 .fade-leave-to {
   opacity: 0;
+}
+
+/* badge-fade*/
+.badge-fade-enter-active {
+  transition: all 0.5s;
+}
+
+.badge-fade-enter {
+  opacity: 0;
+  top: 18px !important;
+  transform: scale(0.1, 0.1) !important;
 }
 
 /*fade-transform*/

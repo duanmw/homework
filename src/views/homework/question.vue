@@ -16,34 +16,37 @@
       </el-row>
     </div>
     <div class="content-area" v-loading="loading">
-      <el-card v-for="(i,index) in 7" :key="'ques'+i" shadow="never">
-        <div class="ques-title">{{index+1}}. sadfkmak 1+1=?</div>
-        <el-row>
-          <el-col v-for="(j,index)  in 6" :key="i+'op'+j" :xs="24" :sm="12">
+      <el-card v-for="(i,index) in questions" :key="'ques'+index" shadow="never">
+        <div class="ques-title">{{index+1+'('+getTypeName(i.question.type)+'). '+i.question.title}}</div>
+        <el-row v-if="i.question.type!='c'">
+          <el-col v-for="(ans,index)  in i.answer" :key="'ans'+ans.id" :xs="24" :sm="12">
             <div
-              :class="{ 'right-item': isRight }"
+              :class="{ 'right-item': ans.correct=='yes' }"
               class="option"
-            >{{String.fromCharCode(index+65)}}. asdjfalsvgnnasbv谁的悲哀八二</div>
+            >{{String.fromCharCode(index+65)}}. {{ans.content}}</div>
           </el-col>
         </el-row>
-      </el-card>
-      <el-card shadow="never">
-        <div class="ques-title">sadfkmak 1+1=_</div>
-        <el-row>
+        <el-row v-else>
           <el-col :xs="24" :sm="12">
-            <div :class="{ 'right-item': isRight }" class="option">A.asdjfalsvgnnasbv谁的悲哀八二</div>
+            <div :class="{ 'right-item': i.answer[0].correct=='yes' }" class="option">✔ 正确</div>
           </el-col>
           <el-col :xs="24" :sm="12">
-            <div :class="{ 'right-item': isRight }" class="option">A.asdjfalsvgnnasbv谁的悲哀八二</div>
+            <div :class="{ 'right-item': i.answer[0].correct=='no' }" class="option">✘ 错误</div>
           </el-col>
         </el-row>
+        <div v-if="i.question.desc" class="answer-desc">解析：{{i.question.desc}}</div>
       </el-card>
+      <transition name="slow-fade" appear>
+        <div v-if="questions.length==0" class="nodata-tip">
+          <svg-icon icon-class="nodata"/>
+        </div>
+      </transition>
     </div>
   </div>
 </template>
 <script>
 import { getOneCourse } from "@/api/course";
-import { addwork } from "@/api/homework";
+import { allQuestionByWid } from "@/api/homework";
 export default {
   name: "Question",
   data() {
@@ -51,41 +54,41 @@ export default {
       loading: false,
       courseId: "",
       courseName: "",
-      works: [],
+      work: {},
       questions: [],
       activeName: "1",
-      // workState: 0,
+      // worktate: 0,
       isRight: true,
       workId: ""
     };
   },
   methods: {
+    getTypeName(type) {
+      switch (type) {
+        case "a":
+          return "单选题";
+        case "b":
+          return "多选题";
+        case "c":
+          return "判断题";
+        case "d":
+          return "填空题";
+        default:
+          return "";
+      }
+    },
     getQuestion() {
       this.loading = true;
-      // allWorkByCid(this.workId)
-      //   .then(res => {
-      //     this.loading = false;
-      //     this.homeworks = res.data.works;
-      //     console.log(this.homeworks);
-      //     let now = new Date();
-
-      //     this.homeworks.forEach(item => {
-      //       let start = new Date(item.starttime);
-      //       let end = new Date(item.closetime);
-      //       if (now < start) {
-      //         item.state = 1; //1：未开始
-      //       } else if (now >= start && now < end) {
-      //         item.state = 2; //2：开放中
-      //       } else {
-      //         item.state = 0; //0：已关闭
-      //       }
-      //     });
-      //     // console.log(this.homeworks);
-      //   })
-      //   .catch(error => {
-      this.loading = false;
-      //     this.$message.error(error + " 数据获取失败");
-      //   });
+      allQuestionByWid(this.work.id)
+        .then(res => {
+          this.loading = false;
+          this.questions = res.data.questions;
+          // console.log(this.homework);
+        })
+        .catch(error => {
+          this.loading = false;
+          this.$message.error(error + " 数据获取失败");
+        });
     }
   },
   created() {
@@ -93,12 +96,9 @@ export default {
       this.courseId = this.$route.params.courseId;
       this.courseName = this.$route.params.courseName;
     }
-    if (this.$route.params.wid) {
-      this.works.push({
-        id: this.$route.params.wid,
-        name: this.$route.params.wname
-      });
-      this.workId = this.works[0].id;
+    if (this.$route.params.wid && this.$route.params.wname) {
+      this.work.id = this.$route.params.wid;
+      this.work.name = this.$route.params.wname;
       this.getQuestion();
     }
   }
@@ -128,20 +128,29 @@ export default {
     }
   }
   .content-area {
-    height: calc(100vh - 96px); // for v-loading
+    min-height: calc(100vh - 140px); // for v-loading
   }
   .el-card {
-    margin-bottom: 8px;
+    margin-bottom: 10px;
 
     .ques-title {
       padding-bottom: 12px;
       border-bottom: 1px solid #ebeef5;
     }
     .option {
+      color: #606266;
+      font-size: 15px;
       padding-top: 10px;
     }
     .right-item {
       color: #88bf6d;
+    }
+    .answer-desc {
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px dashed #ebeef5;
+      color: #606266;
+      font-size: 12px;
     }
   }
 }

@@ -28,3 +28,29 @@
     }
   }
 }
+
+@media screen and (max-width: 992px) {
+  .my-dialog {
+    min-width: 60%;
+  }
+}
+@media screen and (max-width: 768px) {
+  .my-dialog {
+    min-width: 80%;
+  }
+}
+@media screen and (max-width: 600px) {
+  .my-dialog {
+    min-width: 98%;
+  }
+  .el-message {
+    width: 94%;
+    min-width: 260px;
+  }
+  .el-message-box {
+    width: 98%;
+  }
+}
+.my-dialog .el-dialog__body {
+  padding: 20px;
+}

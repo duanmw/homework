@@ -51,7 +51,7 @@
       </div>
     </el-card>
     <el-dialog
-      custom-class="course-form"
+      custom-class="my-dialog"
       width="40%"
       title="修改课程"
       :visible.sync="dialogFormVisible"

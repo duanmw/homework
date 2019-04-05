@@ -4,20 +4,21 @@
       <div class="title-bar">
         <el-row>
           <el-col :xs="24" :sm="12">
-            <router-link :to="{ name: 'Homework', params: { courseId,courseName }}" tag="span">
-              <el-button size="small" icon="el-icon-back">返回</el-button>
-            </router-link>
-            <span class="classname">给课程：{{$route.params.courseName}} 添加作业习题</span>
+            <!-- <router-link :to="{ name: 'Homework', params: { courseId,courseName }}" tag="span"> -->
+            <el-button size="small" icon="el-icon-back" @click.prevent="beforeBack">返回</el-button>
+            <!-- </router-link> -->
+            <!-- <span class="classname">给课程：{{$route.params.courseName}} 添加作业习题</span> -->
+            <span class="classname">添加作业 - {{suggestName?suggestName:"请返回重试！"}}</span>
           </el-col>
           <el-col :xs="24" :sm="12">
-            题目总数：{{dynamicFormOne.questions.length+dynamicFormTwo.questions.length+dynamicFormThree.questions.length+dynamicFormFour.questions.length}}
+            习题总数：{{quesCount}}
             &nbsp;&nbsp;&nbsp;
             <el-button
               :disabled="courseName==''"
               size="medium"
               icon="el-icon-circle-check-outline"
               @click="handleAdd()"
-            >完成添加</el-button>
+            >添加完成</el-button>
           </el-col>
         </el-row>
       </div>
@@ -26,7 +27,7 @@
       <el-tab-pane name="first">
         <span slot="label">
           单选题
-          <transition name="slow-fade" leave-active-class="animated rollOut">
+          <transition name="badge-fade" leave-active-class="animated rollOut">
             <span
               v-if="dynamicFormOne.questions.length"
               class="little-badge"
@@ -34,7 +35,7 @@
           </transition>
         </span>
         <div
-          class="question-box"
+          class="question-box box-type-one"
           v-for="(question, index) in dynamicFormOne.questions"
           :key="question.key"
         >
@@ -140,7 +141,7 @@
       <el-tab-pane name="second">
         <span slot="label">
           多选题
-          <transition name="slow-fade" leave-active-class="animated rollOut">
+          <transition name="badge-fade" leave-active-class="animated rollOut">
             <span
               v-if="dynamicFormTwo.questions.length"
               class="little-badge"
@@ -148,7 +149,7 @@
           </transition>
         </span>
         <div
-          class="question-box"
+          class="question-box box-type-two"
           v-for="(question, index) in dynamicFormTwo.questions"
           :key="question.key"
         >
@@ -254,7 +255,7 @@
       <el-tab-pane name="third">
         <span slot="label">
           判断题
-          <transition name="slow-fade" leave-active-class="animated rollOut">
+          <transition name="badge-fade" leave-active-class="animated rollOut">
             <span
               v-if="dynamicFormThree.questions.length"
               class="little-badge"
@@ -262,7 +263,7 @@
           </transition>
         </span>
         <div
-          class="question-box third-panel"
+          class="question-box box-type-three"
           v-for="(question, index) in dynamicFormThree.questions"
           :key="question.key"
         >
@@ -299,8 +300,8 @@
             v-model="question.desc"
           ></el-input>
           <div class="radio-group">
-            <el-radio v-model="question.option.isRight" label="yes">正确</el-radio>
-            <el-radio v-model="question.option.isRight" label="no">错误</el-radio>
+            <el-radio v-model="question.options[0].isRight" :label="true">正确</el-radio>
+            <el-radio v-model="question.options[0].isRight" :label="false">错误</el-radio>
           </div>
         </div>
         <el-button
@@ -314,7 +315,7 @@
       <el-tab-pane name="fourth">
         <span slot="label">
           填空题
-          <transition name="slow-fade" leave-active-class="animated rollOut">
+          <transition name="badge-fade" leave-active-class="animated rollOut">
             <span
               v-if="dynamicFormFour.questions.length"
               class="little-badge last-badge"
@@ -322,7 +323,7 @@
           </transition>
         </span>
         <div
-          class="question-box"
+          class="question-box box-type-four"
           v-for="(question, index) in dynamicFormFour.questions"
           :key="question.key"
         >
@@ -358,6 +359,20 @@
             placeholder="请输入答案解析（选填）"
             v-model="question.desc"
           ></el-input>
+          <div
+            v-for="(item,index) in question.options"
+            :key="question.key+index"
+            class="answer-box"
+          >
+            答案：
+            <el-input
+              size="medium"
+              clearable
+              maxlength="300"
+              v-model="question.options[index].content"
+              placeholder="请输入空位答案，多个空位的答案请使用空格分隔"
+            ></el-input>
+          </div>
         </div>
         <el-button
           :disabled="courseName==''"
@@ -368,20 +383,35 @@
         >添加题目</el-button>
       </el-tab-pane>
     </el-tabs>
+    <homework-dialog
+      @closeDialog="dialogVisible=false"
+      @back="returnBack"
+      :courseId="courseId"
+      :suggestName="suggestName"
+      :quesCount="quesCount"
+      :dialogVisible.sync="dialogVisible"
+      :typeOne="dynamicFormOne"
+      :typeTwo="dynamicFormTwo"
+      :typeThree="dynamicFormThree"
+      :typeFour="dynamicFormFour"
+    ></homework-dialog>
   </div>
 </template>
 <script>
 import Sticky from "@/components/Sticky";
+import HomeworkDialog from "./HomeworkDialog";
 export default {
   name: "AddQuestion",
   components: {
-    Sticky
+    Sticky,
+    HomeworkDialog
   },
   data() {
     return {
       activeName: "first",
       courseId: "",
       courseName: "",
+      suggestName: "",
       qObj: {
         showDesc: false,
         title: "",
@@ -404,10 +434,44 @@ export default {
       },
       dynamicFormFour: {
         questions: []
-      }
+      },
+      dialogVisible: false
     };
   },
+  computed: {
+    quesCount() {
+      return (
+        this.dynamicFormOne.questions.length +
+        this.dynamicFormTwo.questions.length +
+        this.dynamicFormThree.questions.length +
+        this.dynamicFormFour.questions.length
+      );
+    }
+  },
   methods: {
+    beforeBack() {
+      if (this.quesCount > 0) {
+        this.$confirm("返回将不会保存已添加习题，是否继续？", "提示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
+        })
+          .then(() => {
+            this.returnBack();
+          })
+          .catch(() => {
+            return false;
+          });
+      }else{
+        this.returnBack();
+      }
+    },
+    returnBack() {
+      this.$router.push({
+        name: "Homework",
+        params: { courseId: this.courseId, courseName: this.courseName }
+      });
+    },
     handleClick(tab, event) {
       // console.log(tab, event);
     },
@@ -496,7 +560,7 @@ export default {
         if (item.title != "") {
           for (let i = 0; i < item.options.length; i++) {
             if (item.options[i].content == "") {
-              this.$message.warning("存在填空题答案内容为空情况！请检查");
+              this.$message.warning("存在填空题答案为空情况！请检查");
               return false;
             }
           }
@@ -509,7 +573,19 @@ export default {
     },
     handleAdd() {
       if (this.validateFormOne()) {
-        this.validateFormTwo();
+        if (this.validateFormTwo()) {
+          if (this.validateFormThree()) {
+            if (this.validateFormFour()) {
+              this.dialogVisible = true;
+            } else {
+              this.activeName = "fourth";
+            }
+          } else {
+            this.activeName = "third";
+          }
+        } else {
+          this.activeName = "second";
+        }
       } else {
         this.activeName = "first";
       }
@@ -538,7 +614,7 @@ export default {
               showDesc: false,
               title: "",
               desc: "",
-              option: { content: "正确", isRight: "yes" },
+              options: [{ content: "正确", isRight: true }],
               key: "" + Date.now()
             };
             this.dynamicFormThree.questions.push(newObj);
@@ -550,7 +626,7 @@ export default {
               showDesc: false,
               title: "",
               desc: "",
-              options: [{ content: "", isRight: "yes" }],
+              options: [{ content: "", isRight: true }],
               key: "" + Date.now()
             };
             this.dynamicFormFour.questions.push(newObj);
@@ -596,14 +672,18 @@ export default {
     if (this.$route.params.courseId && this.$route.params.courseName) {
       this.courseId = this.$route.params.courseId;
       this.courseName = this.$route.params.courseName;
+      this.suggestName = this.$route.params.suggestName;
     }
   }
 };
 </script>
 <style lang="scss">
 .add-question {
-  .el-input {
-    width: calc(100% - 90px);
+  .box-type-one,
+  .box-type-two {
+    .el-input {
+      width: calc(100% - 90px);
+    }
   }
 }
 </style>
@@ -643,7 +723,7 @@ export default {
       text-align: center;
       white-space: nowrap;
       border: 1px solid #fff;
-      &.last-badge{
+      &.last-badge {
         right: -1px;
       }
     }
@@ -665,13 +745,21 @@ export default {
         margin-bottom: 6px;
       }
     }
-    .third-panel {
+    .box-type-three {
       .el-textarea {
         margin-bottom: 10px;
       }
       .radio-group {
         padding-left: 1px;
         padding-bottom: 4px;
+      }
+    }
+    .box-type-four {
+      .answer-box {
+        color: #7a7a7a;
+        .el-input {
+          width: calc(100% - 53px);
+        }
       }
     }
   }

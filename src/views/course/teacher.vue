@@ -33,7 +33,7 @@
       </el-row>
       <!-- <FormDialog :dialogFormVisible="false"></FormDialog> -->
       <el-dialog
-        custom-class="course-form"
+        custom-class="my-dialog"
         width="40%"
         title="添加课程"
         :visible.sync="dialogFormVisible"
@@ -169,31 +169,31 @@ export default {
 };
 </script>
 <style lang="scss">
-@media screen and (max-width: 992px) {
-  .course-form {
-    min-width: 60%;
-  }
-}
-@media screen and (max-width: 768px) {
-  .course-form {
-    min-width: 80%;
-  }
-}
-@media screen and (max-width: 600px) {
-  .course-form {
-    min-width: 98%;
-  }
-  .el-message {
-    width: 94%;
-    min-width: 260px;
-  }
-  .el-message-box {
-    width: 98%;
-  }
-}
-.course-form .el-dialog__body {
-  padding: 20px;
-}
+// @media screen and (max-width: 992px) {
+//   .my-dialog {
+//     min-width: 60%;
+//   }
+// }
+// @media screen and (max-width: 768px) {
+//   .my-dialog {
+//     min-width: 80%;
+//   }
+// }
+// @media screen and (max-width: 600px) {
+//   .my-dialog {
+//     min-width: 98%;
+//   }
+//   .el-message {
+//     width: 94%;
+//     min-width: 260px;
+//   }
+//   .el-message-box {
+//     width: 98%;
+//   }
+// }
+// .my-dialog .el-dialog__body {
+//   padding: 20px;
+// }
 </style>
 <style rel="stylesheet/scss" lang="scss" scoped>
 .course-container {

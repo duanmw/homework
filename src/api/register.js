@@ -20,7 +20,7 @@ export function sendVCode(email) {
 }
 export function isExist(email) {
   return request({
-    url: '/api/teacher/findByEmail?email=' + email,
+    url: '/api/teacher/existsByEmail?email=' + email,
     method: 'get'
   })
 }
