@@ -36,10 +36,9 @@
               <span v-else class="closed-state">已关闭</span>
               <span class="work-name">{{i.name}}</span>
               <span class="create-time">创建于 {{i.createtime}}</span>
-              <!-- <router-link :to="'/homework?id='+6" tag="a">习题数量：xx</router-link> -->
             </div>
             <div>
-              <!-- <el-date-picker :readonly="true" v-model="value1" type="datetime" placeholder="选择日期时间"></el-date-picker> -->
+             
             </div>
             <el-row>
               <el-col :xs="24" :sm="12">开始时间：{{i.starttime}}</el-col>
@@ -47,7 +46,6 @@
               <el-col :xs="24" :sm="12">关闭后是否显示答案：{{i.showanswer}}</el-col>
               <el-col :xs="24" :sm="12">最大提交次数：{{i.maxsubmit}}</el-col>
               <el-col :xs="24" :sm="12">
-                <!-- <router-link :to="'/homework?id='+6" tag="a"></router-link> -->
                 习题数量：{{i.quescount}}&nbsp;&nbsp;
                 <router-link
                   :to="{ name: 'Question', params: { wid:i.id,wname:i.name,courseId,courseName }}"
@@ -55,7 +53,6 @@
                 >
                   <el-button size="small" icon="el-icon-tickets">查看习题</el-button>
                 </router-link>
-                <!-- <el-button size="small">查看习题</el-button> -->
               </el-col>
               <el-col :xs="24" :sm="12">
                 <el-button size="small" icon="el-icon-view">查看成绩</el-button>
@@ -81,7 +78,6 @@
           center
           show-icon
         ></el-alert>
-        <!-- <el-alert  title="此课程暂无作业" type="info" center show-icon></el-alert> -->
         <div v-else-if="courses.length==0||homeworks.length==0" class="nodata-tip">
           <svg-icon icon-class="nodata"/>
         </div>

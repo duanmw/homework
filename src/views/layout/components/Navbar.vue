@@ -16,10 +16,9 @@
       </div>
       <el-dropdown-menu slot="dropdown" class="user-dropdown">
         <el-dropdown-item disabled>
-          <div v-if="roles.includes('admin')" class="role" style="color: #ffff10;border: 4px solid #ffff10;">管理员</div>
-          <div v-else-if="roles.includes('teacher')" class="role" style="color: #64d9d6;border: 4px solid #64d9d6;">教师</div>
-          <div v-else-if="roles.includes('student')" class="role" style="color: #8cc4ff;border: 4px solid #8cc4ff;">学生</div>
-          <!-- <div class="role" >管理员</div> -->
+          <div v-if="roles.includes('admin')" class="role" style="color: #FEDB25;border: 2px solid #FEDB25;">管理员</div>
+          <div v-else-if="roles.includes('teacher')" class="role" style="color: #64d9d6;border: 2px solid #64d9d6;">教师</div>
+          <div v-else-if="roles.includes('student')" class="role" style="color: #8cc4ff;border: 2px solid #8cc4ff;">学生</div>
           <div class="dropdown-username">{{name}}</div>
         </el-dropdown-item>
         <router-link to="/profile">
@@ -98,9 +97,10 @@ export default {
 
 <style rel="stylesheet/scss" lang="scss" scoped>
 .navbar {
+  position: relative;
   height: 50px;
   line-height: 50px;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.12), 0 0 3px 0 rgba(0, 0, 0, 0.04);
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.1), 0 0 3px 0 rgba(0, 0, 0, 0.04);
   .hamburger-container {
     line-height: 58px;
     height: 50px;
@@ -134,12 +134,6 @@ export default {
         height: 40px;
         line-height: 40px;
       }
-      // .el-icon-caret-bottom {
-      //   position: absolute;
-      //   right: -20px;
-      //   top: 25px;
-      //   font-size: 12px;
-      // }
     }
   }
 }
