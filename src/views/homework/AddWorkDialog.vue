@@ -48,7 +48,7 @@
 <script>
 import { addWork, addQuestion, addWQ, addAnswer } from "@/api/homework";
 export default {
-  name: "HomeworkDialog",
+  name: "AddWorkDialog",
   props: {
     courseId: Number,
     suggestName: String,

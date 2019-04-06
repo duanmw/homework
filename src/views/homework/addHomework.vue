@@ -383,7 +383,7 @@
         >添加题目</el-button>
       </el-tab-pane>
     </el-tabs>
-    <homework-dialog
+    <add-work-dialog
       @closeDialog="dialogVisible=false"
       @back="returnBack"
       :courseId="courseId"
@@ -394,17 +394,17 @@
       :typeTwo="dynamicFormTwo"
       :typeThree="dynamicFormThree"
       :typeFour="dynamicFormFour"
-    ></homework-dialog>
+    ></add-work-dialog>
   </div>
 </template>
 <script>
 import Sticky from "@/components/Sticky";
-import HomeworkDialog from "./HomeworkDialog";
+import AddWorkDialog from "./AddWorkDialog";
 export default {
   name: "AddQuestion",
   components: {
     Sticky,
-    HomeworkDialog
+    AddWorkDialog
   },
   data() {
     return {

@@ -76,9 +76,17 @@ a:hover {
 
 //main-container全局样式
 .app-main {
-  min-height: 100%
+  min-height: 100%;
 }
 
 .app-container {
   padding: 20px;
+}
+
+.nodata-tip {
+  /*‘暂无数据’提示，全局可用*/
+  margin-top: 5vh;
+  text-align: center;
+  font-size: 140px;
+  color: #409eff;
 }

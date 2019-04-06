@@ -37,9 +37,7 @@
               <span class="work-name">{{i.name}}</span>
               <span class="create-time">创建于 {{i.createtime}}</span>
             </div>
-            <div>
-             
-            </div>
+            <div></div>
             <el-row>
               <el-col :xs="24" :sm="12">开始时间：{{i.starttime}}</el-col>
               <el-col :xs="24" :sm="12">关闭时间：{{i.closetime}}</el-col>
@@ -56,7 +54,7 @@
               </el-col>
               <el-col :xs="24" :sm="12">
                 <el-button size="small" icon="el-icon-view">查看成绩</el-button>
-                <el-button size="small" icon="el-icon-edit" :disabled="!i.state">修改设置</el-button>
+                <el-button size="small" icon="el-icon-edit" :disabled="!i.state" @click="handleUpdate(i)">修改设置</el-button>
                 <el-button
                   plain
                   type="danger"
@@ -83,85 +81,34 @@
         </div>
       </transition>
     </div>
+    <update-work-dialog
+      @closeDialog="dialogVisible=false"
+      :dialogVisible.sync="dialogVisible"
+      :homework="activeHomework"
+    ></update-work-dialog>
   </div>
 </template>
 
 <script>
 import { allCourseByTid } from "@/api/course";
 import { addWork, deleteWork, allWorkByCid } from "@/api/homework";
-// import AddQuestion from "./AddQuestion";
+import UpdateWorkDialog from "./UpdateWorkDialog";
 export default {
   name: "Homework",
   components: {
-    // AddQuestion
+    UpdateWorkDialog
   },
   data() {
     return {
-      formVisible: {
-        one: false,
-        two: false,
-        three: false
-      },
+      dialogVisible:false,
       loading: false,
       courses: [],
       homeworks: [],
+      activeHomework:{},
       activeName: "1",
-      // workState: 0,
       courseId: "",
       courseName: "",
-      value1: "2018-10-21",
       suggestName: "",
-      form: {
-        name: "",
-        startTime: "",
-        closeTime: "",
-        showAnswer: true,
-        maxSubmit: 1
-      },
-      rules: {
-        name: [
-          { required: true, message: "作业名不能为空", trigger: "blur" },
-          {
-            min: 2,
-            max: 20,
-            message: "作业名长度在 2 到 20 个字符",
-            trigger: "blur"
-          }
-        ],
-        startTime: [
-          {
-            type: "date",
-            required: true,
-            message: "请选择开放时间",
-            trigger: "blur"
-          }
-        ],
-        closeTime: [
-          {
-            type: "date",
-            required: true,
-            message: "请选择关闭时间",
-            trigger: "blur"
-          }
-        ],
-        maxSubmit: [
-          {
-            required: true,
-            message: "提交次数不能为空",
-            trigger: "blur"
-          }
-        ]
-      },
-      pickerOptions0: {
-        disabledDate(time) {
-          // if (this.form.closeTime != "") {
-          //   return time.getTime() > Date.now() || time.getTime() > this.form.closeTime;
-          // } else {
-          //   return time.getTime() > Date.now();
-          // }
-          return time.getTime() < Date.now() - 8.64e7; //如果没有后面的-8.64e7就是不可以选择今天
-        }
-      }
     };
   },
   watch: {
@@ -202,6 +149,10 @@ export default {
           this.loading = false;
           this.$message.error(error + " 数据获取失败");
         });
+    },
+    handleUpdate(item){
+      this.activeHomework=item
+      this.dialogVisible=true
     },
     handleDelete(item) {
       this.$confirm(
@@ -261,13 +212,6 @@ export default {
 };
 </script>
 <style lang="scss">
-.nodata-tip {
-  /*全局可用*/
-  margin-top: 4vh;
-  text-align: center;
-  font-size: 8em;
-  color: #409eff;
-}
 .work-container {
   .el-collapse-item__header {
     // font-size: 14px;
