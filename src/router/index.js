@@ -135,7 +135,7 @@ export const asyncRouterMap = [{
   children: [{
     path: 'index',
     name: 'Student',
-    component: () => import('@/views/home/teacher'),
+    component: () => import('@/views/students/index'),
     meta: {
       title: '学生',
       icon: 'student'

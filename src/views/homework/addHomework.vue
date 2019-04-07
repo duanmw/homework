@@ -53,7 +53,7 @@
               type="danger"
               plain
               icon="el-icon-delete"
-              @click.prevent="removeOne('a',question)"
+              @click="removeOne('a',question)"
             >删除</el-button>
           </div>
           <el-input
@@ -167,7 +167,7 @@
               type="danger"
               plain
               icon="el-icon-delete"
-              @click.prevent="removeOne('b',question)"
+              @click="removeOne('b',question)"
             >删除</el-button>
           </div>
           <el-input
@@ -281,7 +281,7 @@
               type="danger"
               plain
               icon="el-icon-delete"
-              @click.prevent="removeOne('c',question)"
+              @click="removeOne('c',question)"
             >删除</el-button>
           </div>
           <el-input
@@ -341,7 +341,7 @@
               type="danger"
               plain
               icon="el-icon-delete"
-              @click.prevent="removeOne('d',question)"
+              @click="removeOne('d',question)"
             >删除</el-button>
           </div>
           <el-input
