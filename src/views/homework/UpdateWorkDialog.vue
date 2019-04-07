@@ -44,7 +44,7 @@
   </el-dialog>
 </template>
 <script>
-import { addWork, addQuestion, addWQ, addAnswer } from "@/api/homework";
+import { addWork,updateWork, addQuestion, addWQ, addAnswer } from "@/api/homework";
 export default {
   name: "UpdateWorkDialog",
   props: {
@@ -150,12 +150,7 @@ export default {
       }
     },
     homework(val) {
-      // this.form=Object.assign({},val)
-      // if (val.showanswer=='yes') {
-      //   this.form.showanswer=true
-      // }else if(val.showanswer=='no'){
-      //   this.form.showanswer=false
-      // }
+      
     }
   },
   methods: {
@@ -169,40 +164,27 @@ export default {
       this.$refs.updateWorkForm.validate(valid => {
         if (valid) {
           this.dialogShow = false;
-          const loading = this.$loading({
-            lock: true,
-            text: "Loading...",
-            spinner: "el-icon-loading",
-            background: "rgba(0, 0, 0, 0.6)"
-          });
-          //   addWork(
-          //     this.courseId,
-          //     this.form.name,
-          //     this.form.startTime,
-          //     this.form.closeTime,
-          //     this.form.showAnswer,
-          //     this.form.maxSubmit
-          //   )
-          //     .then(res => {
-          //       loading.text = "1/4 作业信息添加成功";
-          //       if (res.data.wid) {
-          //         this.newWorkId = res.data.wid;
-          //       } else {
-          //         throw "作业ID获取失败";
-          //       }
-          //       return addQuestion(this.questions);
-          //     })
-          //     .then(res => {
-          //       loading.text = "4/4 作业习题添加成功";
-          //       loading.close();
-          //       this.$message.success("作业添加成功!");
-          //       this.$emit("back");
-          //     })
-          //     .catch(error => {
-          //       loading.close();
-          //       this.$message.error(error + " 添加失败");
-          //       this.$emit("back");
-          //     });
+          this.$emit("beforeUpdate")
+          // const loading = this.$loading({
+          //   lock: true,
+          //   text: "Loading...",
+          //   spinner: "el-icon-loading",
+          //   background: "rgba(0, 0, 0, 0.6)"
+          // });
+            updateWork(this.form)
+              .then(res => {
+                // loading.text = " 作业修改成功";
+                // loading.close();
+                this.$emit("afterUpdate")
+                this.$message.success("作业修改成功!");
+                // this.$emit("back");
+              })
+              .catch(error => {
+                // loading.close();
+                this.$emit("afterUpdate")
+                this.$message.error(error + " 修改失败");
+                // this.$emit("back");
+              });
         }
       });
     }

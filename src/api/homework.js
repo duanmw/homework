@@ -23,7 +23,16 @@ export function updateWork(homework) {
   return request({
     url: '/api/work/updateWork',
     method: 'post',
-    data: qs.stringify(homework)
+    data: qs.stringify({
+      id: homework.id,
+      cid: homework.cid,
+      name: homework.name,
+      createtime: homework.createtime,
+      starttime: createDate('', homework.starttime),
+      closetime: createDate('', homework.closetime),
+      showanswer: homework.showanswer ? 'yes' : 'no',
+      maxsubmit: homework.maxsubmit
+    })
   })
 }
 export function deleteWork(homework) {
@@ -53,6 +62,7 @@ export function addQuestion(question) {
     url: '/api/question/addQuestion',
     method: 'post',
     // data: qs.stringify(question)
+    // 直接传对象，后端要使用 @RequestBody 接收
     data: question
   })
 }

@@ -54,7 +54,12 @@
               </el-col>
               <el-col :xs="24" :sm="12">
                 <el-button size="small" icon="el-icon-view">查看成绩</el-button>
-                <el-button size="small" icon="el-icon-edit" :disabled="!i.state" @click="handleUpdate(i)">修改设置</el-button>
+                <el-button
+                  size="small"
+                  icon="el-icon-edit"
+                  :disabled="!i.state"
+                  @click="handleUpdate(i)"
+                >修改设置</el-button>
                 <el-button
                   plain
                   type="danger"
@@ -83,6 +88,8 @@
     </div>
     <update-work-dialog
       @closeDialog="dialogVisible=false"
+      @beforeUpdate="loading=true"
+      @afterUpdate="loading=false;getWork(courseId)"
       :dialogVisible.sync="dialogVisible"
       :homework="activeHomework"
     ></update-work-dialog>
@@ -100,15 +107,16 @@ export default {
   },
   data() {
     return {
-      dialogVisible:false,
+      dialogVisible: false,
       loading: false,
       courses: [],
       homeworks: [],
-      activeHomework:{},
+      activeHomework: {},
       activeName: "1",
       courseId: "",
       courseName: "",
       suggestName: "",
+      timer: null //记录定时器
     };
   },
   watch: {
@@ -129,30 +137,41 @@ export default {
         .then(res => {
           this.loading = false;
           this.homeworks = res.data.works;
-          // console.log(this.homeworks);
-          let now = new Date();
-
-          this.homeworks.forEach(item => {
-            let start = new Date(item.starttime);
-            let end = new Date(item.closetime);
-            if (now < start) {
-              item.state = 1; //1：未开始
-            } else if (now >= start && now < end) {
-              item.state = 2; //2：开放中
-            } else {
-              item.state = 0; //0：已关闭
-            }
-          });
-          // console.log(this.homeworks);
+          if (this.timer) {
+            clearInterval(this.timer);
+          }
+          let num = 1;
+          let getState = function() {
+            console.log("定时器里getState执行");
+            let now = new Date();
+            this.homeworks.forEach((item, index) => {
+              let start = new Date(item.starttime);
+              let end = new Date(item.closetime);
+              if (now < start) {
+                // item.state = 1; //1：未开始
+                this.$set(this.homeworks[index], "state", 1); //这样改变对象属性值才能触发视图更新
+              } else if (now >= start && now < end) {
+                // item.state = 2; //2：开放中
+                this.$set(this.homeworks[index], "state", 2);
+              } else {
+                // item.state = 0; //0：已关闭
+                this.$set(this.homeworks[index], "state", 0);
+              }
+            });
+          }.bind(this); //此处绑定this，到定时器里this就不会被改变了
+          getState();
+          if (this.homeworks.length > 0) {
+            this.timer = setInterval(getState, 2000);
+          }
         })
         .catch(error => {
           this.loading = false;
           this.$message.error(error + " 数据获取失败");
         });
     },
-    handleUpdate(item){
-      this.activeHomework=item
-      this.dialogVisible=true
+    handleUpdate(item) {
+      this.activeHomework = item;
+      this.dialogVisible = true;
     },
     handleDelete(item) {
       this.$confirm(
@@ -165,17 +184,14 @@ export default {
         }
       )
         .then(() => {
-          // this.$emit("before-delete");
           this.loading = true;
           return deleteWork(item);
         })
         .then(res => {
-          // this.$emit("after-delete", this.index); //传数据过去
           this.$message.success("删除成功！");
           this.getWork(item.cid);
         })
         .catch(() => {
-          // this.$emit("after-delete");
           this.loading = false;
           this.$message({
             type: "info",
@@ -208,6 +224,11 @@ export default {
         // this.loading = false;
         this.$message.error(error + " 数据获取失败");
       });
+  },
+  beforeDestroy() {
+    clearInterval(this.timer);
+    console.log("定时器清理了");
+    this.timer = null;
   }
 };
 </script>
