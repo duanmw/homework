@@ -24,40 +24,34 @@
       </el-row>
     </div>
     <div class="content-area">
-      <transition name="slow-fade" appear>
-        <el-alert
-          v-if="courses.length!=0&&!courseId"
-          title="请先选择一个课程"
-          type="warning"
-          center
-          show-icon
-        ></el-alert>
-        <!-- <div v-else-if="courses.length==0||students.length==0" class="nodata-tip">
-          <svg-icon icon-class="nodata"/>
-        </div>-->
-      </transition>
-      <div class="table-title">xxxx课程学生表</div>
+      <!-- <div class="table-title">{{courseName?courseName:"??课程"}} 学生表</div> -->
       <el-table
+        size="medium"
         v-loading="loading"
         :data="students"
         border
-        fit
         highlight-current-row
         style="width: 100%"
-        @current-change="handleCurrentChange"
+        @current-change="CurrentRowChange"
       >
         <el-table-column type="index" width="50"></el-table-column>
         <!-- <el-table-column align="center" label="学号" width="80"> -->
         <el-table-column align="center" label="学号">
-          <template slot-scope="scope">
-            <span>{{ scope.row.number }}</span>
+          <template slot-scope="{row}">
+            <template v-if="row.edit">
+              <el-input v-model="row.number" class="edit-input" size="small"/>
+            </template>
+            <span v-else>{{ row.number }}</span>
           </template>
         </el-table-column>
 
         <el-table-column align="center" label="班级">
           <!-- <el-table-column width="120px" align="center" label="班级"> -->
-          <template slot-scope="scope">
-            <span>{{ scope.row.classname }}</span>
+          <template slot-scope="{row}">
+            <template v-if="row.edit">
+              <el-input v-model="row.classname" class="edit-input" size="small"/>
+            </template>
+            <span v-else>{{ row.classname }}</span>
           </template>
         </el-table-column>
 
@@ -66,13 +60,6 @@
           <template slot-scope="{row}">
             <template v-if="row.edit">
               <el-input v-model="row.name" class="edit-input" size="small"/>
-              <!-- <el-button
-                class="cancel-btn"
-                size="small"
-                icon="el-icon-circle-close-outline"
-                type="warning"
-                @click="cancelEdit(row)"
-              >取消</el-button>-->
             </template>
             <span v-else>{{ row.name }}</span>
           </template>
@@ -113,48 +100,101 @@
           </template>
         </el-table-column>
       </el-table>
+
+      <el-pagination
+        v-show="total>0"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="page"
+        :page-sizes="[10, 20, 30, 50]"
+        :page-size="10"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total"
+      ></el-pagination>
+      <transition enter-active-class="animated zoomInUp" appear>
+        <el-alert
+          v-if="courses.length!=0&&!courseId"
+          title="请先选择一个课程"
+          type="warning"
+          center
+          show-icon
+        ></el-alert>
+      </transition>
     </div>
   </div>
 </template>
 
 <script>
 import { allCourseByTid } from "@/api/course";
+import { allStudentByCid } from "@/api/student";
+import Pagination from "@/components/Pagination"; // Secondary package based on el-pagination
 
 export default {
-  name: "Students",
-  components: {},
+  name: "Student",
+  components: { Pagination },
   data() {
     return {
       courseId: "",
       courseName: "",
       loading: false,
       courses: [],
-      students: [
-        {
-          number: "1501511234",
-          classname: "1506031",
-          name: "小明",
-          edit: false
-        },
-        {
-          number: "1501511236",
-          classname: "1506031",
-          name: "小s明",
-          edit: false
-        }
-      ]
+      total: 0,
+      page: 1,
+      limit: 10,
+      // listQuery: {
+      //   page: 1,
+      //   limit: 10
+      // },
+      students: []
     };
   },
   watch: {},
   methods: {
-    getStudent() {
-      this.students = this.students.map(v => {
-        this.$set(v, "edit", false); // https://vuejs.org/v2/guide/reactivity.html
-        v.originalName = v.name; //  will be used when user click the cancel botton
-        return v;
-      });
+    handleSizeChange(val) {
+      console.log(`每页 ${val} 条`);
+      this.limit = val;
+      this.getStudent(this.courseId);
     },
-    handleCurrentChange(row, oldRow) {
+    handleCurrentChange(val) {
+      console.log(`当前页: ${val}`);
+      this.page = val;
+      this.getStudent(this.courseId);
+    },
+    /**
+     * 因为下拉框的@change事件，因此第一个参数一定为cid
+     * 第几页page对应后台第几页要减1
+     */
+    getStudent(cid, page = this.page - 1, size = this.limit) {
+      this.loading = true;
+      let obj = {};
+      obj = this.courses.find(item => {
+        return item.id === cid; //筛选出匹配课程id的课程
+      });
+      this.courseName = obj.name; //设置对应课程名
+      // console.log(this.listQuery);
+      // let  page= this.listQuery.page;
+      // let  limit = this.listQuery.limit;
+      console.log("limit:", this.limit);
+
+      allStudentByCid(cid, page, size)
+        .then(res => {
+          this.loading = false;
+          this.total = res.data.students.totalElements;
+          this.students = res.data.students.content;
+          this.students = this.students.map(stu => {
+            this.$set(stu, "edit", false); // https://vuejs.org/v2/guide/reactivity.html
+            stu.originalNumber = stu.number; //  取消编辑后使用original值
+            stu.originalClassname = stu.classname;
+            stu.originalName = stu.name;
+            return stu;
+          });
+        })
+        .catch(error => {
+          this.loading = false;
+          this.$message.error(error + " 数据获取失败");
+        });
+    },
+    CurrentRowChange(row, oldRow) {
       // console.log("row",row);
       console.log("oldRow", oldRow);
       if (oldRow && oldRow.edit) {
@@ -162,16 +202,20 @@ export default {
       }
     },
     cancelEdit(row) {
+      row.number = row.originalNumber;
+      row.classname = row.originalClassname;
       row.name = row.originalName;
       row.edit = false;
-      this.$message({
-        message: "已取消编辑",
-        type: "warning"
-      });
+      // this.$message({
+      //   message: "已取消编辑",
+      //   type: "warning"
+      // });
     },
     confirmEdit(row) {
       console.log("row", row);
       row.edit = false;
+      row.originalNumber = row.number;
+      row.originalClassname = row.classname;
       row.originalName = row.name;
       this.$message({
         message: "确认编辑",
@@ -225,8 +269,6 @@ export default {
         // this.loading = false;
         this.$message.error(error + " 数据获取失败");
       });
-
-    this.getStudent();
   }
 };
 </script>
@@ -240,27 +282,22 @@ export default {
   margin: 30px;
   .title-bar {
     color: #444;
-    padding: 0 0 10px;
+    padding: 0 0 20px;
     & > .el-row > .el-col {
       margin-bottom: 8px;
     }
   }
   .content-area {
-    min-height: calc(100vh - 200px); // for v-loading
     .table-title {
       color: #909399;
-      text-align: center;
-      padding: 12px;
-      font-weight: bold;
+      padding: 12px 0;
     }
     .edit-input {
-      // padding-right: 95px;
       margin-top: 1px;
+      width: 90%;
     }
-    .cancel-btn {
-      // position: absolute;
-      // right: 15px;
-      // top: 12px;
+    .el-pagination {
+      padding: 30px 0;
     }
   }
 }

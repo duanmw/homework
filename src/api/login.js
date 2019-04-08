@@ -1,12 +1,12 @@
 import request from '@/utils/request'
 import md5 from 'blueimp-md5'
 import qs from 'qs'
-export function studentLogin(sid, password) {
+export function studentLogin(number, password) {
   return request({
     url: '/api/student/login',
     method: 'post',
     data: qs.stringify({
-      number: sid,
+      number,
       password: md5(password)
     })
   })

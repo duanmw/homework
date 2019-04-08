@@ -38,7 +38,10 @@
             </span>
             作业：{{courseData.workcount}}
           </router-link>
-          <router-link :to="'/student?can='+index" tag="a">
+          <router-link
+            :to="{ name: 'Student', params: { courseId:courseData.id,courseName:courseData.name }}"
+            tag="a"
+          >
             <span class="inner-icon" :style="colorStyle[index%4]">
               <svg-icon icon-class="student"/>
             </span>

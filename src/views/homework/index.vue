@@ -73,7 +73,7 @@
         </transition-group>
       </el-collapse>
       <br>
-      <transition name="slow-fade" appear>
+      <transition enter-active-class="animated zoomInUp" :duration="{ leave: 0 }" appear>
         <el-alert
           v-if="courses.length!=0&&!courseId"
           title="请先选择一个课程"
@@ -81,7 +81,9 @@
           center
           show-icon
         ></el-alert>
-        <div v-else-if="courses.length==0||homeworks.length==0" class="nodata-tip">
+      </transition>
+        <transition name="slow-fade" appear>
+        <div v-if="courses.length==0||(courses.length!=0&&homeworks.length==0)" class="nodata-tip">
           <svg-icon icon-class="nodata"/>
         </div>
       </transition>
@@ -129,7 +131,7 @@ export default {
     getWork(courseId) {
       let obj = {};
       obj = this.courses.find(item => {
-        return item.id === courseId; //筛选出匹配id的课程
+        return item.id === courseId; //筛选出匹配课程id的课程
       });
       this.courseName = obj.name; //设置对应课程名
       this.loading = true;
