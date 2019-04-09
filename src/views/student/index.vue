@@ -15,11 +15,11 @@
           </el-select>
         </el-col>
         <el-col :xs="24" :sm="12">
-          <router-link :to="{ name: 'addHomework', params: { courseId,courseName}}" tag="span">
-            <el-button :disabled="!courseId" size="medium" icon="el-icon-circle-plus-outline">添加学生</el-button>
+          <el-button :disabled="!courseId" size="medium" icon="el-icon-circle-plus-outline">添加学生</el-button>
+          <router-link :to="{ name: 'addStudent', params: { courseId,courseName}}" tag="span">
+            <el-button :disabled="!courseId" size="medium" icon="el-icon-upload2">导入学生</el-button>
           </router-link>
-          <!-- <el-button size="medium" icon="el-icon-view">查看成绩</el-button> -->
-          <el-button :disabled="!courseId" size="medium" icon="el-icon-printer">统计成绩</el-button>
+          <!-- <el-button :disabled="!courseId" size="medium" icon="el-icon-printer">统计成绩</el-button> -->
         </el-col>
       </el-row>
     </div>
@@ -111,7 +111,7 @@
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"
       ></el-pagination>
-      <transition enter-active-class="animated zoomInUp" appear>
+      <transition enter-active-class="animated zoomInUp" :duration="{ leave: 0 }" appear>
         <el-alert
           v-if="courses.length!=0&&!courseId"
           title="请先选择一个课程"

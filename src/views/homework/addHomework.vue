@@ -4,11 +4,9 @@
       <div class="title-bar">
         <el-row>
           <el-col :xs="24" :sm="12">
-            <!-- <router-link :to="{ name: 'Homework', params: { courseId,courseName }}" tag="span"> -->
-            <el-button size="small" icon="el-icon-back" @click.prevent="beforeBack">返回</el-button>
-            <!-- </router-link> -->
+            <el-button size="small" icon="el-icon-back" @click="beforeBack">返回</el-button>
             <!-- <span class="classname">给课程：{{$route.params.courseName}} 添加作业习题</span> -->
-            <span class="classname">添加作业 - {{suggestName?suggestName:"请返回重试！"}}</span>
+            <span class="classname">添加作业 - {{suggestName?suggestName:"无数据，请返回重试！"}}</span>
           </el-col>
           <el-col :xs="24" :sm="12">
             习题总数：{{quesCount}}
