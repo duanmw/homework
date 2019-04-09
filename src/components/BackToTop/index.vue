@@ -95,15 +95,16 @@ export default {
     cursor: pointer;
   }
   .back-to-ceiling:hover {
-    background: #d5dbe7;
+    background: #d5dbe7 !important;
   }
   .fade-enter-active,
   .fade-leave-active {
-    transition: opacity .5s;
+    transition: all .5s;
   }
   .fade-enter,
   .fade-leave-to {
-    opacity: 0
+    opacity: 0;
+    transform: scale(0.5,0.5);
   }
   .back-to-ceiling .Icon {
     fill: #9aaabf;

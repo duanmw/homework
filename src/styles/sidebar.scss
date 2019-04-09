@@ -2,23 +2,9 @@
 
   // 主体区域 Main container
   .main-container {
-    height: 100vh;
     transition: margin-left .28s;
     margin-left: $sideBarWidth;
     position: relative;
-    overflow: hidden;
-    .scrollbar-wrapper {
-      overflow-x: hidden !important;
-      .el-scrollbar__view {
-        height: 100%;
-      }
-    }
-    .el-scrollbar {
-      height: 100%;
-    }
-    .is-horizontal {
-      display: none;
-    }
   }
 
   // 侧边栏 Sidebar container
