@@ -1,6 +1,6 @@
 <template>
   <div :style="{height:height+'px',zIndex:zIndex}">
-    <div :class="className" :style="{top:stickyTop+'px',zIndex:zIndex,position:position,width:width,height:height+'px'}">
+    <div :class="stickyClass" :style="{top:stickyTop+'px',zIndex:zIndex,position:position,width:width,height:height+'px'}">
       <slot>
         <div>sticky</div>
       </slot>
@@ -32,6 +32,11 @@ export default {
       width: undefined,
       height: undefined,
       isSticky: false
+    }
+  },
+  computed: {
+    stickyClass(){ //是sticky才有类名
+      return this.isSticky ? this.className : ""
     }
   },
   mounted() {

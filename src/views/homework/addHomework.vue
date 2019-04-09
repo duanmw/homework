@@ -1,6 +1,7 @@
 <template>
   <div class="add-question">
-    <sticky :z-index="3">
+    <!-- class-name 此类名当sticky为真时才会绑定到div上 -->
+    <sticky class-name="fixed-bar" :z-index="3">
       <div class="title-bar">
         <el-row>
           <el-col :xs="24" :sm="12">

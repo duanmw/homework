@@ -11,15 +11,11 @@ export function isExist(number) {
   })
 }
 
-export function addStudent(number, classname, name) {
+export function addStudent(students) {
   return request({
     url: '/api/student/addStudent',
     method: 'post',
-    data: qs.stringify({
-      number,
-      classname,
-      name
-    })
+    data: students
   })
 }
 
