@@ -5,7 +5,7 @@
       <el-row>
         <el-col :xs="24" :sm="12">
           课程：&nbsp;
-          <el-select @change="getStudent" v-model="courseId" placeholder="请选择课程" size="medium">
+          <el-select @change="courseChange" v-model="courseId" placeholder="请选择课程" size="medium">
             <el-option
               v-for="course in courses"
               :key="'optc'+course.id"
@@ -128,7 +128,12 @@
 
 <script>
 import { allCourseByTid } from "@/api/course";
-import { allStudentByCid, isExist, updateStudent } from "@/api/student";
+import {
+  allStudentByCid,
+  isExist,
+  updateStudent,
+  deleteSC
+} from "@/api/student";
 import Pagination from "@/components/Pagination"; // Secondary package based on el-pagination
 
 export default {
@@ -146,7 +151,9 @@ export default {
       students: []
     };
   },
-  watch: {},
+  watch: {
+    courseId() {}
+  },
   methods: {
     handleSizeChange(val) {
       //改变每页条数
@@ -161,8 +168,13 @@ export default {
     handleDblClick(row, column, event) {
       row.edit = true;
     },
+    // 因为下拉框的@change事件，因此参数为cid
+    courseChange(cid) {
+      //下拉框选择课程一改变，就重置页数page到第一页
+      this.page = 1;
+      this.getStudent(cid);
+    },
     /**
-     * 因为下拉框的@change事件，因此第一个参数一定为cid
      * 第几页page对应后台第几页要减1
      */
     getStudent(cid, page = this.page - 1, size = this.limit) {
@@ -232,7 +244,11 @@ export default {
     },
     deleteOne(row) {
       this.$confirm(
-        "此操作将删除学生：" + row.name + "，不可撤销，是否继续？",
+        "确定要将学生（" +
+          row.name +
+          "）从课程（" +
+          this.courseName +
+          "）内删除，不可撤销，是否继续？",
         "提示",
         {
           confirmButtonText: "确定",
@@ -241,13 +257,13 @@ export default {
         }
       )
         .then(() => {
-          // this.loading = true;
-          // return deleteWork(item);
+          this.loading = true;
+          return deleteSC(row.id, this.courseId);
         })
-        // .then(res => {
-        //   this.$message.success("删除成功！");
-        //   this.getWork(item.cid);
-        // })
+        .then(res => {
+          this.$message.success("删除成功！"); //不用设置loading，接下来获取数据有设置loading
+          this.getStudent(this.courseId); //删除后重新获取数据
+        })
         .catch(() => {
           this.loading = false;
           this.$message({

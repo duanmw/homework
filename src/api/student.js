@@ -4,6 +4,13 @@ import {
 } from '@/utils/date'
 import qs from 'qs'
 
+export function haveOne(number) {
+  return request({
+    url: '/api/student//oneByNumber?number=' + number,
+    method: 'get'
+  })
+}
+
 export function isExist(number) {
   return request({
     url: '/api/student/existsByNumber?number=' + number,
@@ -24,6 +31,16 @@ export function addSC(scArr) {
     url: '/api/student/addSC',
     method: 'post',
     data: scArr
+  })
+}
+export function deleteSC(sid, cid) {
+  return request({
+    url: '/api/student/deleteSC',
+    method: 'post',
+    data: qs.stringify({
+      sid,
+      cid
+    })
   })
 }
 

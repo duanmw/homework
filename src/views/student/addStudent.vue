@@ -54,15 +54,15 @@
         :before-upload="beforeUpload"
       />
 
-      <!-- <transition enter-active-class="animated fadeInUp" :duration="{ leave: 0 }" appear>
+      <transition enter-active-class="animated fadeInUp" :duration="{ leave: 0 }" appear>
         <el-alert
           v-if="tableData.length!=0"
-          title="请务必检查以下数据的正确性，再点击“确定添加”"
+          title="请务必检查以下数据的正确性，再点击“确定添加”，添加时会忽略系统中已存在学号的数据项"
           type="warning"
           show-icon
           style="margin-top:10px"
         ></el-alert>
-      </transition>-->
+      </transition>
 
       <el-table
         size="medium"
@@ -80,7 +80,7 @@
 <script>
 import Sticky from "@/components/Sticky";
 import UploadExcelComponent from "@/components/UploadExcel/index.vue";
-import { addStudent, isExist, addSC } from "@/api/student";
+import { addStudent, haveOne, addSC } from "@/api/student";
 import md5 from "blueimp-md5";
 export default {
   name: "AddStudent",
@@ -97,7 +97,9 @@ export default {
       tableHeader: [],
       exampleHeader: ["学号", "班级", "姓名"],
       rightContent: false,
-      loading: null
+      loading: null,
+      existSid: [],
+      students: []
     };
   },
   computed: {},
@@ -190,6 +192,8 @@ export default {
         }
       )
         .then(() => {
+          this.existSid.splice(0, this.existSid.length); //清空待添加关联的学号数组
+          this.students.splice(0, this.students.length); //清空待添加关联的学号数组
           //添加前判断学号唯一！暂不实现
           this.loading = this.$loading({
             lock: true,
@@ -198,16 +202,28 @@ export default {
             background: "rgba(0, 0, 0, 0.6)"
           });
 
-          let students = [];
+          // let students = [];
           this.tableData.forEach(item => {
-            let obj = {};
-            obj.number = item["学号"];
-            obj.name = item["姓名"];
-            obj.classname = item["班级"];
-            obj.password = md5("123456"); //学生登录默认密码123456
-            students.push(obj);
+    
+            haveOne(item["学号"]).then(res => {
+              if (res.data.id) {
+                //如果存在则把学生id加到“待添加关联”数组
+                this.existSid.push({ sid: res.data.id, cid: this.courseId });
+              } else {
+                //如果不存在则把学生信息加到“待添加学生”数组
+                let obj = {};
+                obj.number = item["学号"];
+                obj.name = item["姓名"];
+                obj.classname = item["班级"];
+                obj.password = md5("123456"); //学生登录默认密码123456
+                this.students.push(obj);
+              }
+            });
+  
           });
-          return addStudent(students);
+        })
+        .then(() => {
+          return addStudent(this.students);
         })
         .then(res => {
           this.loading.text = "1/2 学生信息添加成功";
@@ -218,10 +234,11 @@ export default {
             for (let id of res.data.sid) {
               scArr.push({ sid: id, cid: this.courseId });
             }
-          } else {
-            throw "作业ID获取失败";
           }
-          return addSC(scArr);
+          // else {
+          //   throw "作业ID获取失败";
+          // }
+          return addSC(this.existSid.concat(scArr));
         })
         .then(res => {
           this.loading.text = "2/2 学生课程关联添加成功";
