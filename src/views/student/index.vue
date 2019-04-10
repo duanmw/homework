@@ -33,6 +33,7 @@
         highlight-current-row
         style="width: 100%"
         @current-change="CurrentRowChange"
+        @row-dblclick="handleDblClick"
       >
         <el-table-column type="index" width="50"></el-table-column>
         <!-- <el-table-column align="center" label="学号" width="80"> -->
@@ -102,12 +103,13 @@
       </el-table>
 
       <el-pagination
-        v-show="total>0"
+        v-if="total>0"
+        background
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page="page"
-        :page-sizes="[10, 20, 30, 50]"
-        :page-size="10"
+        :page-sizes="[8, 20, 30, 50]"
+        :page-size="limit"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"
       ></el-pagination>
@@ -126,7 +128,7 @@
 
 <script>
 import { allCourseByTid } from "@/api/course";
-import { allStudentByCid } from "@/api/student";
+import { allStudentByCid, isExist, updateStudent } from "@/api/student";
 import Pagination from "@/components/Pagination"; // Secondary package based on el-pagination
 
 export default {
@@ -138,27 +140,26 @@ export default {
       courseName: "",
       loading: false,
       courses: [],
-      total: 0,
-      page: 1,
-      limit: 10,
-      // listQuery: {
-      //   page: 1,
-      //   limit: 10
-      // },
+      total: 0, //数据总条数
+      page: 1, //当前第几页（前端从1算起，后端从0算起）
+      limit: 8, //每页条数
       students: []
     };
   },
   watch: {},
   methods: {
     handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
+      //改变每页条数
       this.limit = val;
       this.getStudent(this.courseId);
     },
     handleCurrentChange(val) {
-      console.log(`当前页: ${val}`);
+      //改变当前页
       this.page = val;
       this.getStudent(this.courseId);
+    },
+    handleDblClick(row, column, event) {
+      row.edit = true;
     },
     /**
      * 因为下拉框的@change事件，因此第一个参数一定为cid
@@ -168,13 +169,9 @@ export default {
       this.loading = true;
       let obj = {};
       obj = this.courses.find(item => {
-        return item.id === cid; //筛选出匹配课程id的课程
+        return item.id === cid; //每次cid改变，筛选出匹配课程id的课程
       });
       this.courseName = obj.name; //设置对应课程名
-      // console.log(this.listQuery);
-      // let  page= this.listQuery.page;
-      // let  limit = this.listQuery.limit;
-      console.log("limit:", this.limit);
 
       allStudentByCid(cid, page, size)
         .then(res => {
@@ -206,21 +203,32 @@ export default {
       row.classname = row.originalClassname;
       row.name = row.originalName;
       row.edit = false;
-      // this.$message({
-      //   message: "已取消编辑",
-      //   type: "warning"
-      // });
     },
     confirmEdit(row) {
-      console.log("row", row);
-      row.edit = false;
-      row.originalNumber = row.number;
-      row.originalClassname = row.classname;
-      row.originalName = row.name;
-      this.$message({
-        message: "确认编辑",
-        type: "success"
-      });
+      // console.log("row", row);
+      //先判断学号是否存在，确保唯一性
+      isExist(row.number)
+        .then(res => {
+          if (res.message == "true") {
+            //存在此学号，还和此输入框原始值不一样，说明学号会重复，不能添加
+            if (row.number != row.originalNumber) {
+              this.$message.warning("输入的学号已存在，请更改！");
+              throw "学号已存在";
+            }
+          }
+          return updateStudent(row.number, row.classname, row.name, row.id);
+        })
+        .then(res => {
+          this.$message.success("更新成功！");
+          row.edit = false;
+          row.originalNumber = row.number;
+          row.originalClassname = row.classname;
+          row.originalName = row.name;
+        })
+        .catch(error => {
+          this.cancelEdit(row); //出现错误就取消编辑
+          this.$message.error(error + " 更新失败！");
+        });
     },
     deleteOne(row) {
       this.$confirm(

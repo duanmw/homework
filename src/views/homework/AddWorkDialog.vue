@@ -252,9 +252,7 @@ export default {
     width: 100%;
   }
 }
-.el-loading-spinner .el-icon-loading {
-  font-size: 26px;
-}
+
 </style>
 
 <style lang="scss" scoped>

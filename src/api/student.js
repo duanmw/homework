@@ -19,6 +19,14 @@ export function addStudent(students) {
   })
 }
 
+export function addSC(scArr) {
+  return request({
+    url: '/api/student/addSC',
+    method: 'post',
+    data: scArr
+  })
+}
+
 export function getOneStudent(cid) {
   return request({
     url: '/api/student/editStudent?id=' + cid,
@@ -26,11 +34,16 @@ export function getOneStudent(cid) {
   })
 }
 
-export function updateStudent(student) {
+export function updateStudent(number, classname, name, sid) {
   return request({
     url: '/api/student/updateStudent',
     method: 'post',
-    data: qs.stringify(student)
+    data: qs.stringify({
+      number,
+      classname,
+      name,
+      sid
+    })
   })
 }
 export function deleteStudent(student) {
