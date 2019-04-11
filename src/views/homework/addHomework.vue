@@ -253,7 +253,7 @@
       </el-tab-pane>
       <el-tab-pane name="third">
         <span slot="label">
-          判断题
+          判断题{{dynamicFormThree.questions.length}}
           <transition name="badge-fade" leave-active-class="animated rollOut">
             <span
               v-if="dynamicFormThree.questions.length"
@@ -408,7 +408,7 @@ export default {
   data() {
     return {
       activeName: "first",
-      courseId: "",
+      courseId: 0,
       courseName: "",
       suggestName: "",
       qObj: {
@@ -735,7 +735,6 @@ export default {
       }
 
       .right-btn {
-        display: inline-block;
         margin-bottom: 4px;
         float: right;
       }

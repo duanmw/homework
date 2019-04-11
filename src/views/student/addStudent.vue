@@ -181,7 +181,7 @@ export default {
           // let students = [];
           this.tableData.forEach(item => {
             haveOne(item["学号"]).then(res => {
-              if (res.data.id) {
+              if (res.data && res.data.id) {
                 //如果存在则把学生id加到“待添加关联”数组
                 this.existSid.push({ sid: res.data.id, cid: this.courseId });
               } else {

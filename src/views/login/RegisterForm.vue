@@ -45,7 +45,7 @@
         placeholder="密码"
         @keyup.enter.native="handleRegister"
       />
-      <span class="show-pwd" @mousedown="pwdType=''" @mouseup="pwdType='password'">
+      <span class="show-pwd" @mousedown="pwdType='text'" @mouseup="pwdType='password'">
         <svg-icon :icon-class="pwdType === 'password' ? 'eye' : 'eye-open'"/>
       </span>
     </el-form-item>

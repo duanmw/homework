@@ -83,7 +83,7 @@ export default {
   left: 50%;
   transform: translateX(-50%);
   color: #8cc4ff;
-  border: 3px solid #8cc4ff;
+  border: 2px solid #8cc4ff;
   line-height: 22px;
   text-align: center;
   padding: 0px 12px;

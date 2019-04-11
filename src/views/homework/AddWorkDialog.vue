@@ -98,10 +98,7 @@ export default {
       pickerOptions0: {
         disabledDate(time) {
           return time.getTime() < Date.now() - 8.64e7; //如果没有后面的-8.64e7就是不可以选择今天
-        },
-        selectableRange: '2019-04-10 12:00:00-2019-04-14 22:00:00'
-        
-
+        }
       },
       rules: {
         name: [

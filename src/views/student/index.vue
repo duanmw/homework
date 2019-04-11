@@ -1,6 +1,5 @@
 <template>
   <div class="student-container">
-    <!-- <h3>全部作业</h3> -->
     <div class="title-bar">
       <el-row>
         <el-col :xs="24" :sm="12">
@@ -45,7 +44,7 @@
         <el-table-column align="center" label="学号">
           <template slot-scope="{row}">
             <template v-if="row.edit">
-              <el-input v-model="row.number" class="edit-input" size="small"/>
+              <el-input v-model="row.number" maxlength="10" class="edit-input" size="small"/>
             </template>
             <span v-else>{{ row.number }}</span>
           </template>
@@ -55,7 +54,7 @@
           <!-- <el-table-column width="120px" align="center" label="班级"> -->
           <template slot-scope="{row}">
             <template v-if="row.edit">
-              <el-input v-model="row.classname" class="edit-input" size="small"/>
+              <el-input v-model="row.classname" maxlength="20" class="edit-input" size="small"/>
             </template>
             <span v-else>{{ row.classname }}</span>
           </template>
@@ -65,7 +64,7 @@
         <el-table-column align="center" label="姓名">
           <template slot-scope="{row}">
             <template v-if="row.edit">
-              <el-input v-model="row.name" class="edit-input" size="small"/>
+              <el-input v-model="row.name" maxlength="10" class="edit-input" size="small"/>
             </template>
             <span v-else>{{ row.name }}</span>
           </template>
@@ -436,8 +435,6 @@ export default {
 };
 </script>
 <style lang="scss">
-.student-container {
-}
 </style>
 
 <style rel="stylesheet/scss" lang="scss" scoped>

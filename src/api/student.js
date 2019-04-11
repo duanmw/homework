@@ -1,7 +1,4 @@
 import request from '@/utils/request'
-import {
-  createDate
-} from '@/utils/date'
 import qs from 'qs'
 /**
  * 判断,存在返回学生数据，不存在返回null
