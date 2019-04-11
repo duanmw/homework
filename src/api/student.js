@@ -3,14 +3,20 @@ import {
   createDate
 } from '@/utils/date'
 import qs from 'qs'
-
+/**
+ * 判断,存在返回学生数据，不存在返回null
+ * @param {string} number
+ */
 export function haveOne(number) {
   return request({
     url: '/api/student//oneByNumber?number=' + number,
     method: 'get'
   })
 }
-
+/**
+ * 判断是否存在返回bool
+ * @param {string} number
+ */
 export function isExist(number) {
   return request({
     url: '/api/student/existsByNumber?number=' + number,

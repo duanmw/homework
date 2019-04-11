@@ -10,7 +10,7 @@
             <span class="classname">导入学生 - {{courseName?courseName:"无数据，请返回重试！"}}</span>
           </el-col>
           <el-col :xs="24" :sm="12">
-            学生总数：{{rightContent?tableData.length:"？"}}
+            学生总数：{{rightContent?tableData.length:"？？"}}
             &nbsp;&nbsp;&nbsp;
             <el-button
               :disabled="courseName==''||tableData.length==0 || !rightContent"
@@ -23,31 +23,6 @@
       </div>
     </sticky>
     <div class="content">
-      <!-- <transition enter-active-class="animated fadeInRight" appear>
-        <el-alert
-          title="Excel内容格式说明"
-          close-text="我知道了"
-          type="info"
-          show-icon
-          style="margin-bottom:20px"
-        >
-          <div class="tip-content" slot="title">
-            Excel内容格式示例：
-            <table class="example-table" cellspacing="0" cellpadding="0" align="center">
-              <tr>
-                <td>学号</td>
-                <td>班级</td>
-                <td>姓名</td>
-              </tr>
-              <tr>
-                <td>xxx</td>
-                <td>xxx</td>
-                <td>xxx</td>
-              </tr>
-            </table>
-          </div>
-        </el-alert>
-      </transition>-->
       <upload-excel-component
         v-if="courseId"
         :on-success="handleSuccess"
@@ -111,6 +86,7 @@ export default {
           this.$notify({
             type: "warning",
             title: "请检查内容格式",
+            duration: 5000,
             dangerouslyUseHTMLString: true,
             message: `<p>Excel内容格式要求：</p>
                       <table class="example-table" cellspacing="0" cellpadding="0">
@@ -197,14 +173,13 @@ export default {
           //添加前判断学号唯一！暂不实现
           this.loading = this.$loading({
             lock: true,
-            text: "Loading...",
+            text: "正在添加...",
             spinner: "el-icon-loading",
             background: "rgba(0, 0, 0, 0.6)"
           });
 
           // let students = [];
           this.tableData.forEach(item => {
-    
             haveOne(item["学号"]).then(res => {
               if (res.data.id) {
                 //如果存在则把学生id加到“待添加关联”数组
@@ -219,7 +194,6 @@ export default {
                 this.students.push(obj);
               }
             });
-  
           });
         })
         .then(() => {

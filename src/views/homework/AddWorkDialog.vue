@@ -194,7 +194,7 @@ export default {
           this.dialogShow = false;
           const loading = this.$loading({
             lock: true,
-            text: "Loading...",
+            text: "正在添加...",
             spinner: "el-icon-loading",
             background: "rgba(0, 0, 0, 0.6)"
           });

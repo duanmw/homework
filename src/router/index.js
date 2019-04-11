@@ -147,7 +147,7 @@ export const asyncRouterMap = [{
     component: () => import('@/views/student/addStudent'),
     hidden: true,
     meta: {
-      title: '添加学生'
+      title: '导入学生'
     }
   }]
 },

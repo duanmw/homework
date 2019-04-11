@@ -15,7 +15,12 @@
           </el-select>
         </el-col>
         <el-col :xs="24" :sm="12">
-          <el-button :disabled="!courseId" size="medium" icon="el-icon-circle-plus-outline">添加学生</el-button>
+          <el-button
+            :disabled="!courseId"
+            size="medium"
+            @click="dialogFormVisible = true"
+            icon="el-icon-circle-plus-outline"
+          >添加学生</el-button>
           <router-link :to="{ name: 'addStudent', params: { courseId,courseName}}" tag="span">
             <el-button :disabled="!courseId" size="medium" icon="el-icon-upload2">导入学生</el-button>
           </router-link>
@@ -123,6 +128,31 @@
         ></el-alert>
       </transition>
     </div>
+    <el-dialog
+      custom-class="my-dialog"
+      width="40%"
+      title="添加学生"
+      :visible.sync="dialogFormVisible"
+      @closed="handleClose"
+    >
+      <el-form :model="form" :rules="rules" ref="addStuForm" label-width="70px">
+        <el-form-item label-width="10px" label>添加学生到课程：{{courseName}}</el-form-item>
+
+        <el-form-item label="学号：" prop="number">
+          <el-input maxlength="10" clearable v-model="form.number"></el-input>
+        </el-form-item>
+        <el-form-item label="班级：" prop="classname">
+          <el-input maxlength="20" clearable v-model="form.classname"></el-input>
+        </el-form-item>
+        <el-form-item label="姓名：" prop="name">
+          <el-input maxlength="10" clearable v-model="form.name"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="handleAdd">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -131,15 +161,28 @@ import { allCourseByTid } from "@/api/course";
 import {
   allStudentByCid,
   isExist,
+  addStudent,
   updateStudent,
-  deleteSC
+  addSC,
+  deleteSC,
+  haveOne
 } from "@/api/student";
 import Pagination from "@/components/Pagination"; // Secondary package based on el-pagination
-
+import { isvalidStudentID } from "@/utils/validate";
+import md5 from "blueimp-md5";
 export default {
   name: "Student",
   components: { Pagination },
   data() {
+    const validateStudentId = (rule, value, callback) => {
+      if (value.length == 0) {
+        callback(new Error("学号不能为空"));
+      } else if (!isvalidStudentID(value)) {
+        callback(new Error("请输入10位学号"));
+      } else {
+        callback();
+      }
+    };
     return {
       courseId: "",
       courseName: "",
@@ -148,7 +191,37 @@ export default {
       total: 0, //数据总条数
       page: 1, //当前第几页（前端从1算起，后端从0算起）
       limit: 8, //每页条数
-      students: []
+      students: [],
+      dialogFormVisible: false,
+      form: {
+        number: "",
+        classname: "",
+        name: "",
+        password: md5("123456") //学生登录默认密码123456
+      },
+      rules: {
+        number: [
+          { required: true, trigger: "blur", validator: validateStudentId }
+        ],
+        classname: [
+          { required: true, message: "班级不能为空", trigger: "blur" },
+          {
+            min: 2,
+            max: 20,
+            message: "班级名长度在 2 到 20 个字符",
+            trigger: "blur"
+          }
+        ],
+        name: [
+          { required: true, message: "姓名不能为空", trigger: "blur" },
+          {
+            min: 2,
+            max: 10,
+            message: "姓名长度在 2 到 10 个字符",
+            trigger: "blur"
+          }
+        ]
+      }
     };
   },
   watch: {
@@ -272,6 +345,72 @@ export default {
             message: "已取消删除"
           });
         });
+    },
+    handleClose() {
+      //移除校验结果并重置表单为初始值
+      this.$refs.addStuForm.resetFields();
+    },
+    handleAdd() {
+      this.$refs.addStuForm.validate(valid => {
+        if (valid) {
+          haveOne(this.form.number)
+            .then(res => {
+              if (res.data) {
+                let stu = res.data.student;
+                return this.$confirm(
+                  "系统中已存在学号为" +
+                    stu.number +
+                    "的学生（班级：" +
+                    stu.classname +
+                    "，姓名：" +
+                    stu.name +
+                    "），是否添加此学生？",
+                  "提示",
+                  {
+                    confirmButtonText: "添加",
+                    cancelButtonText: "取消",
+                    type: "warning"
+                  }
+                )
+                  .then(res => {
+                    this.dialogFormVisible = false;
+                    this.loading = true;
+                    return stu.id; //此学生已存在，直接返回此学生id
+                  })
+                  .catch(res => {
+                    return ""; //点击取消，返回空
+                  });
+              } else {
+                //学生不存在，则执行添加学生
+                return addStudent([this.form]);
+              }
+            })
+            .then(res => {
+              console.log("res--res:", res);
+              if (res.data && res.data.sid) {
+                //若为添加完学生再返回的数据data，sid为res.sid[0]
+                return addSC([{ sid: res.sid[0], cid: this.courseId }]);
+              } else if (typeof res === "number") {
+                //已存在学生的情况，直接返回了sid, res为sid
+                return addSC([{ sid: res, cid: this.courseId }]);
+              } else {
+                return "";
+              }
+            })
+            .then(res => {
+              if (res) {
+                //以上return为空的将不执行
+                this.$message.success("添加成功！");
+                this.getStudent(this.courseId); //添加后重新获取数据
+              }
+            })
+            .catch(err => {
+              this.dialogFormVisible = false;
+              this.loading = false;
+              this.$message.error(err + " 添加失败！");
+            });
+        }
+      });
     }
   },
   created() {
