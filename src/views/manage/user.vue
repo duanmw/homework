@@ -1,7 +1,7 @@
 <template>
   <div class="profile-container" v-loading="loading">
     <el-row>
-      <div class="info-text">基本信息</div>
+      <div class="info-text">管理</div>
     </el-row>
     <el-row>
       <el-col :xs="24" :sm="4" :md="4">
@@ -77,7 +77,9 @@
       :visible.sync="dialogFormVisible"
       @closed="handleClose"
     >
-      <el-form :model="form" :rules="rules" ref="updatePwdForm" label-width="94px">
+      <el-form :model="form" :rules="rules" ref="updatePwdForm" label-width="96px">
+        <!-- <el-form-item label-width="10px" label>添加学生到课程：{{courseName}}</el-form-item> -->
+
         <el-form-item label="旧密码：" prop="oldPwd">
           <el-input type="password" clearable v-model="form.oldPwd"></el-input>
         </el-form-item>

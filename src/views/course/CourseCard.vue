@@ -1,4 +1,5 @@
 <template>
+  <!-- 修改课程时未判断课程名的重复与否 -->
   <div class="card" v-loading="loading">
     <el-card shadow="hover">
       <div slot="header">
@@ -14,10 +15,16 @@
             <el-dropdown-item command="update">修改课程</el-dropdown-item>
             <el-dropdown-item command="delete">删除课程</el-dropdown-item>
             <el-dropdown-item command="a">
-              <router-link :to="'/homework?can='+index" tag="span">管理作业</router-link>
+              <router-link
+                :to="{ name: 'Homework', params: { courseId:courseData.id,courseName:courseData.name }}"
+                tag="span"
+              >管理作业</router-link>
             </el-dropdown-item>
             <el-dropdown-item command="b">
-              <router-link :to="'/student?can='+index" tag="span">管理学生</router-link>
+              <router-link
+                :to="{ name: 'Student', params: { courseId:courseData.id,courseName:courseData.name }}"
+                tag="span"
+              >管理学生</router-link>
             </el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
@@ -147,13 +154,17 @@ export default {
             .then(res => {
               this.$emit("after-delete", this.index); //传数据过去
             })
-            .catch(() => {
+            .catch(err => {
               this.$emit("after-delete");
-              this.$message({
-                type: "info",
-                duration: 2000,
-                message: "已取消删除"
-              });
+              if (err == "cancel") {
+                this.$message({
+                  type: "info",
+                  duration: 2000,
+                  message: "已取消删除"
+                });
+              } else {
+                this.$message.error(err + " 删除失败！");
+              }
             });
           break;
         default:

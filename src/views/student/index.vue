@@ -39,6 +39,9 @@
         @current-change="CurrentRowChange"
         @row-dblclick="handleDblClick"
       >
+      <div slot="empty" class="nodata-tip">
+        <svg-icon icon-class="nodata"/>
+      </div>
         <el-table-column type="index" width="50"></el-table-column>
         <!-- <el-table-column align="center" label="学号" width="80"> -->
         <el-table-column align="center" label="学号">
@@ -336,13 +339,17 @@ export default {
           this.$message.success("删除成功！"); //不用设置loading，接下来获取数据有设置loading
           this.getStudent(this.courseId); //删除后重新获取数据
         })
-        .catch(() => {
+        .catch(err => {
           this.loading = false;
-          this.$message({
-            type: "info",
-            duration: 2000,
-            message: "已取消删除"
-          });
+          if (err == "cancel") {
+            this.$message({
+              type: "info",
+              duration: 2000,
+              message: "已取消删除"
+            });
+          } else {
+            this.$message.error(err + " 删除失败！");
+          }
         });
     },
     handleClose() {

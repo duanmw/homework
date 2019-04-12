@@ -167,34 +167,54 @@ export const asyncRouterMap = [{
 },
 {
   path: '/manage',
-  redirect: '/manage/index',
+  redirect: '/manage/course',
   component: Layout,
   meta: {
-    roles: ['admin']
+    roles: ['admin'],
+    title: '管理',
+    icon: 'manage1'
   },
   children: [{
-    path: 'index',
-    name: 'Manage',
-    component: () => import('@/views/home/teacher'),
+    path: 'course',
+    name: 'courseManage',
+    component: () => import('@/views/manage/course'),
     meta: {
-      title: '管理',
-      icon: 'manage'
+      title: '课程管理',
+      icon: 'course'
+    }
+  },
+  {
+    path: 'homework',
+    name: 'homeworkManage',
+    component: () => import('@/views/manage/homework'),
+    meta: {
+      title: '作业管理',
+      icon: 'homework'
+    }
+  },
+  {
+    path: 'user',
+    name: 'userManage',
+    component: () => import('@/views/manage/user'),
+    meta: {
+      title: '用户管理',
+      icon: 'user'
     }
   }]
 },
-{
-  path: '/form',
-  component: Layout,
-  children: [{
-    path: 'index',
-    name: 'Form',
-    component: () => import('@/views/form/index'),
-    meta: {
-      title: 'Form',
-      icon: 'form'
-    }
-  }]
-},
+// {
+//   path: '/form',
+//   component: Layout,
+//   children: [{
+//     path: 'index',
+//     name: 'Form',
+//     component: () => import('@/views/form/index'),
+//     meta: {
+//       title: 'Form',
+//       icon: 'form'
+//     }
+//   }]
+// },
 
 // {
 //   path: '/nested',
@@ -265,17 +285,17 @@ export const asyncRouterMap = [{
 //   ]
 // },
 
-{
-  path: 'external-link',
-  component: Layout,
-  children: [{
-    path: 'https://panjiachen.github.io/vue-element-admin-site/#/',
-    meta: {
-      title: 'External Link',
-      icon: 'link'
-    }
-  }]
-},
+// {
+//   path: 'external-link',
+//   component: Layout,
+//   children: [{
+//     path: 'https://panjiachen.github.io/vue-element-admin-site/#/',
+//     meta: {
+//       title: 'External Link',
+//       icon: 'link'
+//     }
+//   }]
+// },
 
 {
   path: '*',

@@ -49,3 +49,10 @@ export function allCourseByTid(tid) {
     method: 'get'
   })
 }
+
+export function allByPage(start, size) {
+  return request({
+    url: '/api/course/allByPage?start=' + start + '&size=' + size,
+    method: 'get'
+  })
+}
