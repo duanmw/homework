@@ -39,12 +39,12 @@
       <el-table-column align="center" label="创建者" prop="tid">
         <template slot-scope="{row}">
           <el-popover trigger="hover" placement="top">
-            <div style="margin-bottom:4px;">邮箱：{{ row.teacher[0].email }}</div>
-            <div>教师：{{ row.teacher[0].name }}</div>
+            <div style="margin-bottom:4px;">邮箱：{{ row.teacher.email }}</div>
+            <div>教师：{{ row.teacher.name }}</div>
             <div slot="reference">
               <el-tag
                 size="medium"
-              >{{ row.teacher[0].name?row.teacher[0].name:row.teacher[0].email}}</el-tag>
+              >{{ row.teacher.name?row.teacher.name:row.teacher.email}}</el-tag>
             </div>
           </el-popover>
         </template>
@@ -209,7 +209,7 @@ export default {
     deleteOne(row) {
       this.$confirm(
         "确定要删除由教师（" +
-          (row.teacher[0].name ? row.teacher[0].name : row.teacher[0].email) +
+          (row.teacher.name ? row.teacher.name : row.teacher.email) +
           "）创建的课程（" +
           row.name +
           "），课程内作业也会被删除，不可撤销，是否继续？",
