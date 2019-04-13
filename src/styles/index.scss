@@ -110,6 +110,8 @@ html::-webkit-scrollbar-thumb {
   border-radius: 7px;
   background: rgba(100, 100, 100, 0.3);
   border-right: 1px solid #fcfcfc;
+  border-top: 1px solid #fcfcfc;
+  border-bottom: 1px solid #fcfcfc;
 }
 
 html::-webkit-scrollbar-thumb:hover {

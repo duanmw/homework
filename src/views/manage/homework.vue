@@ -3,7 +3,7 @@
     <el-table
       size="medium"
       v-loading="loading"
-      :data="courses"
+      :data="homeworks"
       border
       highlight-current-row
       style="width: 100%"
@@ -13,14 +13,46 @@
       <div slot="empty" class="nodata-tip">
         <svg-icon icon-class="nodata"/>
       </div>
-       <el-table-column type="expand" width="40">
-      <template slot-scope="{row}">
-        <div>{{ row.name }}</div>
-        <div>{{ row.name }}</div>
-      </template>
-    </el-table-column>
+      <el-table-column type="expand" width="40">
+        <template slot-scope="{row}">
+          <el-row>
+            <el-col :xs="24" :sm="12">
+              <span class="label-text">开始时间：</span>
+              {{row.starttime}}
+            </el-col>
+            <el-col :xs="24" :sm="12">
+              <span class="label-text">关闭时间：</span>
+              {{row.closetime}}
+            </el-col>
+            <el-col :xs="24" :sm="12">
+              <span class="label-text">关闭后是否显示答案：</span>
+              {{row.showanswer}}
+            </el-col>
+            <el-col :xs="24" :sm="12">
+              <span class="label-text">最大提交次数：</span>
+              {{row.maxsubmit}}
+            </el-col>
+            <el-col :xs="24" :sm="12">
+              <span class="label-text">习题数量：</span>
+              {{row.quescount}}
+            </el-col>
+            <el-col :xs="24" :sm="12">
+              <!-- <router-link
+                :to="{ name: 'Question', params: { wid:row.id,wname:row.name,courseId:row.cid,courseName:row.cname }}"
+                tag="span"
+              >-->
+              <router-link
+                :to="{ name: 'Question', params: { wid:row.id,wname:row.name}}"
+                tag="span"
+              >
+                <el-button size="mini" icon="el-icon-tickets">查看习题</el-button>
+              </router-link>
+            </el-col>
+          </el-row>
+        </template>
+      </el-table-column>
       <el-table-column type="index" width="40"></el-table-column>
-      <!-- <el-table-column align="center" label="学号" width="80"> -->
+
       <el-table-column align="center" label="作业名" min-width="120">
         <template slot-scope="{row}">
           <template v-if="row.edit">
@@ -30,31 +62,34 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="所属课程" min-width="200" show-overflow-tooltip>
-        <!-- <el-table-column width="120px" align="center" label="班级"> -->
-        <template slot-scope="{row}">
-          <template v-if="row.edit">
-            <el-input v-model="row.info" maxlength="50" class="edit-input" size="small"/>
-          </template>
-          <span v-else>{{ row.info? row.info:"暂无简介"}}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column align="center" label="学生数" prop="stucount" width="70"></el-table-column>
-      <el-table-column align="center" label="作业数" prop="workcount" width="70"></el-table-column>
-      <el-table-column align="center" label="创建者" prop="tid">
+      <el-table-column
+        align="center"
+        label="所属课程"
+        :filters="[{text: '2016-05-01', value: '2016-05-01'}, {text: '2016-05-04', value: '2016-05-04'}]"
+        :filter-method="filterHandler"
+      >
         <template slot-scope="{row}">
           <el-popover trigger="hover" placement="top">
-            <div style="margin-bottom:4px;">邮箱：{{ row.teacher[0].email }}</div>
-            <div>教师：{{ row.teacher[0].name }}</div>
-            <div slot="reference">
-              <el-tag
-                size="medium"
-              >{{ row.teacher[0].name?row.teacher[0].name:row.teacher[0].email}}</el-tag>
-            </div>
+            <div style="margin-bottom:4px;">由教师：{{ row.course.teacher.name }} 创建</div>
+            <div style="margin-bottom:4px;">创建于：{{ row.course.createtime }}</div>
+            <div>教师邮箱：{{ row.course.teacher.email }}</div>
+            <div slot="reference">{{ row.course.name}}</div>
           </el-popover>
         </template>
       </el-table-column>
+
+      <el-table-column align="center" label="已提交/学生数" prop="stucount">
+        <template slot-scope="{row}">{{row.submitcount}}/{{row.stucount}}</template>
+      </el-table-column>
+
+      <el-table-column align="center" label="作业状态" prop="workcount">
+        <template slot-scope="{row}">
+          <el-tag v-if="row.state==1" type="warning" size="medium">未开放</el-tag>
+          <el-tag v-else-if="row.state==2" type="success" size="medium">开放中</el-tag>
+          <el-tag v-else type="info" size="medium">已关闭</el-tag>
+        </template>
+      </el-table-column>
+
       <el-table-column sortable align="center" label="创建时间" prop="createtime"></el-table-column>
 
       <el-table-column align="center" label="操作" width="190">
@@ -108,31 +143,22 @@
 </template>
 
 <script>
-import { allByPage, updateCourse, deleteCourse } from "@/api/course";
+import { allByPage, deleteWork } from "@/api/homework";
 import Pagination from "@/components/Pagination"; // Secondary package based on el-pagination
 
 export default {
-  name: "CourseManage",
+  name: "HomeworkManage",
   components: { Pagination },
   data() {
-    const validateStudentId = (rule, value, callback) => {
-      if (value.length == 0) {
-        callback(new Error("学号不能为空"));
-      } else if (!isvalidStudentID(value)) {
-        callback(new Error("请输入10位学号"));
-      } else {
-        callback();
-      }
-    };
     return {
       courseId: "",
       courseName: "",
       loading: false,
-      courses: [],
+      homeworks: [],
+      filterData:[],
       total: 0, //数据总条数
       page: 1, //当前第几页（前端从1算起，后端从0算起）
       limit: 8, //每页条数
-      courses: [],
       dialogFormVisible: false
     };
   },
@@ -140,15 +166,19 @@ export default {
     courseId() {}
   },
   methods: {
+    filterHandler(value, row, column) {
+      const property = column["property"];
+      return row[property] === value;
+    },
     handleSizeChange(val) {
       //改变每页条数
       this.limit = val;
-      this.getCourse();
+      this.getHomework();
     },
     handleCurrentChange(val) {
       //改变当前页
       this.page = val;
-      this.getCourse();
+      this.getHomework();
     },
     handleDblClick(row, column, event) {
       row.edit = true;
@@ -157,18 +187,31 @@ export default {
     /**
      * 第几页page对应后台第几页要减1
      */
-    getCourse(page = this.page - 1, size = this.limit) {
+    getHomework(page = this.page - 1, size = this.limit) {
       this.loading = true;
       allByPage(page, size)
         .then(res => {
           this.loading = false;
-          this.courses = res.data.courses;
+          this.homeworks = res.data.works;
           this.total = res.data.totalElements; //总条数
-          this.courses = this.courses.map(c => {
-            this.$set(c, "edit", false); // https://vuejs.org/v2/guide/reactivity.html
-            c.originalName = c.name; //  取消编辑后就使用original值还原
-            c.originalInfo = c.info;
-            return c;
+
+          let now = new Date(); //现在时间
+          // this.homeworks = this.homeworks.map(h => {
+          this.homeworks.forEach((h, index) => {
+            let start = new Date(h.starttime);
+            let end = new Date(h.closetime);
+            if (now < start) {
+              this.$set(h, "state", 1); //1：未开始
+            } else if (now >= start && now < end) {
+              this.$set(h, "state", 2); //2：开放中
+            } else {
+              this.$set(h, "state", 0); //0：已关闭
+            }
+            this.$set(h, "edit", false); //设置edit属性
+            h.originalName = h.name; //  作业名  //暂时只支持改作业名
+            // h.originalInfo = h.info;
+            // return h;
+            //设置筛选数据
           });
         })
         .catch(error => {
@@ -183,7 +226,7 @@ export default {
     },
     cancelEdit(row) {
       row.name = row.originalName;
-      row.info = row.originalInfo;
+      // row.info = row.originalInfo;
       row.edit = false;
     },
     confirmEdit(row) {
@@ -193,18 +236,12 @@ export default {
       } else if (row.name.trim().length < 2) {
         this.$message.warning("课程名不少于2个字符！");
       } else {
-        updateCourse({
-          id: row.id,
-          tid: row.tid,
-          name: row.name,
-          info: row.info,
-          createtime: row.createtime
-        })
+        updateHomework(row)
           .then(res => {
             this.$message.success("更新成功！");
             row.edit = false;
             row.originalName = row.name;
-            row.originalInfo = row.info;
+            // row.originalInfo = row.info;
           })
           .catch(error => {
             this.cancelEdit(row); //出现错误就取消编辑
@@ -214,11 +251,11 @@ export default {
     },
     deleteOne(row) {
       this.$confirm(
-        "确定要删除由教师（" +
-          (row.teacher[0].name ? row.teacher[0].name : row.teacher[0].email) +
-          "）创建的课程（" +
+        "确定要删除课程（" +
+          row.course.name +
+          "）里的作业（" +
           row.name +
-          "），课程内作业也会被删除，不可撤销，是否继续？",
+          "），不可撤销，是否继续？",
         "提示",
         {
           confirmButtonText: "确定",
@@ -228,17 +265,11 @@ export default {
       )
         .then(() => {
           this.loading = true;
-          return deleteCourse({
-            id: row.id,
-            tid: row.tid,
-            name: row.name,
-            info: row.info,
-            createtime: row.createtime
-          });
+          return deleteHomework(row);
         })
         .then(res => {
           this.$message.success("删除成功！"); //不用设置loading，接下来获取数据有设置loading
-          this.getCourse(); //删除后重新获取数据
+          this.getHomework(); //删除后重新获取数据
         })
         .catch(err => {
           this.loading = false;
@@ -255,7 +286,7 @@ export default {
     }
   },
   created() {
-    this.getCourse();
+    this.getHomework();
   }
 };
 </script>
@@ -266,9 +297,14 @@ export default {
 .student-container {
   margin: 30px;
 
-  .edit-input {
-    // margin-top: 1px;
-    // width: 96%;
+  .el-table__expanded-cell {
+    .el-col {
+      margin: 8px 0;
+      color: #606266;
+      .label-text {
+        color: #909399;
+      }
+    }
   }
   .el-pagination {
     padding: 30px 0;

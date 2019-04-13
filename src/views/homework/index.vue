@@ -36,9 +36,12 @@
         <transition-group name="fade-up" tag="div" appear>
           <el-collapse-item v-for="i in homeworks" :key="'work'+i.id" :name="i.id">
             <div slot="title" class="panel-title">
-              <span v-if="i.state==1" class="wait-state">未开放</span>
-              <span v-else-if="i.state==2" class="opening-state">开放中</span>
-              <span v-else class="closed-state">已关闭</span>
+              <!-- <span v-if="i.state==1" class="wait-state">未开放</span> -->
+              <el-tag v-if="i.state==1" type="warning" size="small">未开放</el-tag>
+              <!-- <span v-else-if="i.state==2" class="opening-state">开放中</span> -->
+              <el-tag v-else-if="i.state==2" type="success" size="small">开放中</el-tag>
+              <!-- <span v-else class="closed-state">已关闭</span>-->
+              <el-tag v-else type="info" size="small">已关闭</el-tag> 
               <span class="work-name">{{i.name}}</span>
               <span class="create-time">创建于 {{i.createtime}}</span>
               <el-tooltip :content="'已提交人数：'+i.submitcount" placement="top">
@@ -374,6 +377,9 @@ export default {
   }
   .panel-title {
     min-width: 50%;
+    .el-tag{
+      margin-right: 6px;
+    }
     .opening-state {
       @include work-state(#67c23a);
     }

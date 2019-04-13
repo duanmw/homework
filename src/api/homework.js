@@ -50,6 +50,13 @@ export function allWorkByCid(cid) {
   })
 }
 
+export function allByPage(start, size) {
+  return request({
+    url: '/api/work/allByPage?start=' + start + '&size=' + size,
+    method: 'get'
+  })
+}
+
 export function allQuestionByWid(wid) {
   return request({
     url: '/api/question/allByWid?wid=' + wid,

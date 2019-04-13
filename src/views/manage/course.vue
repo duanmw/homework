@@ -109,15 +109,6 @@ export default {
   name: "CourseManage",
   components: { Pagination },
   data() {
-    const validateStudentId = (rule, value, callback) => {
-      if (value.length == 0) {
-        callback(new Error("学号不能为空"));
-      } else if (!isvalidStudentID(value)) {
-        callback(new Error("请输入10位学号"));
-      } else {
-        callback();
-      }
-    };
     return {
       courseId: "",
       courseName: "",
@@ -126,7 +117,6 @@ export default {
       total: 0, //数据总条数
       page: 1, //当前第几页（前端从1算起，后端从0算起）
       limit: 8, //每页条数
-      courses: [],
       dialogFormVisible: false
     };
   },
@@ -260,10 +250,6 @@ export default {
 .student-container {
   margin: 30px;
 
-  .edit-input {
-    // margin-top: 1px;
-    // width: 96%;
-  }
   .el-pagination {
     padding: 30px 0;
   }

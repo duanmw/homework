@@ -6,7 +6,7 @@
           <router-link :to="{ name: 'Homework', params: { courseId,courseName }}" tag="span">
             <el-button size="small" icon="el-icon-back">返回</el-button>
           </router-link>
-          <span class="workname">作业：{{$route.params.wname}}</span>
+          <span class="workname">作业：{{$route.params.wname?$route.params.wname:"无数据，请返回重试！"}}</span>
         </el-col>
         <el-col :xs="24" :sm="12">
           <el-button size="medium" icon="el-icon-circle-plus-outline">添加习题</el-button>
