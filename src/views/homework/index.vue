@@ -50,12 +50,25 @@
             </div>
             <div></div>
             <el-row>
-              <el-col :xs="24" :sm="12">开始时间：{{i.starttime}}</el-col>
-              <el-col :xs="24" :sm="12">关闭时间：{{i.closetime}}</el-col>
-              <el-col :xs="24" :sm="12">关闭后是否显示答案：{{i.showanswer}}</el-col>
-              <el-col :xs="24" :sm="12">最大提交次数：{{i.maxsubmit}}</el-col>
               <el-col :xs="24" :sm="12">
-                习题数量：{{i.quescount}}&nbsp;&nbsp;
+                <span class="label-text">开始时间：</span>
+                {{i.starttime}}
+              </el-col>
+              <el-col :xs="24" :sm="12">
+                <span class="label-text">关闭时间：</span>
+                {{i.closetime}}
+              </el-col>
+              <el-col :xs="24" :sm="12">
+                <span class="label-text">关闭后是否显示答案：</span>
+                {{i.showanswer}}
+              </el-col>
+              <el-col :xs="24" :sm="12">
+                <span class="label-text">最大提交次数：</span>
+                {{i.maxsubmit}}
+              </el-col>
+              <el-col :xs="24" :sm="12">
+                <span class="label-text">习题数量：</span>
+                {{i.quescount}}&nbsp;&nbsp;&nbsp;
                 <router-link
                   :to="{ name: 'Question', params: { wid:i.id,wname:i.name,courseId,courseName }}"
                   tag="span"
@@ -262,7 +275,7 @@ export default {
             if (this.homeworks.length > 0) {
               allWorkByCid(this.courseId)
                 .then(res => {
-                  if ((this.homeworks.length === res.data.works.length)) {
+                  if (this.homeworks.length === res.data.works.length) {
                     //此处暂时仅判断长度，不严谨
                     this.homeworks.forEach((item, index) => {
                       this.$set(
@@ -284,7 +297,7 @@ export default {
 
         allWorkByCid(this.courseId)
           .then(res => {
-            if ((this.homeworks.length === res.data.works.length)) {
+            if (this.homeworks.length === res.data.works.length) {
               this.homeworks.forEach((item, index) => {
                 this.$set(
                   item,
@@ -352,6 +365,12 @@ export default {
   }
   .content-area {
     min-height: calc(100vh - 200px); // for v-loading
+    .el-col {
+      color: #606266;
+      .label-text {
+        color: #909399;
+      }
+    }
   }
   .panel-title {
     min-width: 50%;
@@ -372,14 +391,14 @@ export default {
       color: #c0c4cc;
     }
     .submit-count {
-      color: #c0c4cc;
+      color: #909399;
       float: right;
       transform: translateX(100%);
       margin-top: 15px;
       height: 20px;
       line-height: 20px;
       span {
-        color: #79bbff;
+        color: #53a8ff;
       }
     }
     .el-button {
