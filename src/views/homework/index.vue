@@ -15,7 +15,7 @@
               <span style="float: left">{{ course.name }}</span>
               <span
                 style="margin-left: 10px; line-height: 36px; float: right; color: #c0c4cc; font-size: 13px"
-              >{{ ' 学生:'+course.stucount }}</span>
+              >{{ '作业:'+course.workcount }}</span>
             </el-option>
           </el-select>
         </el-col>
@@ -130,7 +130,8 @@ export default {
       courseName: "",
       stuCount: "",
       suggestName: "",
-      timer: null //记录定时器
+      timer1: null, //记录定时器(更新作业状态)
+      timer2: null //记录定时器（获取作业信息，主要是更新提交人数）
     };
   },
   watch: {
@@ -151,15 +152,15 @@ export default {
         this.stuCount = obj.stucount; //设置当前课程学生数
       }
       this.courseName = obj.name; //设置对应课程名
-
+      if (this.timer1) {
+        // 先清理定时器
+        clearInterval(this.timer1);
+      }
       allWorkByCid(courseId)
         .then(res => {
           this.loading = false;
           this.homeworks = res.data.works;
-          if (this.timer) {
-            clearInterval(this.timer);
-          }
-          let num = 1;
+
           let getState = function() {
             console.log("定时器里getState执行");
             let now = new Date();
@@ -180,7 +181,7 @@ export default {
           }.bind(this); //此处绑定this，到定时器里this就不会被改变了
           getState();
           if (this.homeworks.length > 0) {
-            this.timer = setInterval(getState, 2000);
+            this.timer1 = setInterval(getState, 2000);
           }
         })
         .catch(error => {
@@ -249,10 +250,63 @@ export default {
         this.$message.error(error + " 数据获取失败");
       });
   },
+  mounted() {
+    let times = 0; //记录次数
+    this.timer2 = setInterval(() => {
+      if (this.homeworks.length > 0) {
+        times++;
+        if (times >= 50) {
+          //如果请求次数到50，变成隔60s请求一次
+          clearInterval(this.timer2); //清除原定时器
+          this.timer2 = setInterval(() => {
+            if (this.homeworks.length > 0) {
+              allWorkByCid(this.courseId)
+                .then(res => {
+                  if ((this.homeworks.length === res.data.works.length)) {
+                    //此处暂时仅判断长度，不严谨
+                    this.homeworks.forEach((item, index) => {
+                      this.$set(
+                        item,
+                        "submitcount",
+                        res.data.works[index].submitcount
+                      ); //这样改变对象属性值才能触发视图更新
+                    });
+                  }
+                })
+                .catch(err => {
+                  console.log("timer2(30s)里", err);
+                  clearInterval(this.timer2);
+                });
+            }
+          }, 60 * 1000);
+        }
+        console.log("timer2里发送请求---");
+
+        allWorkByCid(this.courseId)
+          .then(res => {
+            if ((this.homeworks.length === res.data.works.length)) {
+              this.homeworks.forEach((item, index) => {
+                this.$set(
+                  item,
+                  "submitcount",
+                  res.data.works[index].submitcount
+                ); //这样改变对象属性值才能触发视图更新
+              });
+            }
+          })
+          .catch(err => {
+            console.log("timer2里", err);
+            times = 50;
+          });
+      }
+    }, 8 * 1000);
+  },
   beforeDestroy() {
-    clearInterval(this.timer);
+    clearInterval(this.timer1);
+    clearInterval(this.timer2);
     console.log("定时器清理了");
-    this.timer = null;
+    this.timer1 = null;
+    this.timer2 = null;
   }
 };
 </script>

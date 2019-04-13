@@ -14,7 +14,7 @@
               <span style="float: left">{{ course.name }}</span>
               <span
                 style="margin-left: 10px; line-height: 36px; float: right; color: #c0c4cc; font-size: 13px"
-              >{{ ' 学生:'+course.stucount }}</span>
+              >{{ '学生:'+course.stucount }}</span>
             </el-option>
           </el-select>
         </el-col>
