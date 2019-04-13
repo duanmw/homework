@@ -10,7 +10,12 @@
               :key="'optc'+course.id"
               :label="course.name"
               :value="course.id"
-            ></el-option>
+            >
+              <span style="float: left">{{ course.name }}</span>
+              <span
+                style="margin-left: 10px; line-height: 36px; float: right; color: #c0c4cc; font-size: 13px"
+              >{{ ' 学生:'+course.stucount }}</span>
+            </el-option>
           </el-select>
         </el-col>
         <el-col :xs="24" :sm="12">
@@ -39,9 +44,9 @@
         @current-change="CurrentRowChange"
         @row-dblclick="handleDblClick"
       >
-      <div slot="empty" class="nodata-tip">
-        <svg-icon icon-class="nodata"/>
-      </div>
+        <div slot="empty" class="nodata-tip">
+          <svg-icon icon-class="nodata"/>
+        </div>
         <el-table-column type="index" width="50"></el-table-column>
         <!-- <el-table-column align="center" label="学号" width="80"> -->
         <el-table-column align="center" label="学号">

@@ -11,7 +11,12 @@
               :key="'optc'+course.id"
               :label="course.name"
               :value="course.id"
-            ></el-option>
+            >
+              <span style="float: left">{{ course.name }}</span>
+              <span
+                style="margin-left: 10px; line-height: 36px; float: right; color: #c0c4cc; font-size: 13px"
+              >{{ ' 学生:'+course.stucount }}</span>
+            </el-option>
           </el-select>
         </el-col>
         <el-col :xs="24" :sm="12">
@@ -36,6 +41,12 @@
               <span v-else class="closed-state">已关闭</span>
               <span class="work-name">{{i.name}}</span>
               <span class="create-time">创建于 {{i.createtime}}</span>
+              <el-tooltip :content="'已提交人数：'+i.submitcount" placement="top">
+                <span class="submit-count">
+                  <span>{{i.submitcount}}</span>
+                  / {{stuCount}}
+                </span>
+              </el-tooltip>
             </div>
             <div></div>
             <el-row>
@@ -82,7 +93,7 @@
           show-icon
         ></el-alert>
       </transition>
-        <transition name="slow-fade" appear>
+      <transition name="slow-fade" appear>
         <div v-if="courses.length==0||(courses.length!=0&&homeworks.length==0)" class="nodata-tip">
           <svg-icon icon-class="nodata"/>
         </div>
@@ -117,6 +128,7 @@ export default {
       activeName: "1",
       courseId: "",
       courseName: "",
+      stuCount: "",
       suggestName: "",
       timer: null //记录定时器
     };
@@ -129,12 +141,17 @@ export default {
   },
   methods: {
     getWork(courseId) {
+      this.loading = true;
       let obj = {};
       obj = this.courses.find(item => {
         return item.id === courseId; //筛选出匹配课程id的课程
       });
+      if (obj.stucount) {
+        //有可能还没有stucount属性
+        this.stuCount = obj.stucount; //设置当前课程学生数
+      }
       this.courseName = obj.name; //设置对应课程名
-      this.loading = true;
+
       allWorkByCid(courseId)
         .then(res => {
           this.loading = false;
@@ -217,10 +234,15 @@ export default {
     allCourseByTid(this.$store.getters.id)
       .then(res => {
         this.courses = res.data.courses;
-        // if (this.$route.params.courseId) {
-        //   this.courseId = this.$route.params.courseId;
-        //   this.getWork(this.courseId);
-        // }
+        if (this.courseId) {
+          //若还没选课程（cid为空），则不用设置
+          let obj = {};
+          obj = this.courses.find(item => {
+            return item.id === this.courseId; //筛选出匹配课程id的课程
+          });
+          this.stuCount = obj.stucount; //设置当前课程学生人数
+        }
+        // this.$set(this.thisCourse, stucount, obj.stucount);
       })
       .catch(error => {
         // this.loading = false;
@@ -278,6 +300,7 @@ export default {
     min-height: calc(100vh - 200px); // for v-loading
   }
   .panel-title {
+    min-width: 50%;
     .opening-state {
       @include work-state(#67c23a);
     }
@@ -293,6 +316,17 @@ export default {
     .create-time {
       margin-left: 10px;
       color: #c0c4cc;
+    }
+    .submit-count {
+      color: #c0c4cc;
+      float: right;
+      transform: translateX(100%);
+      margin-top: 15px;
+      height: 20px;
+      line-height: 20px;
+      span {
+        color: #79bbff;
+      }
     }
     .el-button {
       float: right;
