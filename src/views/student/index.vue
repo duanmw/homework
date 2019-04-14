@@ -174,12 +174,10 @@ import {
   deleteSC,
   haveOne
 } from "@/api/student";
-import Pagination from "@/components/Pagination"; // Secondary package based on el-pagination
 import { isvalidStudentID } from "@/utils/validate";
 import md5 from "blueimp-md5";
 export default {
   name: "Student",
-  components: { Pagination },
   data() {
     const validateStudentId = (rule, value, callback) => {
       if (value.length == 0) {

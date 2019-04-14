@@ -85,9 +85,10 @@ export function allStudentByCid(cid, start, size) {
     method: 'get'
   })
 }
-// export function allStudentByCid(cid, query) {
-//   return request({
-//     url: '/api/student/allByCid?cid=' + cid + '&start=' + (query.page - 1) + '&size=' + query.limit,
-//     method: 'get'
-//   })
-// }
+
+export function allByPage(start, size) {
+  return request({
+    url: '/api/student/allByPage?start=' + start + '&size=' + size,
+    method: 'get'
+  })
+}

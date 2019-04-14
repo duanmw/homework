@@ -78,10 +78,12 @@ a:hover {
 .app-main {
   min-height: 100%;
 }
+
 //sticky固定吸顶时加上阴影
 .app-main .fixed-bar {
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.1);
 }
+
 .app-container {
   padding: 20px;
 }
@@ -120,4 +122,9 @@ html::-webkit-scrollbar-thumb:hover {
 
 html::-webkit-scrollbar-thumb:active {
   background: rgba(100, 100, 100, 0.7);
+}
+
+//表格单元格里无数据时“暂无”提示
+.null-tip {
+  color: #c0c4cc;
 }

@@ -48,3 +48,10 @@ export function deleteTeacher(teacher) {
     data: qs.stringify(teacher)
   })
 }
+
+export function allByPage(start, size) {
+  return request({
+    url: '/api/teacher/allByPage?start=' + start + '&size=' + size,
+    method: 'get'
+  })
+}

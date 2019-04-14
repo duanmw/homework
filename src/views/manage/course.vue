@@ -24,31 +24,32 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="课程简介" min-width="200" show-overflow-tooltip>
+      <el-table-column align="center" label="课程简介" min-width="120" show-overflow-tooltip>
         <!-- <el-table-column width="120px" align="center" label="班级"> -->
         <template slot-scope="{row}">
           <template v-if="row.edit">
             <el-input v-model="row.info" maxlength="50" class="edit-input" size="small"/>
           </template>
-          <span v-else>{{ row.info? row.info:"暂无简介"}}</span>
+          <span v-else>
+            {{ row.info}}
+            <span v-if="!row.info" class="null-tip">暂无简介</span>
+          </span>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="学生数" prop="stucount" width="70"></el-table-column>
-      <el-table-column align="center" label="作业数" prop="workcount" width="70"></el-table-column>
       <el-table-column align="center" label="创建者" prop="tid">
         <template slot-scope="{row}">
           <el-popover trigger="hover" placement="top">
             <div style="margin-bottom:4px;">邮箱：{{ row.teacher.email }}</div>
             <div>教师：{{ row.teacher.name }}</div>
             <div slot="reference">
-              <el-tag
-                size="medium"
-              >{{ row.teacher.name?row.teacher.name:row.teacher.email}}</el-tag>
+              <el-tag size="medium">{{ row.teacher.name?row.teacher.name:row.teacher.email}}</el-tag>
             </div>
           </el-popover>
         </template>
       </el-table-column>
+      <el-table-column align="center" label="学生数" prop="stucount" width="70"></el-table-column>
+      <el-table-column align="center" label="作业数" prop="workcount" width="70"></el-table-column>
       <el-table-column sortable align="center" label="创建时间" prop="createtime"></el-table-column>
 
       <el-table-column align="center" label="操作" width="190">
@@ -103,25 +104,19 @@
 
 <script>
 import { allByPage, updateCourse, deleteCourse } from "@/api/course";
-import Pagination from "@/components/Pagination"; // Secondary package based on el-pagination
+// import Pagination from "@/components/Pagination"; // Secondary package based on el-pagination
 
 export default {
   name: "CourseManage",
-  components: { Pagination },
+  // components: { Pagination },
   data() {
     return {
-      courseId: "",
-      courseName: "",
       loading: false,
       courses: [],
       total: 0, //数据总条数
       page: 1, //当前第几页（前端从1算起，后端从0算起）
-      limit: 8, //每页条数
-      dialogFormVisible: false
+      limit: 8 //每页条数
     };
-  },
-  watch: {
-    courseId() {}
   },
   methods: {
     handleSizeChange(val) {
@@ -248,6 +243,7 @@ export default {
 
 <style rel="stylesheet/scss" lang="scss" scoped>
 .student-container {
+  //后面将margin: 30px 单独提出到一个公用类
   margin: 30px;
 
   .el-pagination {

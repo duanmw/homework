@@ -153,11 +153,9 @@
 
 <script>
 import { allByPage, updateWork, deleteWork } from "@/api/homework";
-import Pagination from "@/components/Pagination"; // Secondary package based on el-pagination
 
 export default {
   name: "HomeworkManage",
-  components: { Pagination },
   data() {
     return {
       loading: false,
@@ -167,7 +165,6 @@ export default {
       total: 0, //数据总条数
       page: 1, //当前第几页（前端从1算起，后端从0算起）
       limit: 8, //每页条数
-      dialogFormVisible: false
     };
   },
   methods: {
