@@ -3,7 +3,7 @@
     <div class="title-bar">
       <el-row>
         <el-col :xs="24" :sm="12">
-          <router-link :to="{ name: 'Homework', params: { courseId,courseName }}" tag="span">
+          <router-link :to="{ name: routerName, params: { courseId,courseName }}" tag="span">
             <el-button size="small" icon="el-icon-back">返回</el-button>
           </router-link>
           <span class="workname">作业：{{$route.params.wname?$route.params.wname:"无数据，请返回重试！"}}</span>
@@ -59,7 +59,8 @@ export default {
       activeName: "1",
       // worktate: 0,
       isRight: true,
-      workId: ""
+      workId: "",
+      routerName: "Homework"
     };
   },
   methods: {
@@ -100,6 +101,10 @@ export default {
       this.work.id = this.$route.params.wid;
       this.work.name = this.$route.params.wname;
       this.getQuestion();
+    }
+    if (this.$route.params.routerName) {
+      //设置“返回按钮”要返回的路由
+      this.routerName = this.$route.params.routerName;
     }
   }
 };

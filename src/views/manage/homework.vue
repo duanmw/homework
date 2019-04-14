@@ -1,6 +1,7 @@
 <template>
   <div class="student-container">
     <el-table
+      ref="filterTable"
       size="medium"
       v-loading="loading"
       :data="homeworks"
@@ -37,12 +38,8 @@
               {{row.quescount}}
             </el-col>
             <el-col :xs="24" :sm="12">
-              <!-- <router-link
-                :to="{ name: 'Question', params: { wid:row.id,wname:row.name,courseId:row.cid,courseName:row.cname }}"
-                tag="span"
-              >-->
               <router-link
-                :to="{ name: 'Question', params: { wid:row.id,wname:row.name}}"
+                :to="{ name: 'Question', params: { wid:row.id,wname:row.name,routerName:'homeworkManage'}}"
                 tag="span"
               >
                 <el-button size="mini" icon="el-icon-tickets">查看习题</el-button>
@@ -65,8 +62,9 @@
       <el-table-column
         align="center"
         label="所属课程"
-        :filters="[{text: '2016-05-01', value: '2016-05-01'}, {text: '2016-05-04', value: '2016-05-04'}]"
-        :filter-method="filterHandler"
+        prop="course"
+        :filters="filterData"
+        :filter-method="filterCourse"
       >
         <template slot-scope="{row}">
           <el-popover trigger="hover" placement="top">
@@ -79,10 +77,21 @@
       </el-table-column>
 
       <el-table-column align="center" label="已提交/学生数" prop="stucount">
-        <template slot-scope="{row}">{{row.submitcount}}/{{row.stucount}}</template>
+        <template slot-scope="{row}">{{row.submitcount}} / {{row.stucount}}</template>
       </el-table-column>
 
-      <el-table-column align="center" label="作业状态" prop="workcount">
+      <el-table-column
+        align="center"
+        label="作业状态"
+        prop="state"
+        :filters="[{ text: '未开放', value: 1 }, { text: '开放中', value: 2}, { text: '已关闭', value: 0}]"
+        :filter-method="filterState"
+      >
+        <template slot="header" slot-scope="scope">
+          <el-tooltip content="提示：作业状态不会自动刷新" placement="top">
+            <span>作业状态</span>
+          </el-tooltip>
+        </template>
         <template slot-scope="{row}">
           <el-tag v-if="row.state==1" type="warning" size="medium">未开放</el-tag>
           <el-tag v-else-if="row.state==2" type="success" size="medium">开放中</el-tag>
@@ -143,7 +152,7 @@
 </template>
 
 <script>
-import { allByPage, deleteWork } from "@/api/homework";
+import { allByPage, updateWork, deleteWork } from "@/api/homework";
 import Pagination from "@/components/Pagination"; // Secondary package based on el-pagination
 
 export default {
@@ -151,32 +160,32 @@ export default {
   components: { Pagination },
   data() {
     return {
-      courseId: "",
-      courseName: "",
       loading: false,
       homeworks: [],
-      filterData:[],
+      cnameArr: [],//课程名
+      filterData: [],//要筛选的课程名
       total: 0, //数据总条数
       page: 1, //当前第几页（前端从1算起，后端从0算起）
       limit: 8, //每页条数
       dialogFormVisible: false
     };
   },
-  watch: {
-    courseId() {}
-  },
   methods: {
-    filterHandler(value, row, column) {
-      const property = column["property"];
-      return row[property] === value;
+    filterCourse(value, row, column) {
+      return row.course.name === value;
+    },
+    filterState(value, row) {
+      return row.state === value;
     },
     handleSizeChange(val) {
       //改变每页条数
+      this.$refs.filterTable.clearFilter(); //清除过滤器
       this.limit = val;
       this.getHomework();
     },
     handleCurrentChange(val) {
       //改变当前页
+      this.$refs.filterTable.clearFilter(); //清除过滤器
       this.page = val;
       this.getHomework();
     },
@@ -195,8 +204,9 @@ export default {
           this.homeworks = res.data.works;
           this.total = res.data.totalElements; //总条数
 
+          this.cnameArr.splice(0, this.cnameArr.length); //清空数组
+          this.filterData.splice(0, this.filterData.length); //清空数组
           let now = new Date(); //现在时间
-          // this.homeworks = this.homeworks.map(h => {
           this.homeworks.forEach((h, index) => {
             let start = new Date(h.starttime);
             let end = new Date(h.closetime);
@@ -209,9 +219,15 @@ export default {
             }
             this.$set(h, "edit", false); //设置edit属性
             h.originalName = h.name; //  作业名  //暂时只支持改作业名
-            // h.originalInfo = h.info;
-            // return h;
+
             //设置筛选数据
+            if (!this.cnameArr.includes(h.course.name)) {
+              this.cnameArr.push(h.course.name);
+            }
+          });
+
+          this.cnameArr.forEach(item => {
+            this.filterData.push({ text: item, value: item });
           });
         })
         .catch(error => {
@@ -230,18 +246,17 @@ export default {
       row.edit = false;
     },
     confirmEdit(row) {
-      //先判断课程名是否存在，暂时不做
+      //先判断作业名是否存在，暂时不做
       if (row.name.trim() === "") {
-        this.$message.warning("课程名不能为空！");
+        this.$message.warning("作业名不能为空！");
       } else if (row.name.trim().length < 2) {
-        this.$message.warning("课程名不少于2个字符！");
+        this.$message.warning("作业名不少于2个字符！");
       } else {
-        updateHomework(row)
+        updateWork(row)
           .then(res => {
-            this.$message.success("更新成功！");
+            this.$message.success("作业名更新成功！");
             row.edit = false;
             row.originalName = row.name;
-            // row.originalInfo = row.info;
           })
           .catch(error => {
             this.cancelEdit(row); //出现错误就取消编辑
@@ -251,11 +266,7 @@ export default {
     },
     deleteOne(row) {
       this.$confirm(
-        "确定要删除课程（" +
-          row.course.name +
-          "）里的作业（" +
-          row.name +
-          "），不可撤销，是否继续？",
+        "确定要删除作业：" + row.name + "，不可撤销，是否继续？",
         "提示",
         {
           confirmButtonText: "确定",
@@ -265,7 +276,7 @@ export default {
       )
         .then(() => {
           this.loading = true;
-          return deleteHomework(row);
+          return deleteWork(row);
         })
         .then(res => {
           this.$message.success("删除成功！"); //不用设置loading，接下来获取数据有设置loading

@@ -346,17 +346,17 @@ export default {
 </style>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
-@mixin work-state($color) {
-  display: inline-block;
-  font-size: 12px;
-  padding: 0 4px;
-  height: 20px;
-  line-height: 20px;
-  color: $color;
-  border-radius: 4px;
-  border: 1px solid $color;
-  margin-right: 8px;
-}
+// @mixin work-state($color) {
+//   display: inline-block;
+//   font-size: 12px;
+//   padding: 0 4px;
+//   height: 20px;
+//   line-height: 20px;
+//   color: $color;
+//   border-radius: 4px;
+//   border: 1px solid $color;
+//   margin-right: 8px;
+// }
 .work-container {
   margin: 30px;
   .title-bar {
@@ -380,15 +380,15 @@ export default {
     .el-tag{
       margin-right: 6px;
     }
-    .opening-state {
-      @include work-state(#67c23a);
-    }
-    .wait-state {
-      @include work-state(#e6a23c);
-    }
-    .closed-state {
-      @include work-state(#909399);
-    }
+    // .opening-state {
+    //   @include work-state(#67c23a);
+    // }
+    // .wait-state {
+    //   @include work-state(#e6a23c);
+    // }
+    // .closed-state {
+    //   @include work-state(#909399);
+    // }
     .work-name {
       font-size: 14px;
     }
