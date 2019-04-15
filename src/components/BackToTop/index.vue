@@ -90,6 +90,7 @@ export default {
 <style scoped>
   .back-to-ceiling {
     position: fixed;
+    z-index: 1;
     display: inline-block;
     text-align: center;
     cursor: pointer;

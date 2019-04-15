@@ -68,8 +68,10 @@
       >
         <template slot-scope="{row}">
           <el-popover trigger="hover" placement="top">
-            <div style="margin-bottom:4px;">由教师：{{ row.course.teacher.name }} 创建</div>
-            <div style="margin-bottom:4px;">创建于：{{ row.course.createtime }}</div>
+            <div>由教师：{{ row.course.teacher.name }} 创建</div>
+            <div class="split-line"></div>
+            <div>创建于：{{ row.course.createtime }}</div>
+            <div class="split-line"></div>
             <div>教师邮箱：{{ row.course.teacher.email }}</div>
             <div slot="reference">{{ row.course.name}}</div>
           </el-popover>

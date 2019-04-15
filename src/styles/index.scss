@@ -124,7 +124,13 @@ html::-webkit-scrollbar-thumb:active {
   background: rgba(100, 100, 100, 0.7);
 }
 
+.split-line{//虚线分隔线
+  border-top: 1px dashed #E4E7ED;
+  width: 98%;
+  margin: 6px auto;
+}
+
 //表格单元格里无数据时“暂无”提示
 .null-tip {
-  color: #c0c4cc;
+  color: #909399;
 }

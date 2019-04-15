@@ -40,7 +40,8 @@
       <el-table-column align="center" label="创建者" prop="tid">
         <template slot-scope="{row}">
           <el-popover trigger="hover" placement="top">
-            <div style="margin-bottom:4px;">邮箱：{{ row.teacher.email }}</div>
+            <div>邮箱：{{ row.teacher.email }}</div>
+            <div class="split-line"></div>
             <div>教师：{{ row.teacher.name }}</div>
             <div slot="reference">
               <el-tag size="medium">{{ row.teacher.name?row.teacher.name:row.teacher.email}}</el-tag>

@@ -253,7 +253,7 @@
       </el-tab-pane>
       <el-tab-pane name="third">
         <span slot="label">
-          判断题{{dynamicFormThree.questions.length}}
+          判断题
           <transition name="badge-fade" leave-active-class="animated rollOut">
             <span
               v-if="dynamicFormThree.questions.length"
@@ -461,7 +461,7 @@ export default {
           .catch(() => {
             return false;
           });
-      }else{
+      } else {
         this.returnBack();
       }
     },
