@@ -8,7 +8,7 @@ const app = {
       withoutAnimation: false
     },
     device: 'desktop',
-    fixedHeader: localStorage.getItem('fixedHeader')
+    fixedHeader: localStorage.getItem('fixedHeader') ? (!+localStorage.getItem('fixedHeader')) : false// !+'0'为true, !+'1'为false
   },
   mutations: {
     TOGGLE_SIDEBAR: state => {
@@ -33,7 +33,11 @@ const app = {
     },
     TOGGLE_FIXEDHEAD: state => {
       state.fixedHeader = !state.fixedHeader
-      localStorage.setItem('fixedHeader', state.fixedHeader)
+      if (state.fixedHeader) {
+        localStorage.setItem('fixedHeader', 0)// 从localStorage读取值时 !+'0'为true
+      } else {
+        localStorage.setItem('fixedHeader', 1)// !+'1'为false
+      }
     }
   },
   actions: {
