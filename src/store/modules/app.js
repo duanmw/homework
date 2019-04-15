@@ -7,7 +7,8 @@ const app = {
       opened: !+localStorage.getItem('sidebarStatus'),
       withoutAnimation: false
     },
-    device: 'desktop'
+    device: 'desktop',
+    fixedHeader: localStorage.getItem('fixedHeader')
   },
   mutations: {
     TOGGLE_SIDEBAR: state => {
@@ -29,6 +30,10 @@ const app = {
     },
     TOGGLE_DEVICE: (state, device) => {
       state.device = device
+    },
+    TOGGLE_FIXEDHEAD: state => {
+      state.fixedHeader = !state.fixedHeader
+      localStorage.setItem('fixedHeader', state.fixedHeader)
     }
   },
   actions: {
@@ -40,6 +45,9 @@ const app = {
     },
     ToggleDevice({ commit }, device) {
       commit('TOGGLE_DEVICE', device)
+    },
+    ToggleFixedHeader({ commit }) {
+      commit('TOGGLE_FIXEDHEAD')
     }
   }
 }

@@ -8,7 +8,7 @@
     <breadcrumb/>
     <el-dropdown class="avatar-container" :show-timeout="100" @visible-change="changeIcon">
       <div class="avatar-wrapper">
-        <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar">
+        <img @dblclick="handleFixed" :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar">
         <span class="username" v-if="name!='null'">&nbsp;{{name}}</span>
         <span class="username" v-else>&nbsp;{{email}}</span>
         <span class="username" ><i :class="dropdownIcon"/></span>
@@ -72,6 +72,9 @@ export default {
       this.$store.dispatch("FedLogOut").then(() => {
         location.reload(); // 为了重新实例化vue-router对象 避免bug
       });
+    },
+    handleFixed(){
+      this.$store.dispatch('ToggleFixedHeader')
     }
   }
 };
