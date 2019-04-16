@@ -18,7 +18,8 @@ const user = {
     name: '',
     number: '',
     email: '',
-    avatar: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif', // 暂时写死
+    // avatar: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif', // 暂时写死
+    avatar: 'src/assets/img/student.png', // 暂时写死
     roles: []
   },
 

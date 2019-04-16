@@ -27,10 +27,16 @@ export function getInfo() {
         store.commit('SET_ID', arr[0])
         store.commit('SET_NUMBER', arr[1])
         store.commit('SET_NAME', arr[2])
+        store.commit('SET_AVATAR', 'src/assets/img/student.png')
       } else if (roles.includes('teacher')) {
         store.commit('SET_ID', arr[0])
         store.commit('SET_EMAIL', arr[1])
         store.commit('SET_NAME', arr[2])
+        if (roles.includes('admin')) {
+          store.commit('SET_AVATAR', 'src/assets/img/admin2.png')
+        } else {
+          store.commit('SET_AVATAR', 'src/assets/img/teacher.png')
+        }
       }
     }
     return true

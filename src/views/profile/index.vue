@@ -6,7 +6,7 @@
     <el-row>
       <el-col :xs="24" :sm="4" :md="4">
         <div class="left-wrapper">
-          <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar">
+          <img :src="avatar" class="user-avatar">
           <div class="info-text">
             <div
               v-if="roles.includes('admin')"
@@ -16,19 +16,18 @@
             <div
               v-else-if="roles.includes('teacher')"
               class="profile-role"
-              style="color: #64d9d6;border: 2px solid #64d9d6;"
+              style="color: #00cff7;border: 2px solid #00cff7;"
             >教师</div>
             <div
               v-else-if="roles.includes('student')"
               class="profile-role"
-              style="color: #8cc4ff;border: 2px solid #8cc4ff;"
+              style="color: #6AB4FF;border: 2px solid #6AB4FF;"
             >学生</div>
           </div>
         </div>
       </el-col>
       <el-col :xs="24" :sm="12">
-        <div class="info-text">账号：{{ email }}</div>
-
+        <div class="info-text">账号：{{ email?email:number }}</div>
         <div class="info-text">
           用户名：
           <template v-if="edit">
@@ -66,6 +65,7 @@
             @click="cancelEdit()"
           >取消</el-button>
         </div>
+        <div v-if="number" class="info-text">班级：{{ classname }}</div>
         <el-button size="medium" @click="dialogFormVisible = true" plain type="primary">修改密码</el-button>
       </el-col>
     </el-row>
@@ -99,11 +99,12 @@
 <script>
 import { mapGetters } from "vuex";
 import { updateName, rightOldPwd, updatePwd } from "@/api/teacher";
+import { getOneStudent } from "@/api/student";
+
 import md5 from "blueimp-md5";
 import store from "@/store";
 export default {
   name: "Profile",
-  components: {},
   data() {
     const validatePass = (rule, value, callback) => {
       if (value.length == 0) {
@@ -127,6 +128,7 @@ export default {
       loading: false,
       edit: false,
       dialogFormVisible: false,
+      classname: "", //若为学生，则有班级名
       form: {
         name: this.name,
         oldPwd: "",
@@ -222,6 +224,17 @@ export default {
             });
         }
       });
+    }
+  },
+  created() {
+    if (this.number) {
+      getOneStudent(this.id)
+        .then(res => {
+          this.classname = res.data.student.classname;
+        })
+        .catch(err => {
+          this.$message.error(err + " 数据获取失败");
+        });
     }
   }
 };

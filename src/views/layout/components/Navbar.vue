@@ -8,16 +8,17 @@
     <breadcrumb/>
     <el-dropdown class="avatar-container" :show-timeout="100" @visible-change="changeIcon">
       <div class="avatar-wrapper">
-        <img @dblclick="handleFixed" :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar">
-        <span class="username" v-if="name!='null'">&nbsp;{{name}}</span>
-        <span class="username" v-else>&nbsp;{{email}}</span>
+        <img @dblclick="handleFixed" :src="avatar" class="user-avatar">
+        <span class="username" v-if="email">&nbsp;{{email}}</span>
+        <span class="username" v-else-if="number">&nbsp;{{number}}</span>
+        <span class="username" v-else>&nbsp;{{name}}</span>
         <span class="username" ><i :class="dropdownIcon"/></span>
         
       </div>
       <el-dropdown-menu slot="dropdown" class="user-dropdown">
         <el-dropdown-item disabled>
           <div v-if="roles.includes('admin')" class="role" style="color: #FEDB25;border: 2px solid #FEDB25;">管理员</div>
-          <div v-else-if="roles.includes('teacher')" class="role" style="color: #64d9d6;border: 2px solid #64d9d6;">教师</div>
+          <div v-else-if="roles.includes('teacher')" class="role" style="color: #00cff7;border: 2px solid #00cff7;">教师</div>
           <div v-else-if="roles.includes('student')" class="role" style="color: #8cc4ff;border: 2px solid #8cc4ff;">学生</div>
           <div class="dropdown-username">{{name}}</div>
         </el-dropdown-item>
@@ -52,7 +53,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(["name", "email", "sidebar", "avatar", "roles"])
+    ...mapGetters(["name", "email", "number", "sidebar", "avatar", "roles"])
   },
   methods: {
     toggleSideBar() {
@@ -123,19 +124,19 @@ export default {
     right: 35px;
     .avatar-wrapper {
       cursor: pointer;
-      margin-top: 5px;
+      margin-top: 7px;
       position: relative;
       line-height: initial;
       .user-avatar {
-        width: 40px;
-        height: 40px;
-        border-radius: 20px;
+        width: 36px;
+        height: 36px;
+        border-radius: 18px;
       }
       .username {
         display: inline-block;
         vertical-align: top;
-        height: 40px;
-        line-height: 40px;
+        height: 36px;
+        line-height: 36px;
       }
     }
   }
