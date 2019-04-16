@@ -50,6 +50,13 @@ export function allCourseByTid(tid) {
   })
 }
 
+export function allCourseBySid(sid) {
+  return request({
+    url: '/api/course/allBySid?sid=' + sid,
+    method: 'get'
+  })
+}
+
 export function allByPage(start, size) {
   return request({
     url: '/api/course/allByPage?start=' + start + '&size=' + size,
