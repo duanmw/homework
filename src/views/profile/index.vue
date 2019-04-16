@@ -6,7 +6,7 @@
     <el-row>
       <el-col :xs="24" :sm="4" :md="4">
         <div class="left-wrapper">
-          <img :src="avatar" class="user-avatar">
+          <img @dblclick="handleClick" :src="avatar" class="user-avatar">
           <div class="info-text">
             <div
               v-if="roles.includes('admin')"
@@ -146,6 +146,11 @@ export default {
     ...mapGetters(["id", "avatar", "name", "roles", "email", "number"])
   },
   methods: {
+    handleClick() {
+      if (this.roles.includes("teacher")) {
+        this.$store.dispatch("ToggleTheme");
+      }
+    },
     confirmEdit() {
       if (this.form.name.trim().length <= 0) {
         this.$message.warning("用户名不能为空！");

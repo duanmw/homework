@@ -62,16 +62,54 @@
     }
 
     .el-menu {
-      border: none;
+      // border: none;
       height: 100%;
       width: 100% !important;
     }
 
     // menu hover
+    // .submenu-title-noDropdown,
+    // .el-submenu__title {
+    //   &:hover {
+    //     background-color: $menuHover !important;
+    //   }
+    // }
+
+    // .is-active>.el-submenu__title {
+    //   color: $subMenuActiveText !important;
+    // }
+
+    & .nest-menu .el-submenu>.el-submenu__title,
+    & .el-submenu .el-menu-item {
+      min-width: $sideBarWidth !important;
+      // background-color: $subMenuBg !important;
+
+      // &:hover {
+      //   background-color: $subMenuHover !important;
+      // }
+    }
+  }
+
+  .dark-theme {
+    .el-menu {
+      border: none;
+      background-color: $menuBg;
+
+      .el-menu-item {
+        color: $menuText;
+      }
+    }
+
     .submenu-title-noDropdown,
     .el-submenu__title {
+      color: $menuText;
+
       &:hover {
         background-color: $menuHover !important;
+      }
+
+      &:focus {
+        background-color: $menuBg;
       }
     }
 
@@ -81,11 +119,54 @@
 
     & .nest-menu .el-submenu>.el-submenu__title,
     & .el-submenu .el-menu-item {
-      min-width: $sideBarWidth !important;
       background-color: $subMenuBg !important;
 
       &:hover {
         background-color: $subMenuHover !important;
+      }
+    }
+
+  }
+
+  .light-theme {
+    .sidebar-logo-container{
+      border-right: 1px solid #e6e6e6;
+      background-color: #edf0f5 !important;
+      .sidebar-title{
+        color: #616161;
+      }
+    }
+    .el-menu {
+      background-color: #F5F5F5;
+
+      .el-menu-item {
+        color: #616161;
+      }
+    }
+
+    .submenu-title-noDropdown,
+    .el-submenu__title {
+      color: #616161;
+
+      &:hover {
+        background-color: #E5EAF2 !important;
+      }
+
+      &:focus {
+        background-color: #F5F5F5;
+      }
+    }
+
+    .is-active>.el-submenu__title {
+      color: #414141 !important;
+    }
+
+    & .nest-menu .el-submenu>.el-submenu__title,
+    & .el-submenu .el-menu-item {
+      background-color: #F5F5F5 !important;
+
+      &:hover {
+        background-color: #E5EAF2 !important;
       }
     }
   }
@@ -109,6 +190,7 @@
 
       .el-tooltip {
         padding: 0 !important;
+
         .svg-icon {
           margin-left: 20px;
         }
@@ -120,6 +202,7 @@
 
       &>.el-submenu__title {
         padding: 0 !important;
+
         .svg-icon {
           margin-left: 20px;
         }
@@ -181,6 +264,10 @@
 // when menu collapsed
 .el-menu--vertical {
   &>.el-menu {
+    background-color: $menuBg;
+    .el-menu-item {
+      color: $menuText;
+    }
     .svg-icon {
       margin-right: 16px;
     }

@@ -8,7 +8,8 @@ const app = {
       withoutAnimation: false
     },
     device: 'desktop',
-    fixedHeader: localStorage.getItem('fixedHeader') ? (!+localStorage.getItem('fixedHeader')) : false// !+'0'为true, !+'1'为false
+    fixedHeader: localStorage.getItem('fixedHeader') ? (!+localStorage.getItem('fixedHeader')) : false, // fixedHeader默认false !+'0'为true, !+'1'为false
+    darkTheme: !+localStorage.getItem('darkTheme')// darkTheme默认true. !+'0'为true, !+'1'为false
   },
   mutations: {
     TOGGLE_SIDEBAR: state => {
@@ -38,6 +39,14 @@ const app = {
       } else {
         localStorage.setItem('fixedHeader', 1)// !+'1'为false
       }
+    },
+    TOGGLE_THEME: state => {
+      state.darkTheme = !state.darkTheme
+      if (state.darkTheme) {
+        localStorage.setItem('darkTheme', 0)// 从localStorage读取值时!+'0'为true
+      } else {
+        localStorage.setItem('darkTheme', 1)//  !+'1'为false
+      }
     }
   },
   actions: {
@@ -52,6 +61,9 @@ const app = {
     },
     ToggleFixedHeader({ commit }) {
       commit('TOGGLE_FIXEDHEAD')
+    },
+    ToggleTheme({ commit }) {
+      commit('TOGGLE_THEME')
     }
   }
 }
