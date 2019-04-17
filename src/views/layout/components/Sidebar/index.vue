@@ -5,6 +5,8 @@
       <el-menu
         :default-active="$route.path"
         :collapse="isCollapse"
+        :text-color="isDark?variables.menuText:'#616161'"
+        :background-color="isDark?variables.menuBg:'#F5F5F5'"
         :active-text-color="variables.menuActiveText"
         :collapse-transition="false"
         mode="vertical"
