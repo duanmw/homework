@@ -1,8 +1,11 @@
 <template>
   <div class="course-container" v-loading="loading">
+    <!-- <transition enter-active-class="animated zoomInUp" :duration="{ leave: 0 }" appear>
+      <el-alert v-if="courses.length!=0" title="你有作业未提交" type="warning" center show-icon></el-alert>
+    </transition>-->
     <h3>我的课程</h3>
     <div class="course">
-      <el-row :gutter="24">
+      <el-row :gutter="30">
         <!-- <transition-group enter-active-class="animated fadeInDown" tag="div" appear> -->
         <transition-group name="fade-up" tag="div" appear>
           <el-col
@@ -11,26 +14,13 @@
             :key="'cou'+index"
             :xs="24"
             :sm="12"
-            :md="8"
           >
-            <courseCard
-              @after-update="afterUpdate"
-              @before-delete="loading=true"
-              @after-delete="afterDelete"
-              :index="index"
-              :key="index"
-              :courseData="course"
-            ></courseCard>
-          </el-col>
-          <el-col key="addC" :xs="24" :sm="12" :md="8">
-            <el-card shadow="hover" header="暂无课程">
-             
-            </el-card>
+            <router-link :to="{ name: 'StuHomework', params: { cid:course.id, cname:course.name }}" tag="a">
+              <courseCard :index="index" :key="index" :courseData="course"></courseCard>
+            </router-link>
           </el-col>
         </transition-group>
       </el-row>
-      <!-- <FormDialog :dialogFormVisible="false"></FormDialog> -->
-     
     </div>
   </div>
 </template>
@@ -38,141 +28,49 @@
 <script>
 import { mapGetters } from "vuex";
 import CourseCard from "./CourseCard";
-import { isExist, addCourse, allCourseByTid } from "@/api/course";
+import { allCourseBySid } from "@/api/course";
 
-// import FormDialog from "./FormDialog";
 export default {
-  name: "Course",
+  name: "Home",
   components: {
     CourseCard
   },
   data() {
     return {
-      noshow: false,
       loading: false,
-      dialogFormVisible: false,
-      form: {
-        name: "",
-        info: ""
-      },
-      rules: {
-        name: [
-          { required: true, message: "课程名不能为空", trigger: "blur" },
-          {
-            min: 2,
-            max: 20,
-            message: "课程名长度在 2 到 20 个字符",
-            trigger: "blur"
-          }
-        ]
-      },
       courses: []
     };
   },
-  computed: {
-    ...mapGetters(["name", "roles", "email", "number"])
-  },
-  methods: {
-    handleAdd() {
-      this.$refs.addCourseForm.validate(valid => {
-        if (valid) {
-          isExist(this.$store.getters.id, this.form.name)
-            .then(res => {
-              if (res.message == "true") {
-                return Promise.reject("exist");
-              } else {
-                this.dialogFormVisible = false;
-                this.loading = true;
-                return addCourse(
-                  this.$store.getters.id,
-                  this.form.name,
-                  this.form.info
-                );
-              }
-            })
-            .then(res => {
-              return allCourseByTid(this.$store.getters.id);
-            })
-            .then(res => {
-              this.courses = res.data.courses;
-              // console.log(this.courses);
-              this.loading = false;
-              this.$message.success("添加成功！"); //添加成功！
-            })
-            .catch(error => {
-              this.loading = false;
-              if (error == "exist") {
-                this.$message.warning("此课程名已存在！请更换");
-              } else {
-                this.$message.error(error + " 添加失败！");
-              }
-            });
-        } else {
-          console.log("error submit!!");
-          return false;
-        }
-      });
-    },
-    handleClose() {
-      // 每次关闭，移除校验结果，以免下一次打开仍显示
-      // this.$refs.addCourseForm.clearValidate();
-      //移除校验结果并重置表单为初始值
-      this.$refs.addCourseForm.resetFields();
-    },
-    afterUpdate(val) {
-      this.courses[val.index].name = val.data.name;
-      this.courses[val.index].info = val.data.info;
-    },
-    afterDelete(index) {
-      this.loading = false;
-      if (index) {
-        this.courses.splice(index, 1); //删除一个
-        this.$message.success("删除成功！"); //删除成功！
-      }
-    }
-  },
+  // computed: {
+  //   ...mapGetters(["name", "roles", "email", "number"])
+  // },
+  methods: {},
   created() {
-    // allCourseByTid(this.$store.getters.id)
-    //   .then(res => {
-    //     this.courses = res.data.courses;
-    //     console.log(this.courses);
-    //     // this.loading = false;
-    //     // this.$message.success("添加成功!");
-    //   })
-    //   .catch(error => {
-    //     // this.loading = false;
-    //     this.$message.error(error + " 数据获取失败");
-    //   });
+    this.loading = true;
+    allCourseBySid(this.$store.getters.id)
+      .then(res => {
+        this.courses = res.data.courses;
+        this.loading = false;
+      })
+      .catch(error => {
+        this.loading = false;
+        this.$message.error(error + " 数据获取失败");
+      });
   }
 };
 </script>
 <style lang="scss">
-
 </style>
 <style rel="stylesheet/scss" lang="scss" scoped>
 .course-container {
+  min-height: calc(100vh - 200px); // for v-loading
   margin: 30px;
+  // h3 {
+  //   color: #303133;
+  // }
   .el-col {
     margin-bottom: 24px;
     transition: all 0.7s; //进入离开过渡动画均有效，在.fade-up-move设置进入无动画
-  }
-  .el-card {
-    border: 1px solid #dbdfe6;
-    background-color: #fcfeff;
-  }
-  .add-course {
-    color: #666666;
-    text-align: center;
-    font-size: 26px;
-    line-height: 70px;
-    height: 72px;
-    &:hover {
-      color: #409eff;
-      cursor: pointer;
-    }
-    &:active {
-      color: #3a8ee6;
-    }
   }
 }
 </style>

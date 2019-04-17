@@ -231,11 +231,6 @@ export default {
     margin-bottom: -4px;
     width: calc(100% - 60px);
     display: inline-block;
-    .title-icon {
-      margin-left: -1px;
-      margin-right: 8px;
-      color: #409eff;
-    }
   }
   .el-dropdown {
     right: -8px;

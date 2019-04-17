@@ -51,7 +51,6 @@
                 </span>
               </el-tooltip>
             </div>
-            <div></div>
             <el-row>
               <el-col :xs="24" :sm="12">
                 <span class="label-text">开始时间：</span>
@@ -336,27 +335,10 @@ export default {
       }
     }
   }
-  .my-dialog .el-dialog__body {
-    padding: 20px;
-  }
-  .el-date-editor.el-input {
-    width: 100%;
-  }
 }
 </style>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
-// @mixin work-state($color) {
-//   display: inline-block;
-//   font-size: 12px;
-//   padding: 0 4px;
-//   height: 20px;
-//   line-height: 20px;
-//   color: $color;
-//   border-radius: 4px;
-//   border: 1px solid $color;
-//   margin-right: 8px;
-// }
 .work-container {
   margin: 30px;
   .title-bar {
@@ -380,15 +362,6 @@ export default {
     .el-tag{
       margin-right: 6px;
     }
-    // .opening-state {
-    //   @include work-state(#67c23a);
-    // }
-    // .wait-state {
-    //   @include work-state(#e6a23c);
-    // }
-    // .closed-state {
-    //   @include work-state(#909399);
-    // }
     .work-name {
       font-size: 14px;
     }

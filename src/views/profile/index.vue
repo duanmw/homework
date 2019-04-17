@@ -4,7 +4,7 @@
       <div class="info-text">基本信息</div>
     </el-row>
     <el-row>
-      <el-col :xs="24" :sm="4" :md="4">
+      <el-col :xs="24" :sm="4">
         <div class="left-wrapper">
           <img @dblclick="handleClick" :src="avatar" class="user-avatar">
           <div class="info-text">
@@ -26,7 +26,7 @@
           </div>
         </div>
       </el-col>
-      <el-col :xs="24" :sm="12">
+      <el-col :xs="24" :sm="20">
         <div class="info-text">账号：{{ email?email:number }}</div>
         <div class="info-text">
           用户名：

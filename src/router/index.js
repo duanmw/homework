@@ -67,6 +67,15 @@ export const asyncRouterMap = [{
   children: [{
     path: 'home',
     component: () => import('@/views/home/student')
+  },
+  {
+    path: 'homework',
+    name: 'StuHomework',
+    component: () => import('@/views/home/homework'),
+    hidden: true,
+    meta: {
+      title: '作业'
+    }
   }]
 },
 {
@@ -110,7 +119,7 @@ export const asyncRouterMap = [{
     hidden: true,
     meta: {
       title: '添加作业'
-    // icon: 'homework'
+      // icon: 'homework'
     }
   },
   {
@@ -121,7 +130,7 @@ export const asyncRouterMap = [{
     hidden: true,
     meta: {
       title: '作业习题'
-    // icon: 'homework'
+      // icon: 'homework'
     }
   }]
 },
@@ -167,12 +176,13 @@ export const asyncRouterMap = [{
 },
 {
   path: '/manage',
-  redirect: '/manage/course',
+  name: 'Manage',
+  redirect: 'noredirect',//当设置 noredirect 的时候该路由在面包屑导航中不可被点击
   component: Layout,
   meta: {
     roles: ['admin'],
     title: '管理',
-    icon: 'manage1'
+    icon: 'manage'
   },
   children: [{
     path: 'course',
