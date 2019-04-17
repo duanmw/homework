@@ -22,366 +22,370 @@
         </el-row>
       </div>
     </sticky>
-    <el-tabs v-model="activeName" @tab-click="handleClick">
-      <el-tab-pane name="first">
-        <span slot="label">
-          单选题
-          <transition name="badge-fade" leave-active-class="animated rollOut">
-            <span
-              v-if="dynamicFormOne.questions.length"
-              class="little-badge"
-            >{{dynamicFormOne.questions.length}}</span>
-          </transition>
-        </span>
-        <div
-          class="question-box box-type-one"
-          v-for="(question, index) in dynamicFormOne.questions"
-          :key="question.key"
-        >
-          <span class="left-name">{{'单选题 ' + (index+1)}}</span>
-          <div class="right-btn">
-            <el-button
-              size="small"
-              type="primary"
-              plain
-              icon="el-icon-edit"
-              @click.once="question.showDesc=true"
-            >添加解析</el-button>
-            <el-button
-              size="small"
-              type="danger"
-              plain
-              icon="el-icon-delete"
-              @click="removeOne('a',question)"
-            >删除</el-button>
-          </div>
-          <el-input
-            type="textarea"
-            maxlength="300"
-            :autosize="{ minRows: 2, maxRows: 4}"
-            placeholder="请输入题目"
-            v-model="question.title"
-          ></el-input>
-          <el-input
-            v-if="question.showDesc"
-            type="textarea"
-            maxlength="300"
-            :autosize="{ minRows: 1, maxRows: 4}"
-            placeholder="请输入答案解析（选填）"
-            v-model="question.desc"
-          ></el-input>
-          <el-row :gutter="12">
-            <el-col :xs="24" :sm="12">
+    <el-row>
+      <el-col>
+        <el-tabs v-model="activeName">
+          <el-tab-pane name="first">
+            <span slot="label">
+              单选题
+              <transition name="badge-fade" leave-active-class="animated rollOut">
+                <span
+                  v-if="dynamicFormOne.questions.length"
+                  class="little-badge"
+                >{{dynamicFormOne.questions.length}}</span>
+              </transition>
+            </span>
+            <div
+              class="question-box box-type-one"
+              v-for="(question, index) in dynamicFormOne.questions"
+              :key="question.key"
+            >
+              <span class="left-name">{{'单选题 ' + (index+1)}}</span>
+              <div class="right-btn">
+                <el-button
+                  size="small"
+                  type="primary"
+                  plain
+                  icon="el-icon-edit"
+                  @click.once="question.showDesc=true"
+                >添加解析</el-button>
+                <el-button
+                  size="small"
+                  type="danger"
+                  plain
+                  icon="el-icon-delete"
+                  @click="removeOne('a',question)"
+                >删除</el-button>
+              </div>
               <el-input
-                size="medium"
-                clearable
+                type="textarea"
                 maxlength="300"
-                v-model="question.options[0].content"
-                placeholder="选项内容"
+                :autosize="{ minRows: 2, maxRows: 4}"
+                placeholder="请输入题目"
+                v-model="question.title"
               ></el-input>
-              <el-checkbox
-                @click.prevent.native="setOnlyOneCheckbox(question,0)"
-                label="正确选项"
-                v-model="question.options[0].isRight"
-              ></el-checkbox>
-            </el-col>
-            <el-col :xs="24" :sm="12">
               <el-input
-                size="medium"
-                clearable
+                v-if="question.showDesc"
+                type="textarea"
                 maxlength="300"
-                v-model="question.options[1].content"
-                placeholder="选项内容"
+                :autosize="{ minRows: 1, maxRows: 4}"
+                placeholder="请输入答案解析（选填）"
+                v-model="question.desc"
               ></el-input>
-              <el-checkbox
-                @click.prevent.native="setOnlyOneCheckbox(question,1)"
-                label="正确选项"
-                v-model="question.options[1].isRight"
-              ></el-checkbox>
-            </el-col>
-            <el-col :xs="24" :sm="12">
-              <el-input
-                size="medium"
-                clearable
-                maxlength="300"
-                v-model="question.options[2].content"
-                placeholder="选项内容"
-              ></el-input>
-              <el-checkbox
-                @click.prevent.native="setOnlyOneCheckbox(question,2)"
-                label="正确选项"
-                v-model="question.options[2].isRight"
-              ></el-checkbox>
-            </el-col>
-            <el-col :xs="24" :sm="12">
-              <el-input
-                size="medium"
-                clearable
-                maxlength="300"
-                v-model="question.options[3].content"
-                placeholder="选项内容"
-              ></el-input>
-              <el-checkbox
-                @click.prevent.native="setOnlyOneCheckbox(question,3)"
-                label="正确选项"
-                v-model="question.options[3].isRight"
-              ></el-checkbox>
-            </el-col>
-          </el-row>
-        </div>
-        <el-button
-          :disabled="courseName==''"
-          size="medium"
-          type="primary"
-          icon="el-icon-plus"
-          @click="addOneQ('a')"
-        >添加题目</el-button>
-      </el-tab-pane>
-      <el-tab-pane name="second">
-        <span slot="label">
-          多选题
-          <transition name="badge-fade" leave-active-class="animated rollOut">
-            <span
-              v-if="dynamicFormTwo.questions.length"
-              class="little-badge"
-            >{{dynamicFormTwo.questions.length}}</span>
-          </transition>
-        </span>
-        <div
-          class="question-box box-type-two"
-          v-for="(question, index) in dynamicFormTwo.questions"
-          :key="question.key"
-        >
-          <span class="left-name">{{'多选题 ' + (index+1)}}</span>
-          <div class="right-btn">
+              <el-row :gutter="12">
+                <el-col :xs="24" :sm="12">
+                  <el-input
+                    size="medium"
+                    clearable
+                    maxlength="300"
+                    v-model="question.options[0].content"
+                    placeholder="选项内容"
+                  ></el-input>
+                  <el-checkbox
+                    @click.prevent.native="setOnlyOneCheckbox(question,0)"
+                    label="正确选项"
+                    v-model="question.options[0].isRight"
+                  ></el-checkbox>
+                </el-col>
+                <el-col :xs="24" :sm="12">
+                  <el-input
+                    size="medium"
+                    clearable
+                    maxlength="300"
+                    v-model="question.options[1].content"
+                    placeholder="选项内容"
+                  ></el-input>
+                  <el-checkbox
+                    @click.prevent.native="setOnlyOneCheckbox(question,1)"
+                    label="正确选项"
+                    v-model="question.options[1].isRight"
+                  ></el-checkbox>
+                </el-col>
+                <el-col :xs="24" :sm="12">
+                  <el-input
+                    size="medium"
+                    clearable
+                    maxlength="300"
+                    v-model="question.options[2].content"
+                    placeholder="选项内容"
+                  ></el-input>
+                  <el-checkbox
+                    @click.prevent.native="setOnlyOneCheckbox(question,2)"
+                    label="正确选项"
+                    v-model="question.options[2].isRight"
+                  ></el-checkbox>
+                </el-col>
+                <el-col :xs="24" :sm="12">
+                  <el-input
+                    size="medium"
+                    clearable
+                    maxlength="300"
+                    v-model="question.options[3].content"
+                    placeholder="选项内容"
+                  ></el-input>
+                  <el-checkbox
+                    @click.prevent.native="setOnlyOneCheckbox(question,3)"
+                    label="正确选项"
+                    v-model="question.options[3].isRight"
+                  ></el-checkbox>
+                </el-col>
+              </el-row>
+            </div>
             <el-button
-              size="small"
-              type="primary"
-              plain
-              icon="el-icon-edit"
-              @click.once="question.showDesc=true"
-            >添加解析</el-button>
-            <el-button
-              size="small"
-              type="danger"
-              plain
-              icon="el-icon-delete"
-              @click="removeOne('b',question)"
-            >删除</el-button>
-          </div>
-          <el-input
-            type="textarea"
-            maxlength="300"
-            :autosize="{ minRows: 2, maxRows: 4}"
-            placeholder="请输入题目"
-            v-model="question.title"
-          ></el-input>
-          <el-input
-            v-if="question.showDesc"
-            type="textarea"
-            maxlength="300"
-            :autosize="{ minRows: 1, maxRows: 4}"
-            placeholder="请输入答案解析（选填）"
-            v-model="question.desc"
-          ></el-input>
-          <el-row :gutter="12">
-            <el-col :xs="24" :sm="12">
-              <el-input
-                size="medium"
-                clearable
-                maxlength="300"
-                v-model="question.options[0].content"
-                placeholder="选项内容"
-              ></el-input>
-              <el-checkbox
-                @click.prevent.native="setOnlyOneCheckbox(question,0,false)"
-                label="正确选项"
-                v-model="question.options[0].isRight"
-              ></el-checkbox>
-            </el-col>
-            <el-col :xs="24" :sm="12">
-              <el-input
-                size="medium"
-                clearable
-                maxlength="300"
-                v-model="question.options[1].content"
-                placeholder="选项内容"
-              ></el-input>
-              <el-checkbox
-                @click.prevent.native="setOnlyOneCheckbox(question,1,false)"
-                label="正确选项"
-                v-model="question.options[1].isRight"
-              ></el-checkbox>
-            </el-col>
-            <el-col :xs="24" :sm="12">
-              <el-input
-                size="medium"
-                clearable
-                maxlength="300"
-                v-model="question.options[2].content"
-                placeholder="选项内容"
-              ></el-input>
-              <el-checkbox
-                @click.prevent.native="setOnlyOneCheckbox(question,2,false)"
-                label="正确选项"
-                v-model="question.options[2].isRight"
-              ></el-checkbox>
-            </el-col>
-            <el-col :xs="24" :sm="12">
-              <el-input
-                size="medium"
-                clearable
-                maxlength="300"
-                v-model="question.options[3].content"
-                placeholder="选项内容"
-              ></el-input>
-              <el-checkbox
-                @click.prevent.native="setOnlyOneCheckbox(question,3,false)"
-                label="正确选项"
-                v-model="question.options[3].isRight"
-              ></el-checkbox>
-            </el-col>
-          </el-row>
-        </div>
-        <el-button
-          :disabled="courseName==''"
-          size="medium"
-          type="primary"
-          icon="el-icon-plus"
-          @click="addOneQ('b')"
-        >添加题目</el-button>
-      </el-tab-pane>
-      <el-tab-pane name="third">
-        <span slot="label">
-          判断题
-          <transition name="badge-fade" leave-active-class="animated rollOut">
-            <span
-              v-if="dynamicFormThree.questions.length"
-              class="little-badge"
-            >{{dynamicFormThree.questions.length}}</span>
-          </transition>
-        </span>
-        <div
-          class="question-box box-type-three"
-          v-for="(question, index) in dynamicFormThree.questions"
-          :key="question.key"
-        >
-          <span class="left-name">{{'判断题 ' + (index+1)}}</span>
-          <div class="right-btn">
-            <el-button
-              size="small"
-              type="primary"
-              plain
-              icon="el-icon-edit"
-              @click.once="question.showDesc=true"
-            >添加解析</el-button>
-            <el-button
-              size="small"
-              type="danger"
-              plain
-              icon="el-icon-delete"
-              @click="removeOne('c',question)"
-            >删除</el-button>
-          </div>
-          <el-input
-            type="textarea"
-            maxlength="300"
-            :autosize="{ minRows: 1, maxRows: 4}"
-            placeholder="请输入题目"
-            v-model="question.title"
-          ></el-input>
-          <el-input
-            v-if="question.showDesc"
-            type="textarea"
-            maxlength="300"
-            :autosize="{ minRows: 1, maxRows: 4}"
-            placeholder="请输入答案解析（选填）"
-            v-model="question.desc"
-          ></el-input>
-          <div class="radio-group">
-            <el-radio v-model="question.options[0].isRight" :label="true">正确</el-radio>
-            <el-radio v-model="question.options[0].isRight" :label="false">错误</el-radio>
-          </div>
-        </div>
-        <el-button
-          :disabled="courseName==''"
-          size="medium"
-          type="primary"
-          icon="el-icon-plus"
-          @click="addOneQ('c')"
-        >添加题目</el-button>
-      </el-tab-pane>
-      <el-tab-pane name="fourth">
-        <span slot="label">
-          填空题
-          <transition name="badge-fade" leave-active-class="animated rollOut">
-            <span
-              v-if="dynamicFormFour.questions.length"
-              class="little-badge last-badge"
-            >{{dynamicFormFour.questions.length}}</span>
-          </transition>
-        </span>
-        <div
-          class="question-box box-type-four"
-          v-for="(question, index) in dynamicFormFour.questions"
-          :key="question.key"
-        >
-          <span class="left-name">{{'填空题 ' + (index+1)}}</span>
-          <div class="right-btn">
-            <el-button
-              size="small"
-              type="primary"
-              plain
-              icon="el-icon-edit"
-              @click.once="question.showDesc=true"
-            >添加解析</el-button>
-            <el-button
-              size="small"
-              type="danger"
-              plain
-              icon="el-icon-delete"
-              @click="removeOne('d',question)"
-            >删除</el-button>
-          </div>
-          <el-input
-            type="textarea"
-            maxlength="300"
-            :autosize="{ minRows: 2, maxRows: 4}"
-            placeholder="请输入题目"
-            v-model="question.title"
-          ></el-input>
-          <el-input
-            v-if="question.showDesc"
-            type="textarea"
-            maxlength="300"
-            :autosize="{ minRows: 1, maxRows: 4}"
-            placeholder="请输入答案解析（选填）"
-            v-model="question.desc"
-          ></el-input>
-          <div
-            v-for="(item,index) in question.options"
-            :key="question.key+index"
-            class="answer-box"
-          >
-            答案：
-            <el-input
+              :disabled="courseName==''"
               size="medium"
-              clearable
-              maxlength="300"
-              v-model="question.options[index].content"
-              placeholder="请输入空位答案，多个空位的答案请使用空格分隔"
-            ></el-input>
-          </div>
-        </div>
-        <el-button
-          :disabled="courseName==''"
-          size="medium"
-          type="primary"
-          icon="el-icon-plus"
-          @click="addOneQ('d')"
-        >添加题目</el-button>
-      </el-tab-pane>
-    </el-tabs>
+              type="primary"
+              icon="el-icon-plus"
+              @click="addOneQ('a')"
+            >添加题目</el-button>
+          </el-tab-pane>
+          <el-tab-pane name="second">
+            <span slot="label">
+              多选题
+              <transition name="badge-fade" leave-active-class="animated rollOut">
+                <span
+                  v-if="dynamicFormTwo.questions.length"
+                  class="little-badge"
+                >{{dynamicFormTwo.questions.length}}</span>
+              </transition>
+            </span>
+            <div
+              class="question-box box-type-two"
+              v-for="(question, index) in dynamicFormTwo.questions"
+              :key="question.key"
+            >
+              <span class="left-name">{{'多选题 ' + (index+1)}}</span>
+              <div class="right-btn">
+                <el-button
+                  size="small"
+                  type="primary"
+                  plain
+                  icon="el-icon-edit"
+                  @click.once="question.showDesc=true"
+                >添加解析</el-button>
+                <el-button
+                  size="small"
+                  type="danger"
+                  plain
+                  icon="el-icon-delete"
+                  @click="removeOne('b',question)"
+                >删除</el-button>
+              </div>
+              <el-input
+                type="textarea"
+                maxlength="300"
+                :autosize="{ minRows: 2, maxRows: 4}"
+                placeholder="请输入题目"
+                v-model="question.title"
+              ></el-input>
+              <el-input
+                v-if="question.showDesc"
+                type="textarea"
+                maxlength="300"
+                :autosize="{ minRows: 1, maxRows: 4}"
+                placeholder="请输入答案解析（选填）"
+                v-model="question.desc"
+              ></el-input>
+              <el-row :gutter="12">
+                <el-col :xs="24" :sm="12">
+                  <el-input
+                    size="medium"
+                    clearable
+                    maxlength="300"
+                    v-model="question.options[0].content"
+                    placeholder="选项内容"
+                  ></el-input>
+                  <el-checkbox
+                    @click.prevent.native="setOnlyOneCheckbox(question,0,false)"
+                    label="正确选项"
+                    v-model="question.options[0].isRight"
+                  ></el-checkbox>
+                </el-col>
+                <el-col :xs="24" :sm="12">
+                  <el-input
+                    size="medium"
+                    clearable
+                    maxlength="300"
+                    v-model="question.options[1].content"
+                    placeholder="选项内容"
+                  ></el-input>
+                  <el-checkbox
+                    @click.prevent.native="setOnlyOneCheckbox(question,1,false)"
+                    label="正确选项"
+                    v-model="question.options[1].isRight"
+                  ></el-checkbox>
+                </el-col>
+                <el-col :xs="24" :sm="12">
+                  <el-input
+                    size="medium"
+                    clearable
+                    maxlength="300"
+                    v-model="question.options[2].content"
+                    placeholder="选项内容"
+                  ></el-input>
+                  <el-checkbox
+                    @click.prevent.native="setOnlyOneCheckbox(question,2,false)"
+                    label="正确选项"
+                    v-model="question.options[2].isRight"
+                  ></el-checkbox>
+                </el-col>
+                <el-col :xs="24" :sm="12">
+                  <el-input
+                    size="medium"
+                    clearable
+                    maxlength="300"
+                    v-model="question.options[3].content"
+                    placeholder="选项内容"
+                  ></el-input>
+                  <el-checkbox
+                    @click.prevent.native="setOnlyOneCheckbox(question,3,false)"
+                    label="正确选项"
+                    v-model="question.options[3].isRight"
+                  ></el-checkbox>
+                </el-col>
+              </el-row>
+            </div>
+            <el-button
+              :disabled="courseName==''"
+              size="medium"
+              type="primary"
+              icon="el-icon-plus"
+              @click="addOneQ('b')"
+            >添加题目</el-button>
+          </el-tab-pane>
+          <el-tab-pane name="third">
+            <span slot="label">
+              判断题
+              <transition name="badge-fade" leave-active-class="animated rollOut">
+                <span
+                  v-if="dynamicFormThree.questions.length"
+                  class="little-badge"
+                >{{dynamicFormThree.questions.length}}</span>
+              </transition>
+            </span>
+            <div
+              class="question-box box-type-three"
+              v-for="(question, index) in dynamicFormThree.questions"
+              :key="question.key"
+            >
+              <span class="left-name">{{'判断题 ' + (index+1)}}</span>
+              <div class="right-btn">
+                <el-button
+                  size="small"
+                  type="primary"
+                  plain
+                  icon="el-icon-edit"
+                  @click.once="question.showDesc=true"
+                >添加解析</el-button>
+                <el-button
+                  size="small"
+                  type="danger"
+                  plain
+                  icon="el-icon-delete"
+                  @click="removeOne('c',question)"
+                >删除</el-button>
+              </div>
+              <el-input
+                type="textarea"
+                maxlength="300"
+                :autosize="{ minRows: 1, maxRows: 4}"
+                placeholder="请输入题目"
+                v-model="question.title"
+              ></el-input>
+              <el-input
+                v-if="question.showDesc"
+                type="textarea"
+                maxlength="300"
+                :autosize="{ minRows: 1, maxRows: 4}"
+                placeholder="请输入答案解析（选填）"
+                v-model="question.desc"
+              ></el-input>
+              <div class="radio-group">
+                <el-radio v-model="question.options[0].isRight" :label="true">正确</el-radio>
+                <el-radio v-model="question.options[0].isRight" :label="false">错误</el-radio>
+              </div>
+            </div>
+            <el-button
+              :disabled="courseName==''"
+              size="medium"
+              type="primary"
+              icon="el-icon-plus"
+              @click="addOneQ('c')"
+            >添加题目</el-button>
+          </el-tab-pane>
+          <el-tab-pane name="fourth">
+            <span slot="label">
+              填空题
+              <transition name="badge-fade" leave-active-class="animated rollOut">
+                <span
+                  v-if="dynamicFormFour.questions.length"
+                  class="little-badge last-badge"
+                >{{dynamicFormFour.questions.length}}</span>
+              </transition>
+            </span>
+            <div
+              class="question-box box-type-four"
+              v-for="(question, index) in dynamicFormFour.questions"
+              :key="question.key"
+            >
+              <span class="left-name">{{'填空题 ' + (index+1)}}</span>
+              <div class="right-btn">
+                <el-button
+                  size="small"
+                  type="primary"
+                  plain
+                  icon="el-icon-edit"
+                  @click.once="question.showDesc=true"
+                >添加解析</el-button>
+                <el-button
+                  size="small"
+                  type="danger"
+                  plain
+                  icon="el-icon-delete"
+                  @click="removeOne('d',question)"
+                >删除</el-button>
+              </div>
+              <el-input
+                type="textarea"
+                maxlength="300"
+                :autosize="{ minRows: 2, maxRows: 4}"
+                placeholder="请输入题目"
+                v-model="question.title"
+              ></el-input>
+              <el-input
+                v-if="question.showDesc"
+                type="textarea"
+                maxlength="300"
+                :autosize="{ minRows: 1, maxRows: 4}"
+                placeholder="请输入答案解析（选填）"
+                v-model="question.desc"
+              ></el-input>
+              <div
+                v-for="(item,index) in question.options"
+                :key="question.key+index"
+                class="answer-box"
+              >
+                答案：
+                <el-input
+                  size="medium"
+                  clearable
+                  maxlength="300"
+                  v-model="question.options[index].content"
+                  placeholder="请输入空位答案，多个空位的答案请使用空格分隔"
+                ></el-input>
+              </div>
+            </div>
+            <el-button
+              :disabled="courseName==''"
+              size="medium"
+              type="primary"
+              icon="el-icon-plus"
+              @click="addOneQ('d')"
+            >添加题目</el-button>
+          </el-tab-pane>
+        </el-tabs>
+      </el-col>
+    </el-row>
     <add-work-dialog
       @closeDialog="dialogVisible=false"
       @back="returnBack"
@@ -471,9 +475,9 @@ export default {
         params: { courseId: this.courseId, courseName: this.courseName }
       });
     },
-    handleClick(tab, event) {
-      // console.log(tab, event);
-    },
+    // handleClick(tab, event) {
+    //   // console.log(tab, event);
+    // },
     setOnlyOneCheckbox(ques, index, onlyOne = true) {
       if (ques.options[index].content == "") {
         this.$message.warning("请先输入选项内容再设置！");
