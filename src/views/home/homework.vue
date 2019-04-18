@@ -1,65 +1,75 @@
 <template>
   <div class="work-container">
-    <h3>{{courseName}}</h3>
-    <div>{{course.info}}</div>
+    <template v-if="JSON.stringify(course) == '{}'">
+      <transition enter-active-class="animated zoomInUp" appear>
+        <el-alert title="无数据，请返回重试！" type="warning" center show-icon></el-alert>
+      </transition>
+    </template>
+    <template v-else>
+      <div class="cname">
+        {{course.name}}
+        <span>此课程由教师&nbsp;{{course.teacher.name?course.teacher.name:course.teacher.email}} {{course.createtime | substrDate}}创建</span>
+      </div>
+      <div class="info">课程简介：{{course.info?course.info:"暂无"}}</div>
+    </template>
+
     <div class="content-area" v-loading="loading">
-      <el-collapse v-model="activeName">
+      <el-collapse v-if="homeworks.length!=0" v-model="activeName">
         <el-collapse-item v-for="i in homeworks" :key="'work'+i.id" :name="i.id">
           <div slot="title" class="panel-title">
             <el-tag v-if="i.state==1" type="warning" size="small">未开放</el-tag>
             <el-tag v-else-if="i.state==2" type="success" size="small">开放中</el-tag>
             <el-tag v-else type="info" size="small">已关闭</el-tag>
             <span class="work-name">{{i.name}}</span>
-            <span class="create-time">创建于 {{i.createtime}}</span>
-            <el-tooltip :content="'已提交人数：'+i.submitcount" placement="top">
+            <span
+              class="open-time"
+            >开放时间：{{i.starttime | substrDate}}&nbsp;-&nbsp;{{i.closetime | substrDate}}</span>
+            <el-tooltip :content="'得分：'+'666'+' ， 总分：'+i.quescount*2" placement="top">
               <span class="submit-count">
-                <span>{{i.submitcount}}</span>
-                / {{stuCount}}
+                <span>{{666}}</span>
+                / {{i.quescount*2}}
               </span>
             </el-tooltip>
           </div>
           <el-row>
-            <el-col :xs="24" :sm="12">
-              <span class="label-text">开始时间：</span>
-              {{i.starttime}}
-            </el-col>
-            <el-col :xs="24" :sm="12">
-              <span class="label-text">关闭时间：</span>
-              {{i.closetime}}
-            </el-col>
-            <el-col :xs="24" :sm="12">
-              <span class="label-text">关闭后是否显示答案：</span>
-              {{i.showanswer}}
-            </el-col>
-            <el-col :xs="24" :sm="12">
-              <span class="label-text">最大提交次数：</span>
+            <el-col :xs="24" :sm="16">
+              <span class="label-text">允许提交次数：</span>
               {{i.maxsubmit}}
             </el-col>
-            <el-col :xs="24" :sm="12">
+            <el-col :xs="24" :sm="8">
               <span class="label-text">习题数量：</span>
-              {{i.quescount}}&nbsp;&nbsp;&nbsp;
+              {{i.quescount}}
+            </el-col>
+            <el-col :xs="24" :sm="16">
+              <el-popover trigger="hover" placement="right">
+                <!-- <div v-for="i in 4" :key="i"> -->
+                <div v-for="i in 4" :key="i">
+                  第{{i}}次：耗时：{{8}}min，{{ 7777}}分
+                  <div class="split-line"></div>
+                </div>
+
+                <!-- </div> -->
+                <span slot="reference">
+                  <span class="label-text">你已提交次数：</span>
+                  {{3}}
+                </span>
+              </el-popover>
+            </el-col>
+            <el-col :xs="24" :sm="8">
               <router-link
-                :to="{ name: '', params: { wid:i.id,wname:i.name,courseId,courseName }}"
+                v-if="i.state===0"
+                :to="{ name: 'WorkContent', params: { work:i, course}}"
                 tag="span"
               >
-                <el-button size="small" icon="el-icon-tickets">查看习题</el-button>
+                <el-button size="small" type="primary" plain icon="el-icon-tickets">查看作业</el-button>
               </router-link>
-            </el-col>
-            <el-col :xs="24" :sm="12">
-              <el-button size="small" icon="el-icon-view">查看成绩</el-button>
-              <el-button
-                size="small"
-                icon="el-icon-edit"
-                :disabled="!i.state"
-                @click="handleUpdate(i)"
-              >修改设置</el-button>
-              <el-button
-                plain
-                type="danger"
-                size="small"
-                icon="el-icon-delete"
-                @click="handleDelete(i)"
-              >删除作业</el-button>
+              <router-link
+                v-if="i.state===2"
+                :to="{ name: '', params: { wid:i.id,wname:i.name }}"
+                tag="span"
+              >
+                <el-button size="small" type="success" plain icon="el-icon-edit">开始答题</el-button>
+              </router-link>
             </el-col>
           </el-row>
         </el-collapse-item>
@@ -87,8 +97,6 @@ export default {
       course: {},
       homeworks: [],
       activeName: "1",
-      courseId: "",
-      courseName: "",
       stuCount: "",
       timer1: null, //记录定时器(更新作业状态)
       timer2: null //记录定时器（获取作业信息，主要是更新提交人数）
@@ -165,19 +173,18 @@ export default {
     }
   },
   created() {
-    if (this.$route.params.cid && this.$route.params.cname) {
-      this.courseId = this.$route.params.cid;
-      this.courseName = this.$route.params.cname;
+    if (this.$route.params.course) {
+      this.course = this.$route.params.course;
 
-      this.getWork(this.courseId);
-      getOneCourse(this.courseId)
-        .then(res => {
-          this.course = res.data.course;
-        })
-        .catch(error => {
-          // this.loading = false;
-          this.$message.error(error + " 数据获取失败");
-        });
+      this.getWork(this.course.id);
+      // getOneCourse(this.course.id)
+      //   .then(res => {
+      //     this.course = res.data.course;
+      //   })
+      //   .catch(error => {
+      //     // this.loading = false;
+      //     this.$message.error(error + " 数据获取失败");
+      //   });
     }
   },
   mounted() {
@@ -247,6 +254,12 @@ export default {
       .work-name {
         color: #409eff;
       }
+      .submit-count {
+        span {
+          // color: #53a8ff;
+          color: #409eff;
+        }
+      }
     }
   }
 }
@@ -255,8 +268,21 @@ export default {
 <style rel="stylesheet/scss" lang="scss" scoped>
 .work-container {
   margin: 30px;
-  h3 {
-    margin-top: 0;
+  .cname {
+    font-size: 18px;
+    color: #303133;
+
+    span {
+      font-size: 13px;
+      line-height: 20px;
+      color: #C0C4CC;
+      float: right;
+    }
+  }
+  .info {
+    color: #909399;
+    font-size: 13px;
+    margin: 16px 0 20px;
   }
   .content-area {
     min-height: calc(100vh - 200px); // for v-loading
@@ -268,7 +294,7 @@ export default {
     }
   }
   .panel-title {
-    min-width: 50%;
+    min-width: 66.66%;
     .el-tag {
       margin-right: 6px;
     }
@@ -276,7 +302,7 @@ export default {
     .work-name {
       font-size: 14px;
     }
-    .create-time {
+    .open-time {
       margin-left: 10px;
       color: #c0c4cc;
     }
@@ -287,9 +313,10 @@ export default {
       margin-top: 15px;
       height: 20px;
       line-height: 20px;
-      span {
-        color: #53a8ff;
-      }
+      // span {
+      //   // color: #53a8ff;
+      //   // color: #409EFF;
+      // }
     }
     .el-button {
       float: right;

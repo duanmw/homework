@@ -64,6 +64,13 @@ export function allQuestionByWid(wid) {
   })
 }
 
+export function allQuesNoAns(wid) {
+  return request({
+    url: '/api/question/qNoAns?wid=' + wid,
+    method: 'get'
+  })
+}
+
 export function addQuestion(question) {
   return request({
     url: '/api/question/addQuestion',

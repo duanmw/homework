@@ -47,6 +47,15 @@ router.beforeEach((to, from, next) => {
   next()
 })
 
+Vue.filter('substrDate', function(value) { // 全局过滤器，19位日期取前16位
+  if (!value) return ''
+  if (value.length === 19) {
+    return value.substring(0, 16)
+  } else {
+    return value
+  }
+})
+
 new Vue({
   el: '#app',
   router,

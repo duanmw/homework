@@ -71,16 +71,6 @@ export default {
       ]
     };
   },
-  filters: {
-    substrDate(value) {
-      if (!value) return "";
-      if (value.length == 19) {
-        return value.substring(0, 16);
-      } else {
-        return value;
-      }
-    }
-  },
   methods: {
     substrDate(value) {
       if (!value) return "";
@@ -101,7 +91,7 @@ export default {
     background-color: #fcfeff;
     &:hover {
       border-radius: 8px;
-      box-shadow: 0 2px 12px 1px rgba(0, 0, 0, 0.12);
+      box-shadow: 0 2px 10px 1px rgba(0, 0, 0, 0.12);
       .course-name {
         color: #409eff;
         transition: all 0.3s;
@@ -144,7 +134,7 @@ export default {
     .right-body {
       display: inline-block;
       font-size: 14px;
-      color: #444444;
+      color: #666666;
       min-width: 107px;
       width: 39%;
       line-height: 28px;
@@ -156,7 +146,7 @@ export default {
       .item {
         display: block;
         .inner-icon {
-          opacity: 0.8;
+          opacity: 0.7;
         }
       }
     }

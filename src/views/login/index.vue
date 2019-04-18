@@ -16,8 +16,8 @@
             <h3 class="title">vue-admin-template</h3>
             <div style="margin-top: 20px">
               <el-radio-group v-model="loginForm.role">
-                <el-radio-button label="student">学生</el-radio-button>
-                <el-radio-button label="teacher">教师</el-radio-button>
+                <el-radio-button v-waves label="student">学生</el-radio-button>
+                <el-radio-button v-waves label="teacher">教师</el-radio-button>
               </el-radio-group>
             </div>
             <el-form-item v-if="loginForm.role === 'student'" prop="studentId">
@@ -72,7 +72,13 @@
             </el-form-item>
 
             <div class="tips">
-              <router-link v-if="loginForm.role === 'teacher'" to="/register" class="link">无账号？前往注册</router-link>
+              <transition enter-active-class="animated zoomIn" appear>
+                <router-link
+                  v-if="loginForm.role === 'teacher'"
+                  to="/register"
+                  class="link"
+                >无账号？前往注册</router-link>
+              </transition>
             </div>
           </el-form>
           <RegisterForm v-else></RegisterForm>
@@ -89,12 +95,15 @@ import { isvalidStudentID, isvalidEmail } from "@/utils/validate";
 import RegisterForm from "./RegisterForm.vue";
 import Copyright from "@/components/Copyright";
 import particles from "@/utils/particles";
-// import waves from '@/directive/waves/index.js' // 水波纹指令
+import waves from "@/directive/waves/index.js"; // 水波纹指令
 export default {
   name: "Login",
   components: {
     RegisterForm,
     Copyright
+  },
+  directives: {
+    waves
   },
   data() {
     const validateStudentId = (rule, value, callback) => {
@@ -322,7 +331,6 @@ $light_gray: #eee;
   }
   25% {
     background: #0f5867;
-    
   }
   50% {
     // background: #0f5867;
@@ -362,6 +370,11 @@ $light_gray: #eee;
     width: 420px;
     // height: 380px;
     max-width: 100%;
+    .el-radio-group {
+      label {
+        overflow: hidden;
+      }
+    }
   }
 }
 </style>

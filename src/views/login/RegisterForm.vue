@@ -261,6 +261,10 @@ $blue: #409eff;
   background: transparent;
   border-color: $light;
   color: $light;
+  &:hover {
+    color: #b3d8ff;
+    border-color: #b3d8ff;
+  }
 }
 .el-button:active {
   color: $blue;

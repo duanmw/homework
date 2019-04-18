@@ -15,8 +15,8 @@
             :xs="24"
             :sm="12"
           >
-            <router-link :to="{ name: 'StuHomework', params: { cid:course.id, cname:course.name }}" tag="a">
-              <courseCard :index="index" :key="index" :courseData="course"></courseCard>
+            <router-link :to="{ name: 'StuHomework', params: {course, cid:course.id, cname:course.name }}" tag="a">
+              <courseCard v-waves :index="index" :key="index" :courseData="course"></courseCard>
             </router-link>
           </el-col>
         </transition-group>
@@ -29,11 +29,15 @@
 import { mapGetters } from "vuex";
 import CourseCard from "./CourseCard";
 import { allCourseBySid } from "@/api/course";
+import waves from "@/directive/waves/index.js"; // 水波纹指令
 
 export default {
   name: "Home",
   components: {
     CourseCard
+  },
+  directives: {
+    waves
   },
   data() {
     return {

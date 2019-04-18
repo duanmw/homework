@@ -1,19 +1,14 @@
 <template>
   <div class="question-container">
     <div class="title-bar">
-      <el-row>
-        <el-col :xs="24" :sm="12">
-          <router-link :to="{ name: routerName, params: { courseId,courseName }}" tag="span">
-            <el-button size="small" icon="el-icon-back">返回</el-button>
-          </router-link>
-          <span class="workname">作业：{{$route.params.wname?$route.params.wname:"无数据，请返回重试！"}}</span>
-        </el-col>
-        <el-col :xs="24" :sm="12">
-          <el-button size="medium" icon="el-icon-circle-plus-outline">添加习题</el-button>
-          <!-- <el-button size="medium" icon="el-icon-view">查看成绩</el-button> -->
-          <el-button size="medium" icon="el-icon-printer">统计成绩</el-button>
-        </el-col>
-      </el-row>
+      <router-link :to="{ name: 'StuHomework', params: { course}}" tag="span">
+        <el-button size="small" icon="el-icon-back">返回</el-button>
+      </router-link>
+      <span class="workname">作业：{{this.work.name?this.work.name:"无数据，请返回重试！"}}</span>
+      <span class="score">
+        <span>得分：{{this.work.quescount*2}}</span>
+        总分：{{this.work.quescount*2}}
+      </span>
     </div>
     <div class="content-area" v-loading="loading">
       <el-card v-for="(i,index) in questions" :key="'ques'+index" shadow="never">
@@ -45,18 +40,16 @@
   </div>
 </template>
 <script>
-import { getOneCourse } from "@/api/course";
-import { allQuestionByWid } from "@/api/homework";
+import { allQuesNoAns } from "@/api/homework";
 export default {
-  name: "Question",
+  name: "StuQuestion",
   data() {
     return {
       loading: false,
-      courseId: "",
-      courseName: "",
+      course: {},
       work: {},
       questions: [],
-      // worktate: 0,
+      isRight: true,
       workId: "",
       routerName: "Homework"
     };
@@ -78,7 +71,7 @@ export default {
     },
     getQuestion() {
       this.loading = true;
-      allQuestionByWid(this.work.id)
+      allQuesNoAns(this.work.id)
         .then(res => {
           this.loading = false;
           this.questions = res.data.questions;
@@ -91,18 +84,12 @@ export default {
     }
   },
   created() {
-    if (this.$route.params.courseId && this.$route.params.courseName) {
-      this.courseId = this.$route.params.courseId;
-      this.courseName = this.$route.params.courseName;
-    }
-    if (this.$route.params.wid && this.$route.params.wname) {
-      this.work.id = this.$route.params.wid;
-      this.work.name = this.$route.params.wname;
+    if (this.$route.params.work) {
+      this.work = this.$route.params.work;
       this.getQuestion();
     }
-    if (this.$route.params.routerName) {
-      //设置“返回按钮”要返回的路由
-      this.routerName = this.$route.params.routerName;
+    if (this.$route.params.course) {
+      this.course = this.$route.params.course;
     }
   }
 };
@@ -124,6 +111,14 @@ export default {
     .workname {
       vertical-align: middle;
       margin-left: 20px;
+    }
+    .score {
+      float: right;
+      margin-top: 8px;
+      span {
+        margin-right: 16px;
+        color: #67C23A;
+      }
     }
     & > .el-row > .el-col {
       margin-bottom: 8px;

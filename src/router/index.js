@@ -70,13 +70,25 @@ export const asyncRouterMap = [{
   },
   {
     path: 'homework',
+    // redirect: 'noredirect',
     name: 'StuHomework',
     component: () => import('@/views/home/homework'),
     hidden: true,
     meta: {
       title: '作业'
     }
-  }]
+  },
+  {
+    path: 'workcontent',
+    name: 'WorkContent',
+    component: () => import('@/views/home/question'),
+    hidden: true,
+    meta: {
+      title: '作业内容'
+    }
+  }
+
+  ]
 },
 {
   path: '/course',
@@ -177,7 +189,7 @@ export const asyncRouterMap = [{
 {
   path: '/manage',
   name: 'Manage',
-  redirect: 'noredirect',//当设置 noredirect 的时候该路由在面包屑导航中不可被点击
+  redirect: 'noredirect', // 当设置 noredirect 的时候该路由在面包屑导航中不可被点击
   component: Layout,
   meta: {
     roles: ['admin'],
