@@ -41,7 +41,7 @@
               <!-- <span v-else-if="i.state==2" class="opening-state">开放中</span> -->
               <el-tag v-else-if="i.state==2" type="success" size="small">开放中</el-tag>
               <!-- <span v-else class="closed-state">已关闭</span>-->
-              <el-tag v-else type="info" size="small">已关闭</el-tag> 
+              <el-tag v-else type="info" size="small">已关闭</el-tag>
               <span class="work-name">{{i.name}}</span>
               <span class="create-time">创建于 {{i.createtime}}</span>
               <el-tooltip :content="'已提交人数：'+i.submitcount" placement="top">
@@ -61,11 +61,11 @@
                 {{i.closetime}}
               </el-col>
               <el-col :xs="24" :sm="12">
-                <span class="label-text">关闭后是否显示答案：</span>
+                <span class="label-text">作业关闭后答案可见：</span>
                 {{i.showanswer}}
               </el-col>
               <el-col :xs="24" :sm="12">
-                <span class="label-text">最大提交次数：</span>
+                <span class="label-text">允许提交次数：</span>
                 {{i.maxsubmit}}
               </el-col>
               <el-col :xs="24" :sm="12">
@@ -150,9 +150,57 @@ export default {
     };
   },
   watch: {
-    homeworks(newValue) {
+    homeworks(newWork) {
       this.suggestName =
-        this.courseName + "第" + (newValue.length + 1) + "次作业";
+        this.courseName + "第" + (newWork.length + 1) + "次作业";
+    },
+    courseId() {
+      if (this.timer2) {
+        clearInterval(this.timer2); //每次重新选择课程，先清理定时器
+      }
+      let times = 0; //记录次数
+      let getFunc = () => {
+        return allWorkByCid(this.courseId).then(res => {
+          if (this.homeworks.length === res.data.works.length) {
+            //此处暂时仅判断长度，不严谨
+            let clearflag = true; //是否执行定时器的标志,true要清除
+            this.homeworks.forEach((item, index) => {
+              this.$set(item, "submitcount", res.data.works[index].submitcount); //这样改变对象属性值才能触发视图更新
+              if (item.state == 1 || item.state == 2) {
+                //状态为 未开放 或 开放中，则要执行定时器
+                clearflag = false;
+              }
+            });
+            if (clearflag && this.timer2) {
+              clearInterval(this.timer2);
+              console.log("clearflag为true,清除timer2");
+            }
+          }
+        });
+      };
+
+      this.timer2 = setInterval(() => {
+        if (this.homeworks.length > 0) {
+          times++;
+          if (times >= 50) {
+            //如果请求次数到50，变成隔60s请求一次
+            clearInterval(this.timer2); //清除原定时器
+            this.timer2 = setInterval(() => {
+              if (this.homeworks.length > 0) {
+                getFunc().catch(err => {
+                  console.log("timer2(60s)里", err);
+                  clearInterval(this.timer2);
+                });
+              }
+            }, 60 * 1000);
+          }
+          console.log("timer2里发送请求---" + times);
+          getFunc().catch(err => {
+            console.log("timer2里", err);
+            times = 50;
+          });
+        }
+      }, 8 * 1000);
     }
   },
   methods: {
@@ -179,22 +227,29 @@ export default {
           let getState = function() {
             console.log("定时器里getState执行");
             let now = new Date();
+            let clearflag = true; //是否执行定时器的标志,true要清除
             this.homeworks.forEach((item, index) => {
               let start = new Date(item.starttime);
               let end = new Date(item.closetime);
               if (now < start) {
-                // item.state = 1; //1：未开始
+                //1：未开始
                 this.$set(this.homeworks[index], "state", 1); //这样改变对象属性值才能触发视图更新
+                clearflag = false;
               } else if (now >= start && now < end) {
-                // item.state = 2; //2：开放中
+                //2：开放中
                 this.$set(this.homeworks[index], "state", 2);
+                clearflag = false;
               } else {
-                // item.state = 0; //0：已关闭
+                //0：已关闭
                 this.$set(this.homeworks[index], "state", 0);
               }
             });
+            if (clearflag && this.timer1) {
+              clearInterval(this.timer1);
+            }
           }.bind(this); //此处绑定this，到定时器里this就不会被改变了
           getState();
+
           if (this.homeworks.length > 0) {
             this.timer1 = setInterval(getState, 2000);
           }
@@ -265,57 +320,6 @@ export default {
         this.$message.error(error + " 数据获取失败");
       });
   },
-  mounted() {
-    let times = 0; //记录次数
-    this.timer2 = setInterval(() => {
-      if (this.homeworks.length > 0) {
-        times++;
-        if (times >= 50) {
-          //如果请求次数到50，变成隔60s请求一次
-          clearInterval(this.timer2); //清除原定时器
-          this.timer2 = setInterval(() => {
-            if (this.homeworks.length > 0) {
-              allWorkByCid(this.courseId)
-                .then(res => {
-                  if (this.homeworks.length === res.data.works.length) {
-                    //此处暂时仅判断长度，不严谨
-                    this.homeworks.forEach((item, index) => {
-                      this.$set(
-                        item,
-                        "submitcount",
-                        res.data.works[index].submitcount
-                      ); //这样改变对象属性值才能触发视图更新
-                    });
-                  }
-                })
-                .catch(err => {
-                  console.log("timer2(30s)里", err);
-                  clearInterval(this.timer2);
-                });
-            }
-          }, 60 * 1000);
-        }
-        console.log("timer2里发送请求---");
-
-        allWorkByCid(this.courseId)
-          .then(res => {
-            if (this.homeworks.length === res.data.works.length) {
-              this.homeworks.forEach((item, index) => {
-                this.$set(
-                  item,
-                  "submitcount",
-                  res.data.works[index].submitcount
-                ); //这样改变对象属性值才能触发视图更新
-              });
-            }
-          })
-          .catch(err => {
-            console.log("timer2里", err);
-            times = 50;
-          });
-      }
-    }, 8 * 1000);
-  },
   beforeDestroy() {
     clearInterval(this.timer1);
     clearInterval(this.timer2);
@@ -359,7 +363,7 @@ export default {
   }
   .panel-title {
     min-width: 50%;
-    .el-tag{
+    .el-tag {
       margin-right: 6px;
     }
     .work-name {
