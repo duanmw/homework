@@ -15,7 +15,7 @@
             :xs="24"
             :sm="12"
           >
-            <router-link :to="{ name: 'StuHomework', params: {course, cid:course.id, cname:course.name }}" tag="a">
+            <router-link :to="{ name: 'StuHomework', params: {course }}" tag="a">
               <courseCard v-waves :index="index" :key="index" :courseData="course"></courseCard>
             </router-link>
           </el-col>

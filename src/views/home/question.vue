@@ -1,14 +1,30 @@
 <template>
   <div class="question-container">
     <div class="title-bar">
-      <router-link :to="{ name: 'StuHomework', params: { course}}" tag="span">
-        <el-button size="small" icon="el-icon-back">返回</el-button>
-      </router-link>
-      <span class="workname">作业：{{this.work.name?this.work.name:"无数据，请返回重试！"}}</span>
-      <span class="score">
-        <span>得分：{{this.work.quescount*2}}</span>
-        总分：{{this.work.quescount*2}}
-      </span>
+      <el-row>
+        <el-col :xs="24" :sm="18">
+          <template v-if="$route.params.work">
+            <router-link :to="{ name: 'StuHomework', params: { course } }" tag="span">
+              <el-button size="small" icon="el-icon-back">返回</el-button>
+            </router-link>
+          </template>
+          <template v-else>
+            <router-link to="/home" tag="span">
+              <el-button size="small" icon="el-icon-back">返回</el-button>
+            </router-link>
+          </template>
+          <span class="workname">作业：{{this.work.name?this.work.name:"无数据，请返回重试！"}}</span>
+          <span v-if="this.work.showanswer==='no'" class="showans">
+            <svg-icon icon-class="cannotsee"/>答案不可见
+          </span>
+        </el-col>
+        <el-col :xs="24" :sm="6">
+          <span class="score">
+            <span>成绩：{{this.work.maxscore?this.work.maxscore:0}}</span>
+            总分：{{this.work.quescount*2}}
+          </span>
+        </el-col>
+      </el-row>
     </div>
     <div class="content-area" v-loading="loading">
       <el-card v-for="(i,index) in questions" :key="'ques'+index" shadow="never">
@@ -40,7 +56,7 @@
   </div>
 </template>
 <script>
-import { allQuesNoAns } from "@/api/homework";
+import { allQuestionByWid } from "@/api/homework";
 export default {
   name: "StuQuestion",
   data() {
@@ -71,11 +87,10 @@ export default {
     },
     getQuestion() {
       this.loading = true;
-      allQuesNoAns(this.work.id)
+      allQuestionByWid(this.work.id)
         .then(res => {
           this.loading = false;
           this.questions = res.data.questions;
-          // console.log(this.homework);
         })
         .catch(error => {
           this.loading = false;
@@ -86,7 +101,7 @@ export default {
   created() {
     if (this.$route.params.work) {
       this.work = this.$route.params.work;
-      this.getQuestion();
+      this.getQuestion(); 
     }
     if (this.$route.params.course) {
       this.course = this.$route.params.course;
@@ -112,24 +127,26 @@ export default {
       vertical-align: middle;
       margin-left: 20px;
     }
+    .showans {
+      font-size: 14px;
+      vertical-align: middle;
+      margin-left: 10px;
+      color: #909399;
+    }
     .score {
       float: right;
       margin-top: 8px;
       span {
         margin-right: 16px;
-        color: #67C23A;
+        color: #67c23a;
       }
-    }
-    & > .el-row > .el-col {
-      margin-bottom: 8px;
     }
   }
   .content-area {
-    min-height: calc(100vh - 140px); // for v-loading
+    min-height: calc(100vh - 150px); // for v-loading
   }
   .el-card {
     margin-bottom: 10px;
-
     .ques-title {
       font-size: 15px;
       padding-bottom: 12px;

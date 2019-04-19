@@ -43,9 +43,23 @@ export function deleteWork(homework) {
   })
 }
 
+export function oneWork(wid) {
+  return request({
+    url: '/api/work/oneWork?id=' + wid,
+    method: 'get'
+  })
+}
+
 export function allWorkByCid(cid) {
   return request({
     url: '/api/work/allByCid?cid=' + cid,
+    method: 'get'
+  })
+}
+
+export function workAndScore(cid, sid) {
+  return request({
+    url: '/api/work/workAndScore?cid=' + cid + '&sid=' + sid,
     method: 'get'
   })
 }
@@ -60,13 +74,6 @@ export function allByPage(start, size) {
 export function allQuestionByWid(wid) {
   return request({
     url: '/api/question/allByWid?wid=' + wid,
-    method: 'get'
-  })
-}
-
-export function allQuesNoAns(wid) {
-  return request({
-    url: '/api/question/qNoAns?wid=' + wid,
     method: 'get'
   })
 }

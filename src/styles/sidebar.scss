@@ -104,13 +104,14 @@
     .el-submenu__title {
       color: $menuText;
 
+      &:focus {
+        background-color: $menuBg;
+      }
+
       &:hover {
         background-color: $menuHover !important;
       }
 
-      &:focus {
-        background-color: $menuBg;
-      }
     }
 
     .is-active>.el-submenu__title {
@@ -129,13 +130,15 @@
   }
 
   .light-theme {
-    .sidebar-logo-container{
+    .sidebar-logo-container {
       border-right: 1px solid #e6e6e6;
       background-color: #edf0f5 !important;
-      .sidebar-title{
+
+      .sidebar-title {
         color: #616161;
       }
     }
+
     .el-menu {
       background-color: #F5F5F5;
 
@@ -148,12 +151,12 @@
     .el-submenu__title {
       color: #616161;
 
-      &:hover {
-        background-color: #E5EAF2 !important;
+      &:focus {
+        background-color: #F5F5F5 !important; //!important: fix wrong bgcolor when change chrome-tabs
       }
 
-      &:focus {
-        background-color: #F5F5F5;
+      &:hover {
+        background-color: #E5EAF2 !important;
       }
     }
 
@@ -265,9 +268,11 @@
 .el-menu--vertical {
   &>.el-menu {
     background-color: $menuBg;
+
     .el-menu-item {
       color: $menuText;
     }
+
     .svg-icon {
       margin-right: 16px;
     }
