@@ -23,8 +23,13 @@
             ></courseCard>
           </el-col>
           <el-col key="addC" :xs="24" :sm="12" :md="8">
-            <el-card shadow="hover" header="添加课程">
-              <div class="add-course" @click="dialogFormVisible = true">
+            <el-card
+              shadow="hover"
+              header="添加课程"
+              class="add-card"
+              @click.native="dialogFormVisible = true"
+            >
+              <div class="add-course">
                 <i class="el-icon-circle-plus-outline"></i>
               </div>
             </el-card>
@@ -58,7 +63,7 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+// import { mapGetters } from "vuex";
 import CourseCard from "./CourseCard";
 import { isExist, addCourse, allCourseByTid } from "@/api/course";
 
@@ -91,9 +96,9 @@ export default {
       courses: []
     };
   },
-  computed: {
-    ...mapGetters(["name", "roles", "email", "number"])
-  },
+  // computed: {
+  //   ...mapGetters(["name", "roles", "email", "number"])
+  // },
   methods: {
     handleAdd() {
       this.$refs.addCourseForm.validate(valid => {
@@ -168,8 +173,7 @@ export default {
   }
 };
 </script>
-<style lang="scss">
-</style>
+
 <style rel="stylesheet/scss" lang="scss" scoped>
 .course-container {
   margin: 30px;
@@ -181,18 +185,27 @@ export default {
     border: 1px solid #dbdfe6;
     background-color: #fcfeff;
   }
-  .add-course {
-    color: #666666;
-    text-align: center;
-    font-size: 26px;
-    line-height: 70px;
-    height: 72px;
+  .add-card {
+    .add-course {
+      color: #666666;
+      text-align: center;
+      font-size: 26px;
+      line-height: 70px;
+      height: 72px;
+      transform: perspective(1px) translateZ(0);
+      transition-duration: 0.5s;
+    }
     &:hover {
       color: #409eff;
       cursor: pointer;
-    }
-    &:active {
-      color: #3a8ee6;
+      .add-course {
+        color: #409eff;
+        transform: scale(1.2);
+        transition-timing-function: cubic-bezier(0.47, 2.02, 0.31, -0.36);
+        &:active {
+          color: #3a8ee6;
+        }
+      }
     }
   }
 }
