@@ -15,7 +15,7 @@
       <el-form-item label="开放时间：" prop="starttime">
         <el-date-picker
           v-model="form.starttime"
-          :readonly="form.opening"
+          :readonly="state!=1"
           type="datetime"
           placeholder="选择日期时间"
           :picker-options="pickerOptions0"
@@ -121,6 +121,9 @@ export default {
       set(newVal) {
         this.$emit("closeDialog", newVal);
       }
+    },
+    state(){
+      return this.homework.state//1未开放，2开放中，0已关闭
     }
   },
   watch: {
@@ -137,21 +140,8 @@ export default {
           this.form.showanswer = false;
         }
 
-        // this.form.starttime=new Date(this.form.starttime)
-        // this.form.closetime=new Date(this.form.closetime)
-
-        if (new Date() < new Date(this.homework.starttime)) {
-          //作业还未开放
-          this.form.opening = false;
-        } else {
-          //作业开放中（已关闭情况不用考虑，因为禁用了按钮）
-          this.form.opening = true;
-        }
       }
     },
-    homework(val) {
-      
-    }
   },
   methods: {
     handleClose() {
