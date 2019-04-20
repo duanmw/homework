@@ -26,17 +26,26 @@ export const constantRouterMap = [{
   path: '/login',
   name: 'login',
   component: () => import('@/views/login/index'),
-  hidden: true
+  hidden: true,
+  meta: {
+    title: '登录'
+  }
 },
 {
   path: '/register',
   component: () => import('@/views/login/index'),
-  hidden: true
+  hidden: true,
+  meta: {
+    title: '注册'
+  }
 },
 {
   path: '/404',
   component: () => import('@/views/404'),
-  hidden: true
+  hidden: true,
+  meta: {
+    title: '404'
+  }
 }
 ]
 export const asyncRouterMap = [{
@@ -51,7 +60,10 @@ export const asyncRouterMap = [{
   },
   children: [{
     path: 'home',
-    component: () => import('@/views/home/teacher')
+    component: () => import('@/views/home/teacher'),
+    meta: {
+      title: '首页'
+    }
   }]
 },
 {
@@ -66,28 +78,50 @@ export const asyncRouterMap = [{
   },
   children: [{
     path: 'home',
-    component: () => import('@/views/home/student')
+    component: () => import('@/views/home/student/index'),
+    meta: {
+      title: '首页'
+    }
   },
   {
     path: 'homework',
-    // redirect: 'noredirect',
-    name: 'StuHomework',
-    component: () => import('@/views/home/homework'),
+    name: 'WorkView',
+    redirect: 'noredirect',
+    component: () => import('@/views/home/student/view'),
     hidden: true,
     meta: {
       title: '作业'
-    }
-  },
-  {
-    path: 'workcontent',
-    name: 'WorkContent',
-    component: () => import('@/views/home/question'),
-    hidden: true,
-    meta: {
-      title: '作业内容'
-    }
+    },
+    children: [
+      {
+        path: 'index',
+        name: 'StuHomework',
+        component: () => import('@/views/home/student/homework'),
+        hidden: true,
+        meta: {
+          // title: '作业'
+        }
+      },
+      {
+        path: 'workcontent',
+        name: 'WorkContent',
+        component: () => import('@/views/home/student/question'),
+        hidden: true,
+        meta: {
+          title: '作业内容'
+        }
+      },
+      {
+        path: 'dowork',
+        name: 'DoWork',
+        component: () => import('@/views/home/student/dowork'),
+        hidden: true,
+        meta: {
+          title: '答题'
+        }
+      }
+    ]
   }
-
   ]
 },
 {

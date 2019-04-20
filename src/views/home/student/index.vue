@@ -1,9 +1,11 @@
 <template>
   <div class="course-container" v-loading="loading">
-    <!-- <transition enter-active-class="animated zoomInUp" :duration="{ leave: 0 }" appear>
-      <el-alert v-if="courses.length!=0" title="你有作业未提交" type="warning" center show-icon></el-alert>
-    </transition>-->
     <h3>我的课程</h3>
+    <transition name="slow-fade" appear>
+      <div v-if="courses.length==0" class="nodata-tip">
+        <svg-icon icon-class="nodata"/>
+      </div>
+    </transition>
     <div class="course">
       <el-row :gutter="30">
         <!-- <transition-group enter-active-class="animated fadeInDown" tag="div" appear> -->
@@ -26,7 +28,6 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
 import CourseCard from "./CourseCard";
 import { allCourseBySid } from "@/api/course";
 import waves from "@/directive/waves/index.js"; // 水波纹指令
@@ -45,9 +46,6 @@ export default {
       courses: []
     };
   },
-  // computed: {
-  //   ...mapGetters(["name", "roles", "email", "number"])
-  // },
   methods: {},
   created() {
     this.loading = true;

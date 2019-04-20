@@ -4,7 +4,10 @@
       <el-row>
         <el-col :xs="24" :sm="18">
           <template v-if="$route.params.work">
-            <router-link :to="{ name: 'StuHomework', params: { course } }" tag="span">
+            <router-link
+              :to="{ name: 'StuHomework', params: { course,activeName:this.$route.params.activeName } }"
+              tag="span"
+            >
               <el-button size="small" icon="el-icon-back">返回</el-button>
             </router-link>
           </template>
@@ -64,10 +67,7 @@ export default {
       loading: false,
       course: {},
       work: {},
-      questions: [],
-      isRight: true,
-      workId: "",
-      routerName: "Homework"
+      questions: []
     };
   },
   methods: {
@@ -101,7 +101,7 @@ export default {
   created() {
     if (this.$route.params.work) {
       this.work = this.$route.params.work;
-      this.getQuestion(); 
+      this.getQuestion();
     }
     if (this.$route.params.course) {
       this.course = this.$route.params.course;

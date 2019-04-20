@@ -62,24 +62,28 @@
             <el-col :xs="24" :sm="8">
               <router-link
                 v-if="i.state===0"
-                :to="{ name: 'WorkContent', params: { work:i, course}}"
+                :to="{ name: 'WorkContent', params: { work:i, course, activeName}}"
                 tag="span"
               >
                 <el-button size="small" type="primary" plain icon="el-icon-tickets">查看作业</el-button>
               </router-link>
-              <router-link
+
+              <el-button
                 v-if="i.state===2"
-                :to="{ name: '', params: { wid:i.id,wname:i.name }}"
-                tag="span"
-              >
-                <el-button
-                  size="small"
-                  type="success"
-                  plain
-                  icon="el-icon-edit"
-                  @click="handleStart(i)"
-                >开始答题</el-button>
-              </router-link>
+                size="small"
+                type="success"
+                plain
+                icon="el-icon-edit"
+                @click="handleStart(i)"
+              >开始答题</el-button>
+              <el-button
+                v-if="i.state===1"
+                disabled
+                size="small"
+                type="success"
+                plain
+                icon="el-icon-edit"
+              >开始答题</el-button>
             </el-col>
           </el-row>
         </el-collapse-item>
@@ -96,6 +100,7 @@
 
 <script>
 import { oneWork, workAndScore } from "@/api/homework";
+import { getOneCourse } from "@/api/course";
 import waves from "@/directive/waves/index.js"; // 水波纹指令
 export default {
   name: "Homework",
@@ -104,7 +109,7 @@ export default {
       loading: false,
       course: {},
       homeworks: [],
-      activeName: [],
+      activeName: "",
       timer1: null, //记录定时器(更新作业状态)
       timer2: null //记录定时器（更新作业信息，主要是）
     };
@@ -179,24 +184,24 @@ export default {
               work.name +
                 "，即将开始第" +
                 (work.scores.length + 1) +
-                "次答题，答题过程请勿刷新页面，是否继续?",
+                "次答题，答题过程请勿刷新页面，是否立即开始?",
               "提示",
               {
-                confirmButtonText: "确定",
+                confirmButtonText: "开始",
                 cancelButtonText: "取消",
                 type: "warning"
               }
             )
               .then(() => {
-                this.$message({
-                  type: "success",
-                  message: "跳转答题!"
+                this.$router.push({
+                  path: "/homework/dowork",
+                  query: { work: work.id }
                 });
               })
-              .catch(() => {
+              .catch(err => {
                 this.$message({
                   type: "info",
-                  message: "已取消答题"
+                  message: err
                 });
               });
           }
@@ -210,6 +215,10 @@ export default {
       if (this.course.id) {
         this.getWork(this.course.id);
       }
+    }
+
+    if (this.$route.params.activeName) {
+      this.activeName = this.$route.params.activeName;
     }
   },
   mounted() {
@@ -308,15 +317,7 @@ export default {
     margin: 16px 0 20px;
   }
   .content-area {
-    // position: relative;
-    min-height: calc(100vh - 160px); // xxx
-    // .loading-div {
-    //   //for loading
-    //   width: 100%;
-    //   min-height: calc(100vh - 200px);
-    //   position: absolute;
-    //   z-index: -1;
-    // }
+    min-height: calc(100vh - 160px); // for-loading
     .el-col {
       color: #606266;
       .label-text {
