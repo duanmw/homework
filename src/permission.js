@@ -16,6 +16,10 @@ NProgress.configure({
 const whiteList = ['/login', '/register'] // 不重定向白名单
 router.beforeEach((to, from, next) => {
   NProgress.start()
+
+  // set page title
+  document.title = (to.meta.title ? to.meta.title + ' - ' : '') + '作业管理系统'
+
   // if (getToken()) {
   if (sessionStorage.getItem('hmwid')) {
     if (to.path === '/login') {
