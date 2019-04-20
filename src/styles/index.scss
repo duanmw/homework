@@ -75,16 +75,17 @@ a:hover {
 }
 
 //main-container全局样式
-.app-main {
-  min-height: 100%;
-}
+// .app-main {
+//   min-height: 100%;
+// }
 
 //sticky固定吸顶时加上阴影,固定了高度不通用
 .app-main .fixed-bar {
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.1), 0 0 3px 0 rgba(0, 0, 0, 0.04);
   height: 56px !important;
 }
-.app-main .fixed-bar .el-col{
+
+.app-main .fixed-bar .el-col {
   margin-bottom: 0 !important;
 }
 
@@ -114,21 +115,23 @@ html::-webkit-scrollbar {
 html::-webkit-scrollbar-thumb {
   /*滚动条里面小方块*/
   border-radius: 7px;
-  background: rgba(100, 100, 100, 0.3);
+  // background: rgba(100, 100, 100, 0.3);
+  background: rgba(139, 142, 148, 0.3);
   border-right: 1px solid #fcfcfc;
   border-top: 1px solid #fcfcfc;
   border-bottom: 1px solid #fcfcfc;
 }
 
 html::-webkit-scrollbar-thumb:hover {
-  background: rgba(100, 100, 100, 0.5);
+  background: rgba(139, 142, 148, 0.5);
 }
 
 html::-webkit-scrollbar-thumb:active {
-  background: rgba(100, 100, 100, 0.7);
+  background: rgba(139, 142, 148, 0.7);
 }
 
-.split-line{//虚线分隔线
+.split-line {
+  //虚线分隔线
   border-top: 1px dashed #E4E7ED;
   width: 98%;
   margin: 6px auto;

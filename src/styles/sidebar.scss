@@ -28,9 +28,9 @@
     .scrollbar-wrapper {
       overflow-x: hidden !important;
 
-      .el-scrollbar__view {
-        height: 100%;
-      }
+      // .el-scrollbar__view {
+      //   height: 100%;
+      // }
     }
 
     .el-scrollbar__bar.is-vertical {
@@ -91,6 +91,8 @@
   }
 
   .dark-theme {
+    background-color: $menuBg;
+
     .el-menu {
       border: none;
       background-color: $menuBg;
@@ -130,8 +132,10 @@
   }
 
   .light-theme {
+    background-color: #F5F5F5;
+    border-right: 1px solid #e6e6e6;
+
     .sidebar-logo-container {
-      border-right: 1px solid #e6e6e6;
       background-color: #edf0f5 !important;
 
       .sidebar-title {
@@ -140,6 +144,7 @@
     }
 
     .el-menu {
+      border: none;
       background-color: #F5F5F5;
 
       .el-menu-item {
