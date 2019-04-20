@@ -21,11 +21,14 @@
         </el-col>
         <el-col :xs="24" :sm="12">
           <router-link
+            v-if="courseId"
             :to="{ name: 'addHomework', params: { courseId,courseName,suggestName}}"
             tag="span"
           >
-            <el-button :disabled="!courseId" size="medium" icon="el-icon-circle-plus-outline">添加作业</el-button>
+            <el-button size="medium" icon="el-icon-circle-plus-outline">添加作业</el-button>
           </router-link>
+          <el-button v-else disabled size="medium" icon="el-icon-circle-plus-outline">添加作业</el-button>
+
           <!-- <el-button size="medium" icon="el-icon-view">查看成绩</el-button> -->
           <el-button :disabled="!courseId" size="medium" icon="el-icon-printer">统计成绩</el-button>
         </el-col>
@@ -81,9 +84,9 @@
               <el-col :xs="24" :sm="12">
                 <el-button size="small" icon="el-icon-view">查看成绩</el-button>
                 <el-button
+                  v-if="i.state"
                   size="small"
                   icon="el-icon-edit"
-                  :disabled="!i.state"
                   @click="handleUpdate(i)"
                 >修改设置</el-button>
                 <el-button
