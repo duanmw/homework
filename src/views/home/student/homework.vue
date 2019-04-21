@@ -184,7 +184,7 @@ export default {
               work.name +
                 "，即将开始第" +
                 (work.scores.length + 1) +
-                "次答题，答题过程请勿刷新页面，是否立即开始?",
+                "次答题，答题过程请勿刷新页面！！！ 是否立即开始?",
               "提示",
               {
                 confirmButtonText: "开始",
@@ -194,8 +194,9 @@ export default {
             )
               .then(() => {
                 this.$router.push({
-                  path: "/homework/dowork",
-                  query: { work: work.id }
+                  name: "DoWork",
+                  // query: { work: work.id },
+                  params: { work, course: this.course, activeName: this.activeName }
                 });
               })
               .catch(err => {
