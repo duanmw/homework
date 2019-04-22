@@ -58,7 +58,7 @@
         <el-table-column align="center" label="学号">
           <template slot-scope="{row}">
             <template v-if="row.edit">
-              <el-input v-model="row.number" maxlength="10" class="edit-input" size="small"/>
+              <el-input v-model.trim="row.number" maxlength="10" class="edit-input" size="small"/>
             </template>
             <span v-else>{{ row.number }}</span>
           </template>
@@ -303,6 +303,10 @@ export default {
     confirmEdit(row) {
       // console.log("row", row);
       //先判断学号是否存在，确保唯一性
+      if (!isvalidStudentID(row.number)) {
+        this.$message.warning("请输入10位学号！");
+        return false;
+      }
       isExist(row.number)
         .then(res => {
           if (res.message == "true") {

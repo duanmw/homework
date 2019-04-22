@@ -71,9 +71,16 @@ export function allByPage(start, size) {
   })
 }
 
-export function allQuestionByWid(wid) {
+export function allQByWid1(wid) { // 学生访问，后端会判断是否有答案
   return request({
     url: '/api/question/allByWid?wid=' + wid,
+    method: 'get'
+  })
+}
+
+export function allQByWid2(wid) { // 教师访问,有答案
+  return request({
+    url: '/api/question/allQByWid?wid=' + wid,
     method: 'get'
   })
 }
@@ -103,5 +110,19 @@ export function addAnswer(answer) {
     method: 'post',
     // data: qs.stringify(answer)
     data: answer
+  })
+}
+
+export function submitWork(sid, wid, spendtime, answers) {
+  return request({
+    url: '/api/answer/submitWork',
+    method: 'post',
+    data: {
+      sid,
+      wid,
+      spendtime,
+      answers,
+      submittime: createDate()
+    }
   })
 }

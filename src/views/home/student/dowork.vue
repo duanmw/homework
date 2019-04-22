@@ -3,12 +3,13 @@
     <el-row class="title-bar">
       <el-col :xs="24" :sm="12">
         <template v-if="$route.params.course">
-          <router-link
+          <!-- <router-link
             :to="{ name: 'StuHomework', params: { course:this.$route.params.course,activeName:this.$route.params.activeName } }"
             tag="span"
-          >
-            <el-button size="small" icon="el-icon-back">返回</el-button>
-          </router-link>&nbsp;&nbsp;
+          >-->
+          <el-button @click="handleReturn" size="small" icon="el-icon-back">返回</el-button>
+          <!-- </router-link> -->
+          &nbsp;&nbsp;
           <span class="workname">作业：{{work.name}}</span>
         </template>
         <template v-else>
@@ -43,7 +44,7 @@
     <div class="content-area" v-loading="loading">
       <div
         v-for="(ques,index) in form"
-        :class="['overview', index==activeIndex?'active':'',ques.aid>0||ques.correct||ques.answer?'done':'']"
+        :class="['overview', index==activeIndex?'active':'',ques.aid>0||(ques.aids&&ques.aids.length>0)||ques.correct||ques.answer?'done':'']"
         @click="handleChange(index)"
       >{{index+1}}</div>
       <el-card
@@ -59,8 +60,7 @@
           </div>
         </template>
         <template v-else-if="i.question.type==='b'">
-          <el-checkbox-group v-model="form[index].aid">
-            <!-- <div > -->
+          <el-checkbox-group v-model="form[index].aids">
             <el-checkbox
               class="option-box"
               v-waves
@@ -80,10 +80,9 @@
         </template>
         <template v-else-if="i.question.type==='d'">
           <div class="option-box">
-            <el-input v-model="form[index].answer"></el-input>
+            <el-input clearable v-model.trim="form[index].answer"></el-input>
           </div>
         </template>
-        <!-- <div v-if="i.question.desc" class="answer-desc">解析：{{i.question.desc}}</div> -->
       </el-card>
       <template v-if="quesCount>1">
         <el-button size="medium" :disabled="activeIndex==0" @click="handlePrev">上一题</el-button>
@@ -100,7 +99,7 @@
 
 <script>
 import { allCourseBySid } from "@/api/course";
-import { oneWork, allQuestionByWid } from "@/api/homework";
+import { allQByWid1, submitWork, oneWork } from "@/api/homework";
 
 import waves from "@/directive/waves/index.js"; // 水波纹指令
 // import md5 from "blueimp-md5";
@@ -113,13 +112,14 @@ export default {
   data() {
     return {
       loading: false,
-      courses: [],
       work: {},
       activeIndex: 0,
       questions: [],
       form: [], //存用户答案
       spendtime: 0,
-      timer: ""
+      timer: "", //spendtime计时器
+      timer2: "", //用来判断作业关闭时间
+      canBack: false
     };
   },
   computed: {
@@ -129,7 +129,14 @@ export default {
     doneCount() {
       let num = 0;
       this.form.forEach(ele => {
-        if (ele.aid > 0 || ele.correct || ele.answer) num++;
+        if (
+          ele.aid > 0 ||
+          (ele.aids && ele.aids.length > 0) ||
+          ele.correct ||
+          ele.answer
+        )
+          //分别对应单选，多选，判断，填空
+          num++;
       });
       return num;
     }
@@ -151,34 +158,34 @@ export default {
     },
     getQuestion() {
       this.loading = true;
-      allQuestionByWid(this.work.id)
+      allQByWid1(this.work.id)
         .then(res => {
           this.loading = false;
           this.questions = res.data.questions;
+
           this.questions.forEach(q => {
-            if (q.type === "a" || q.type === "b") {
+            if (q.question.type === "a") {
               this.form.push({
                 qnumber: q.question.number,
-                aid: [] //选择题存是aid
+                aid: 0 //单选是number,此处默认必须为number
               });
-            } else if (q.type === "c") {
+            } else if (q.question.type === "b") {
+              this.form.push({
+                qnumber: q.question.number,
+                aids: [] //单选是number,多选是数组
+              });
+            } else if (q.question.type === "c") {
               this.form.push({
                 qnumber: q.question.number,
                 correct: "" //判断题存的是yes或no
               });
-            } else if (q.type === "d") {
+            } else if (q.question.type === "d") {
               this.form.push({
                 qnumber: q.question.number,
                 answer: "" //填空题存填的内容
               });
             }
           });
-          for (let index = 0; index < this.questions.length; index++) {
-            this.form.push({
-              qnumber: this.questions[index].question.number,
-              aid: [] //!除了判断题存的是yes或no,其他类型题存的是aid
-            });
-          }
         })
         .catch(error => {
           this.loading = false;
@@ -195,7 +202,23 @@ export default {
     handleNext() {
       this.activeIndex++;
     },
+    handleReturn() {
+      this.$router.push({
+        name: "StuHomework",
+        params: {
+          course: this.$route.params.course,
+          activeName: this.$route.params.activeName
+        }
+      });
+    },
     handleSubmit() {
+      let fullLoading = this.$loading({
+        lock: true,
+        text: "暂停",
+        spinner: "el-icon-loading",
+        background: "rgba(0, 0, 0, 0.2)"
+      });
+      clearInterval(this.timer);
       this.$confirm(
         (this.doneCount < this.quesCount
           ? "你还有" + (this.quesCount - this.doneCount) + "题未完成，"
@@ -208,81 +231,159 @@ export default {
         }
       )
         .then(() => {
-          this.$message.success("cg");
-          // this.$router.push({
-          //   path: "/homework/dowork",
-          //   query: { work: work.id }
-          // });
+          fullLoading.text = "提交中，请稍等 . . .";
+          fullLoading.background = "rgba(0, 0, 0, 0.6)";
+          return submitWork(
+            this.$store.getters.id,
+            this.work.id,
+            this.spendtime,
+            this.form
+          );
+        })
+        .then(res => {
+          fullLoading.spinner = "el-icon-circle-check-outline";
+          fullLoading.text = "提交成功";
+          this.$notify({
+            title: "提交成功",
+            duration: 6 * 1000,
+            message:
+              "共答对" +
+              res.data.score / 2 +
+              "题，" +
+              "成绩：" +
+              res.data.score +
+              "分",
+            type: "success"
+          });
+          this.canBack = true; //可以返回了
+          setTimeout(() => {
+            fullLoading.close();
+            this.handleReturn();
+          }, 1000);
         })
         .catch(err => {
-          this.$message.error(err);
+          fullLoading.close();
+          if (err == "cancel") {
+            this.timer = setInterval(() => {
+              this.spendtime++;
+            }, 1000);
+          } else {
+            this.$message.error(err);
+          }
         });
     }
   },
   created() {
-    // this.loading = true;
     if (this.$route.params.course && this.$route.params.work) {
-      // oneWork(this.$route.query.work)
-      //   .then(res => {
       this.work = this.$route.params.work;
-      // })
-      // .then(res => {
-      this.getQuestion();
-      // })
-      // .catch(err => {
-      //   this.$message.error(err + "数据获取失败");
-      // });
-    }
-    // if (
-    //   localStorage.getItem("dostate") &&
-    //   localStorage.getItem("dos") &&
-    //   md5(localStorage.getItem("dostate") + "spendtime") ===
-    //     localStorage.getItem("dos")
-    // ) {
-    //   this.spendtime = Math.floor(
-    //     (new Date().getTime() - localStorage.getItem("dostate")) / 1000
-    //   );
 
-    //   // console.log(this.spendtime);
-    // } else {
-    //   this.spendtime = 4450; //4450s = 74:10
-    //   localStorage.setItem("dostate", new Date().getTime() - 4450 * 1000);
-    //   localStorage.setItem(
-    //     "dos",
-    //     md5(new Date().getTime() - 4450 * 1000 + "spendtime")
-    //   ); //加盐
-    // }
+      this.getQuestion();
+
+      let judgeClose = () => {
+        let end = new Date(this.work.closetime).getTime();
+        let waittime = 0;
+        if (new Date().getTime() < end) {
+          waittime = end - new Date().getTime();
+        }
+        this.timer2 = setTimeout(() => {
+          oneWork(this.work.id).then(res => {
+            if (res.data.work.closetime != this.work.closetime) {
+              //关闭时间被改了
+              console.log("关闭时间被改了");
+              clearTimeout(this.timer2);
+              this.work.closetime = res.data.work.closetime;
+              judgeClose(); //递归调用
+            } else {
+              //关闭时间没被修改，自动提交作业
+              this.$alert(
+                "已到作业关闭时间" +
+                  this.work.closetime +
+                  "，系统将自动提交你的作业",
+                "提示",
+                {
+                  confirmButtonText: "知道了",
+                  callback: action => {}
+                }
+              );
+              setTimeout(() => {
+                let fullLoading = this.$loading({
+                  lock: true,
+                  text: "作业关闭，系统自动提交作业",
+                  spinner: "el-icon-loading",
+                  background: "rgba(0, 0, 0, 0.6)"
+                });
+                submitWork(
+                  this.$store.getters.id,
+                  this.work.id,
+                  this.spendtime,
+                  this.form
+                )
+                  .then(res => {
+                    fullLoading.spinner = "el-icon-circle-check-outline";
+                    fullLoading.text = "已提交成功";
+                    this.$notify({
+                      title: "自动提交成功",
+                      duration: 6 * 1000,
+                      message:
+                        "共答对" +
+                        res.data.score / 2 +
+                        "题，" +
+                        "成绩：" +
+                        res.data.score +
+                        "分",
+                      type: "success"
+                    });
+                    this.canBack = true; //可以返回了
+                    setTimeout(() => {
+                      fullLoading.close();
+                      this.handleReturn();
+                    }, 1000);
+                  })
+                  .catch(err => {
+                    fullLoading.close();
+                    this.$message.error(err);
+                  });
+              }, 2000);
+            }
+          });
+        }, waittime); //到达关闭时间，判断数据库里的关闭时间有没有被改
+      };
+      judgeClose();
+    }
   },
   mounted() {
-    // if (this.quesCount > 0) {
-      this.timer = setInterval(() => {
+    this.timer = setInterval(() => {
+      if (this.quesCount == 0) {
+        clearInterval(this.timer);
+        this.timer = null;
+        console.log("quesCount == 0，定时器清理");
+      } else {
         this.spendtime++;
-      }, 1000);
-    // }
+      }
+    }, 1000);
   },
   beforeRouteLeave(to, from, next) {
-    localStorage.removeItem("dostate");
     // 导航离开该组件的对应路由时调用,可以访问组件实例 `this`
-    this.$confirm("你本次作业尚未提交，是否确定离开本页？", "提示", {
-      confirmButtonText: "确定",
-      cancelButtonText: "取消",
-      type: "warning",
-      closeOnClickModal: false
-    })
-      .then(() => {
-        next();
+    if (this.quesCount > 0 && !this.canBack) {
+      this.$confirm("你本次作业尚未提交，是否确定离开本页？", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+        closeOnClickModal: false
       })
-      .catch(err => {
-        next(false);
-        this.$message({
-          type: "info",
-          message: err
+        .then(() => {
+          next();
+        })
+        .catch(err => {
+          next(false); //路由不跳转
         });
-      });
+    } else {
+      next();
+    }
   },
   beforeDestroy() {
     clearInterval(this.timer);
-    this.timer = null;
+    clearInterval(this.timer2);
     console.log("定时器清理了");
   }
 };

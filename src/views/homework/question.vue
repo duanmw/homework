@@ -17,7 +17,16 @@
     </div>
     <div class="content-area" v-loading="loading">
       <el-card v-for="(i,index) in questions" :key="'ques'+index" shadow="never">
-        <div class="ques-title">{{index+1+' ('+getTypeName(i.question.type)+'). '+i.question.title}}</div>
+        <el-row class="ques-title">
+          <el-col :xs="24" :sm="21">
+            <div
+              class="text-title"
+            >{{index+1+' ('+getTypeName(i.question.type)+'). '+i.question.title}}</div>
+          </el-col>
+          <el-col :xs="24" :sm="3">
+            <span class="right-percent">正确率：{{i.rightcount}}/{{i.totalsubmit}}</span>
+          </el-col>
+        </el-row>
         <el-row v-if="i.question.type!='c'">
           <el-col v-for="(ans,index)  in i.answer" :key="'ans'+ans.id" :xs="24" :sm="12">
             <div
@@ -46,7 +55,7 @@
 </template>
 <script>
 import { getOneCourse } from "@/api/course";
-import { allQuestionByWid } from "@/api/homework";
+import { allQByWid2 } from "@/api/homework";
 export default {
   name: "Question",
   data() {
@@ -78,7 +87,7 @@ export default {
     },
     getQuestion() {
       this.loading = true;
-      allQuestionByWid(this.work.id)
+      allQByWid2(this.work.id)
         .then(res => {
           this.loading = false;
           this.questions = res.data.questions;
@@ -139,6 +148,9 @@ export default {
       font-size: 15px;
       padding-bottom: 12px;
       border-bottom: 1px solid #ebeef5;
+      .right-percent {
+        float: right;
+      }
     }
     .option {
       color: #606266;

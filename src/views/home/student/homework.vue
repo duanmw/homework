@@ -25,7 +25,7 @@
               class="open-time"
             >开放时间：{{i.starttime | substrDate}}&nbsp;-&nbsp;{{i.closetime | substrDate}}</span>
             <el-tooltip
-              :content="'得分：'+(i.maxscore?i.maxscore:0)+' ， 总分：'+i.quescount*2"
+              :content="'成绩：'+(i.maxscore?i.maxscore:0)+' ， 总分：'+i.quescount*2"
               placement="top"
             >
               <span class="submit-count">

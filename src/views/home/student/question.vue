@@ -59,7 +59,7 @@
   </div>
 </template>
 <script>
-import { allQuestionByWid } from "@/api/homework";
+import { allQByWid1 } from "@/api/homework";
 export default {
   name: "StuQuestion",
   data() {
@@ -87,7 +87,7 @@ export default {
     },
     getQuestion() {
       this.loading = true;
-      allQuestionByWid(this.work.id)
+      allQByWid1(this.work.id)
         .then(res => {
           this.loading = false;
           this.questions = res.data.questions;
