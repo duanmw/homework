@@ -1,5 +1,28 @@
 import request from '@/utils/request'
 import qs from 'qs'
+
+export function rightOldPwd(pwd, sid) {
+  return request({
+    url: '/api/student/idAndPwd',
+    method: 'post',
+    data: qs.stringify({
+      pwd,
+      sid
+    })
+  })
+}
+
+export function updatePwd(pwd, sid) {
+  return request({
+    url: '/api/student/updatePwd',
+    method: 'post',
+    data: qs.stringify({
+      pwd,
+      sid
+    })
+  })
+}
+
 /**
  * 判断,存在返回学生数据，不存在返回null
  * @param {string} number

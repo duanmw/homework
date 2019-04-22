@@ -99,6 +99,10 @@
 <script>
 import { mapGetters } from "vuex";
 import { updateName, rightOldPwd, updatePwd } from "@/api/teacher";
+import {
+  rightOldPwd as rightOldPwd2,
+  updatePwd as updatePwd2
+} from "@/api/student";
 import { getOneStudent } from "@/api/student";
 
 import md5 from "blueimp-md5";
@@ -190,13 +194,22 @@ export default {
     updatePwd() {
       this.$refs.updatePwdForm.validate(valid => {
         if (valid) {
-          rightOldPwd(md5(this.form.oldPwd), this.id)
+          let valFunc = "";
+          let updateFunc = "";
+          if (this.roles.includes("teacher")) {
+            valFunc = rightOldPwd;
+            updateFunc = updatePwd;
+          } else {
+            valFunc = rightOldPwd2;
+            updateFunc = updatePwd2;
+          }
+          valFunc(md5(this.form.oldPwd), this.id)
             .then(res => {
               if (res.message == "true") {
                 //旧密码正确
                 this.dialogFormVisible = false;
                 this.loading = true;
-                return updatePwd(md5(this.form.newPwd2), this.id);
+                return updateFunc(md5(this.form.newPwd2), this.id);
               } else {
                 throw "旧密码输入错误";
               }
@@ -218,7 +231,6 @@ export default {
                     type: "success",
                     title: "密码修改成功",
                     // duration: 5000,
-                    // dangerouslyUseHTMLString: true,
                     message: "请使用新密码重新登录"
                   });
                 });
