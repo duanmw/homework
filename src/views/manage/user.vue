@@ -84,8 +84,16 @@
           </template>
         </el-table-column>
       </template>
-      <el-table-column align="center" label="操作" width="140">
+      <el-table-column align="center" label="操作" :width="activeName==='student'?230:140">
         <template slot-scope="{row}">
+          <el-button
+            v-if="activeName==='student'"
+            size="small"
+            type="warning"
+            plain
+            icon="el-icon-refresh"
+            @click="resetPwd(row)"
+          >重置密码</el-button>
           <el-button
             :disabled="row.admin && row.admin=='true'"
             size="small"
@@ -114,7 +122,13 @@
 
 <script>
 import { allByPage as allTeacher, deleteTeacher } from "@/api/teacher";
-import { allByPage as allStudent, deleteStudent } from "@/api/student";
+import {
+  allByPage as allStudent,
+  deleteStudent,
+  updatePwd
+} from "@/api/student";
+import md5 from "blueimp-md5";
+
 export default {
   name: "UserManage",
   data() {
@@ -233,6 +247,31 @@ export default {
             });
           } else {
             this.$message.error(err + " 删除失败！");
+          }
+        });
+    },
+    resetPwd(row) {
+      this.$confirm(
+        "确定要重置学生（" + row.name + "）的登录密码为初始密码？",
+        "提示",
+        {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
+        }
+      )
+        .then(() => {
+          this.loading = true;
+          return updatePwd(md5("123456"), row.id);
+        })
+        .then(res => {
+          this.loading = false;
+          this.$message.success(row.name + " 的密码重置成功！");
+        })
+        .catch(err => {
+          this.loading = false;
+          if (err != "cancel") {
+            this.$message.error(err + " 密码重置失败！");
           }
         });
     }
