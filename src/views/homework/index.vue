@@ -50,7 +50,7 @@
               <el-tooltip :content="'已提交人数：'+i.submitcount" placement="top">
                 <span class="submit-count">
                   <span>{{i.submitcount}}</span>
-                  / {{stuCount}}
+                  / {{stuCount}} 提交
                 </span>
               </el-tooltip>
             </div>
@@ -75,14 +75,19 @@
                 <span class="label-text">习题数量：</span>
                 {{i.quescount}}&nbsp;&nbsp;&nbsp;
                 <router-link
-                  :to="{ name: 'Question', params: { wid:i.id,wname:i.name,courseId,courseName }}"
+                  :to="{ name: 'Question', params: { wid:i.id,wname:i.name,courseId,courseName,activeName }}"
                   tag="span"
                 >
                   <el-button size="small" icon="el-icon-tickets">查看习题</el-button>
                 </router-link>
               </el-col>
               <el-col :xs="24" :sm="12">
-                <el-button size="small" icon="el-icon-view">查看成绩</el-button>
+                <router-link
+                  :to="{ name: 'StuScore', params: { work:i, courseId,courseName,activeName }}"
+                  tag="span"
+                >
+                  <el-button size="small" icon="el-icon-view">查看成绩</el-button>
+                </router-link>
                 <el-button
                   v-if="i.state"
                   size="small"
@@ -143,7 +148,7 @@ export default {
       courses: [],
       homeworks: [],
       activeHomework: {},
-      activeName: "1",
+      activeName: "",
       courseId: "",
       courseName: "",
       stuCount: "",
@@ -304,7 +309,9 @@ export default {
       });
       this.getWork(this.courseId);
     }
-
+    if (this.$route.params.activeName) {
+      this.activeName = this.$route.params.activeName;
+    }
     allCourseByTid(this.$store.getters.id)
       .then(res => {
         this.courses = res.data.courses;

@@ -3,7 +3,10 @@
     <div class="title-bar">
       <el-row>
         <el-col :xs="24" :sm="12">
-          <router-link :to="{ name: routerName, params: { courseId,courseName }}" tag="span">
+          <router-link
+            :to="{ name: routerName, params: { courseId,courseName,activeName:this.$route.params.activeName }}"
+            tag="span"
+          >
             <el-button size="small" icon="el-icon-back">返回</el-button>
           </router-link>
           <span class="workname">作业：{{$route.params.wname?$route.params.wname:"无数据，请返回重试！"}}</span>
@@ -24,7 +27,10 @@
             >{{index+1+' ('+getTypeName(i.question.type)+'). '+i.question.title}}</div>
           </el-col>
           <el-col :xs="24" :sm="3">
-            <span class="right-percent">正确率：{{i.rightcount}}/{{i.totalsubmit}}</span>
+            <span class="right-percent">
+              正确率：
+              <span>{{i.rightcount}}/{{i.totalsubmit}}</span>
+            </span>
           </el-col>
         </el-row>
         <el-row v-if="i.question.type!='c'">
@@ -150,6 +156,10 @@ export default {
       border-bottom: 1px solid #ebeef5;
       .right-percent {
         float: right;
+        color: #606266;
+        span {
+          color: #1f8eff;
+        }
       }
     }
     .option {

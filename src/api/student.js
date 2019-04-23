@@ -115,3 +115,10 @@ export function allByPage(start, size) {
     method: 'get'
   })
 }
+
+export function stuScoreInWork(wid, cid, start, size) {
+  return request({
+    url: '/api/student/stuScoreInWork?wid=' + wid + '&cid=' + cid + '&start=' + start + '&size=' + size,
+    method: 'get'
+  })
+}

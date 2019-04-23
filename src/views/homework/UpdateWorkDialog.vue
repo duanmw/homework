@@ -2,7 +2,6 @@
   <!-- 类my-dialog宽度做了响应式,所以加上此类名 -->
   <el-dialog
     custom-class="my-dialog"
-    width="40%"
     top="8vh"
     title="修改作业信息"
     :visible.sync="dialogShow"
@@ -38,8 +37,8 @@
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
-      <el-button @click="dialogShow=false">取 消</el-button>
-      <el-button type="primary" @click="handleUpdate">确定修改</el-button>
+      <el-button size="medium" @click="dialogShow=false">取 消</el-button>
+      <el-button size="medium" type="primary" @click="handleUpdate">确定修改</el-button>
     </div>
   </el-dialog>
 </template>

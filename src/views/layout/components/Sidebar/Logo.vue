@@ -3,11 +3,18 @@
     <!-- <transition enter-active-class="animated zoomIn"> -->
     <transition name="sidebarLogoFade">
       <router-link v-if="collapse" key="collapse" class="sidebar-logo-link" to="/">
-        <img v-if="logo" :src="logo" class="sidebar-logo">
+        <!-- <img v-if="logo" :src="logo" class="sidebar-logo"> -->
+        <span v-if="logo" class="sidebar-logo">
+          <!--  采用svg logo -->
+          <svg-icon icon-class="logo"/>
+        </span>
         <h1 v-else class="sidebar-title">{{ title }}</h1>
       </router-link>
       <router-link v-else key="expand" class="sidebar-logo-link" to="/">
-        <img v-if="logo" :src="logo" class="sidebar-logo">
+        <!-- <img v-if="logo" :src="logo" class="sidebar-logo"> -->
+        <span v-if="logo" class="sidebar-logo">
+          <svg-icon icon-class="logo"/>
+        </span>
         <h1 class="sidebar-title">{{ title }}</h1>
       </router-link>
     </transition>
@@ -26,7 +33,7 @@ export default {
   data() {
     return {
       title: "作 业 管 理 系 统",
-      logo: "src/assets/img/logo3.png"
+      logo: "src/assets/img/logo.png"
     };
   }
 };
@@ -53,10 +60,10 @@ export default {
     height: 100%;
     width: 100%;
     & .sidebar-logo {
-      width: 30px;
-      height: 30px;
+      font-size: 30px;
+      // width: 30px;
+      // height: 30px;
       vertical-align: middle;
-      margin-right: 14px;
     }
     & .sidebar-title {
       display: inline-block;

@@ -62,13 +62,12 @@
     </el-card>
     <el-dialog
       custom-class="my-dialog"
-      width="40%"
       title="修改课程"
       :visible.sync="dialogFormVisible"
       @open="handleOpen"
       @close="handleClose"
     >
-      <el-form :model="form" :rules="rules" ref="updateCourseForm">
+      <el-form size="medium" :model="form" :rules="rules" ref="updateCourseForm">
         <el-form-item label="课程名称：" prop="name">
           <el-input clearable maxlength="20" v-model="form.name"></el-input>
         </el-form-item>
@@ -78,8 +77,8 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="handleUpdate">确 定</el-button>
+        <el-button size="medium" @click="dialogFormVisible = false">取 消</el-button>
+        <el-button size="medium" type="primary" @click="handleUpdate">确 定</el-button>
       </div>
     </el-dialog>
   </div>

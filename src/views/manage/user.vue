@@ -262,7 +262,7 @@ export default {
       )
         .then(() => {
           this.loading = true;
-          return updatePwd(md5("123456"), row.id);
+          return updatePwd(md5("123456"), row.id);//重置密码
         })
         .then(res => {
           this.loading = false;

@@ -143,12 +143,11 @@
     </div>
     <el-dialog
       custom-class="my-dialog"
-      width="40%"
       title="添加学生"
       :visible.sync="dialogFormVisible"
       @closed="handleClose"
     >
-      <el-form :model="form" :rules="rules" ref="addStuForm" label-width="70px">
+      <el-form size="medium" :model="form" :rules="rules" ref="addStuForm" label-width="70px">
         <el-form-item label-width="10px" label>添加学生到课程：{{courseName}}</el-form-item>
 
         <el-form-item label="学号：" prop="number">
@@ -162,8 +161,8 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="handleAdd">确 定</el-button>
+        <el-button size="medium" @click="dialogFormVisible = false">取 消</el-button>
+        <el-button size="medium" type="primary" @click="handleAdd">确 定</el-button>
       </div>
     </el-dialog>
   </div>

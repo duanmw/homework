@@ -87,7 +87,7 @@ export const asyncRouterMap = [{
     path: 'homework',
     name: 'WorkView',
     redirect: 'noredirect',
-    component: () => import('@/views/home/student/view'),
+    component: () => import('@/views/blankView'),
     hidden: true,
     meta: {
       title: '作业'
@@ -156,30 +156,74 @@ export const asyncRouterMap = [{
       title: '作业',
       icon: 'homework'
     }
-  },
-  {
-    path: 'addhomework',
-    // redirect: ':wid/question',
-    name: 'addHomework',
-    component: () => import('@/views/homework/addHomework'),
+  }, {
+    path: '',
+    name: 'HomeworkView',
+    redirect: 'noredirect',
     hidden: true,
+    component: () => import('@/views/blankView'),
     meta: {
-      title: '添加作业'
-      // icon: 'homework'
-    }
-  },
-  {
-    path: ':wid',
-    // redirect: ':wid/question',
-    name: 'Question',
-    component: () => import('@/views/homework/question'),
-    hidden: true,
-    meta: {
-      title: '作业习题'
-      // icon: 'homework'
-    }
+      title: '作业'
+    },
+    children: [{
+      path: 'addhomework',
+      name: 'addHomework',
+      component: () => import('@/views/homework/addHomework'),
+      meta: {
+        title: '添加作业'
+      }
+    }, {
+      path: 'stuscore',
+      name: 'StuScore',
+      component: () => import('@/views/homework/stuScore'),
+      meta: {
+        title: '学生成绩'
+      }
+    },
+    {
+      path: ':wid',
+      name: 'Question',
+      component: () => import('@/views/homework/question'),
+      meta: {
+        title: '作业习题'
+      }
+    }]
   }]
 },
+
+// children: [{
+//   path: 'index',
+//   name: 'Homework',
+//   component: () => import('@/views/homework/index'),
+//   meta: {
+//     title: '作业',
+//     icon: 'homework'
+//   }
+// },
+// {
+//   path: 'addhomework',
+//   // redirect: ':wid/question',
+//   name: 'addHomework',
+//   component: () => import('@/views/homework/addHomework'),
+//   hidden: true,
+//   meta: {
+//     title: '添加作业'
+//     // icon: 'homework'
+//   }
+// },
+// {
+//   path: ':wid',
+//   // redirect: ':wid/question',
+//   name: 'Question',
+//   component: () => import('@/views/homework/question'),
+//   hidden: true,
+//   meta: {
+//     title: '作业习题'
+//     // icon: 'homework'
+//   }
+// }
+// ]
+// },
 {
   path: '/student',
   redirect: '/student/index',

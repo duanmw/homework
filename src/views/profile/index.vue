@@ -72,12 +72,11 @@
 
     <el-dialog
       custom-class="my-dialog"
-      width="40%"
       title="修改密码"
       :visible.sync="dialogFormVisible"
       @closed="handleClose"
     >
-      <el-form :model="form" :rules="rules" ref="updatePwdForm" label-width="94px">
+      <el-form size="medium" :model="form" :rules="rules" ref="updatePwdForm" label-width="94px">
         <el-form-item label="旧密码：" prop="oldPwd">
           <el-input type="password" clearable v-model="form.oldPwd"></el-input>
         </el-form-item>
@@ -89,8 +88,8 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="updatePwd">确 定</el-button>
+        <el-button size="medium" @click="dialogFormVisible = false">取 消</el-button>
+        <el-button size="medium" type="primary" @click="updatePwd">确 定</el-button>
       </div>
     </el-dialog>
   </div>

@@ -29,38 +29,49 @@
   }
 }
 
+.my-dialog {
+  max-width: 510px !important;
+}
+
 @media screen and (max-width: 992px) {
   .my-dialog {
-    min-width: 60%;
+    width: 56%;
   }
 }
+
 @media screen and (max-width: 768px) {
   .my-dialog {
-    min-width: 80%;
+    width: 76%;
   }
 }
+
 @media screen and (max-width: 600px) {
   .my-dialog {
-    min-width: 98%;
+    width: 96%;
   }
+
   .el-message {
     width: 94%;
     min-width: 260px;
   }
+
   .el-message-box {
     width: 98%;
   }
 }
+
 .my-dialog .el-dialog__body {
   padding: 20px;
 }
+
 //loading的图标大小
 .el-loading-spinner .el-icon-loading {
   font-size: 26px;
 }
+
 //el-tag type="success"
 .el-tag--success {
   color: #04ce5e;
-  border-color: rgba(19,206,102,.2);
-  background-color: rgba(19,206,102,.1); 
+  border-color: rgba(19, 206, 102, .2);
+  background-color: rgba(19, 206, 102, .1);
 }
