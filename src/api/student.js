@@ -116,6 +116,13 @@ export function allByPage(start, size) {
   })
 }
 
+export function allBySearch(start, size, str) {
+  return request({
+    url: '/api/student/search?start=' + start + '&size=' + size + '&str=' + str,
+    method: 'get'
+  })
+}
+
 export function stuScoreInWork(wid, cid, start, size) {
   return request({
     url: '/api/student/stuScoreInWork?wid=' + wid + '&cid=' + cid + '&start=' + start + '&size=' + size,

@@ -1,5 +1,18 @@
 <template>
   <div class="student-container">
+    <transition enter-active-class="animated fadeInRight" appear>
+      <el-input
+        v-if="activeName==='student'"
+        class="search-student"
+        clearable
+        size="small"
+        placeholder="请输入内容"
+        prefix-icon="el-icon-search"
+        v-model.trim="searchStr"
+        @keyup.enter.native="searchStu"
+        @clear="clearSearch"
+      ></el-input>
+    </transition>
     <el-tabs v-model="activeName" @tab-click="handleClick">
       <el-tab-pane label="教师管理" name="teacher"></el-tab-pane>
       <el-tab-pane label="学生管理" name="student"></el-tab-pane>
@@ -124,6 +137,7 @@
 import { allByPage as allTeacher, deleteTeacher } from "@/api/teacher";
 import {
   allByPage as allStudent,
+  allBySearch,
   deleteStudent,
   updatePwd
 } from "@/api/student";
@@ -133,6 +147,7 @@ export default {
   name: "UserManage",
   data() {
     return {
+      searchStr: "", //输入搜索学生
       activeName: "teacher", //默认 教师
       loading: false,
       users: [],
@@ -262,7 +277,7 @@ export default {
       )
         .then(() => {
           this.loading = true;
-          return updatePwd(md5("123456"), row.id);//重置密码
+          return updatePwd(md5("123456"), row.id); //重置密码
         })
         .then(res => {
           this.loading = false;
@@ -274,6 +289,37 @@ export default {
             this.$message.error(err + " 密码重置失败！");
           }
         });
+    },
+    searchStu() {
+      if (this.searchStr.length > 0) {
+        this.loading = true;
+        allBySearch(this.page - 1, this.limit, this.searchStr)
+          .then(res => {
+            this.users.splice(0, this.users.length);
+            this.loading = false;
+            this.users.push(...res.data.students);
+            this.total = res.data.totalElements; //总条数
+
+            this.classnameArr.splice(0, this.classnameArr.length); //清空数组
+            this.filterData.splice(0, this.filterData.length); //清空数组
+            this.users.forEach((u, index) => {
+              //设置筛选数据
+              if (!this.classnameArr.includes(u.classname)) {
+                this.classnameArr.push(u.classname);
+              }
+            });
+            this.classnameArr.forEach(item => {
+              this.filterData.push({ text: item, value: item });
+            });
+          })
+          .catch(error => {
+            this.loading = false;
+            this.$message.error(error + " 数据获取失败");
+          });
+      }
+    },
+    clearSearch() {
+      this.getUser();
     }
   },
   created() {
@@ -286,6 +332,12 @@ export default {
 //后面将margin: 30px 单独提出到一个公用类
 .student-container {
   margin: 16px 30px 30px;
+  .search-student {
+    position: absolute;
+    width: 230px;
+    right: 30px;
+    z-index: 1;
+  }
   .el-popover__reference {
     display: inline-block;
   }
