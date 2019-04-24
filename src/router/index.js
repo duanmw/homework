@@ -177,7 +177,14 @@ export const asyncRouterMap = [{
       name: 'StuScore',
       component: () => import('@/views/homework/stuScore'),
       meta: {
-        title: '学生成绩'
+        title: '单次作业成绩'
+      }
+    }, {
+      path: 'coursescore',
+      name: 'CourseScore',
+      component: () => import('@/views/homework/courseScore'),
+      meta: {
+        title: '全部作业成绩'
       }
     },
     {

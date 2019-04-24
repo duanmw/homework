@@ -29,8 +29,14 @@
           </router-link>
           <el-button v-else disabled size="medium" icon="el-icon-circle-plus-outline">添加作业</el-button>
 
-          <!-- <el-button size="medium" icon="el-icon-view">查看成绩</el-button> -->
-          <el-button :disabled="!courseId" size="medium" icon="el-icon-printer">统计成绩</el-button>
+          <router-link
+            v-if="courseId && homeworks.length>0"
+            :to="{ name: 'CourseScore', params: { courseId,courseName,activeName }}"
+            tag="span"
+          >
+            <el-button size="medium" icon="el-icon-printer">统计成绩</el-button>
+          </router-link>
+          <el-button v-else disabled size="medium" icon="el-icon-printer">统计成绩</el-button>
         </el-col>
       </el-row>
     </div>

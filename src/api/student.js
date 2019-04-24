@@ -122,3 +122,10 @@ export function stuScoreInWork(wid, cid, start, size) {
     method: 'get'
   })
 }
+
+export function stuScoreInCourse(cid, start, size) {
+  return request({
+    url: '/api/student/stuScoreInCourse?cid=' + cid + '&start=' + start + '&size=' + size,
+    method: 'get'
+  })
+}

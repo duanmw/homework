@@ -459,6 +459,7 @@ export default {
   .el-card {
     margin-bottom: 10px;
     .ques-title {
+      user-select: none; //文字不可选中
       font-size: 16px;
       padding-bottom: 12px;
       border-bottom: 1px solid #ebeef5;

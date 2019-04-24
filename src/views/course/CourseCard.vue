@@ -85,7 +85,12 @@
 </template>
 
 <script>
-import { updateCourse, deleteCourse, allCourseByTid } from "@/api/course";
+import {
+  isExist,
+  updateCourse,
+  deleteCourse,
+  allCourseByTid
+} from "@/api/course";
 export default {
   name: "CourseCard",
   props: {
@@ -182,11 +187,22 @@ export default {
     handleUpdate() {
       this.$refs.updateCourseForm.validate(valid => {
         if (valid) {
-          console.log("right submit!!");
-          this.dialogFormVisible = false;
-          this.loading = true;
-          let obj = Object.assign({}, this.courseData, this.form); //合并对象
-          updateCourse(obj)
+          isExist(this.$store.getters.id, this.form.name)
+            .then(res => {
+              if (
+                res.message == "true" &&
+                this.form.name != this.courseData.name
+              ) {
+                //如果存在课程名且不跟修改前不一样，说明重复
+                this.$message.warning("此课程名已存在！请更换");
+                return Promise.reject("exist");
+              } else {
+                this.dialogFormVisible = false;
+                this.loading = true;
+                let obj = Object.assign({}, this.courseData, this.form); //合并对象
+                return updateCourse(obj);
+              }
+            })
             .then(res => {
               let theCourse = { index: this.index, data: this.form };
               this.$emit("after-update", theCourse);
@@ -195,7 +211,7 @@ export default {
             })
             .catch(error => {
               this.loading = false;
-              this.$message.error(error + " 修改失败！");
+              if (error != "exist") this.$message.error(error + " 修改失败！");
             });
         } else {
           console.log("error submit!!");

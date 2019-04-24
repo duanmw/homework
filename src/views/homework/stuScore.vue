@@ -11,7 +11,7 @@
           </router-link>
           <span
             class="workname"
-          >{{$route.params.work?$route.params.work.name:"无数据，请返回重试！"}}&nbsp;学生成绩</span>
+          >{{$route.params.work?$route.params.work.name:"无数据，请返回重试！"}}&nbsp;&nbsp;学生成绩</span>
         </el-col>
         <el-col :xs="24" :sm="12">
           <el-button
@@ -130,12 +130,10 @@
 </template>
 
 <script>
-import { allCourseByTid } from "@/api/course";
 import { stuScoreInWork } from "@/api/student";
-import { isvalidStudentID } from "@/utils/validate";
 import md5 from "blueimp-md5";
 export default {
-  name: "Student",
+  name: "StuScore",
   data() {
     return {
       courseId: "",
@@ -225,10 +223,9 @@ export default {
     }
   },
   created() {
+    this.courseId = this.$route.params.courseId;
+    this.courseName = this.$route.params.courseName;
     if (this.$route.params.work) {
-      this.courseId = this.$route.params.courseId;
-      this.courseName = this.$route.params.courseName;
-
       this.getStudent();
     }
   }
