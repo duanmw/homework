@@ -1,12 +1,12 @@
 <template>
   <div class="student-container">
-    <transition enter-active-class="animated fadeInRight" appear>
+    <transition enter-active-class="animated fadeInRight" leave-active-class="animated fadeOutRight" appear>
       <el-input
-        v-if="activeName==='student'"
+        v-if="activeName==='student'&&users.length>0||isSearchStu"
         class="search-student"
         clearable
         size="small"
-        placeholder="请输入内容"
+        placeholder="输入内容 回车搜索学生"
         prefix-icon="el-icon-search"
         v-model.trim="searchStr"
         @keyup.enter.native="searchStu"
@@ -148,6 +148,7 @@ export default {
   data() {
     return {
       searchStr: "", //输入搜索学生
+      isSearchStu: false, //是否为搜索学生模式
       activeName: "teacher", //默认 教师
       loading: false,
       users: [],
@@ -161,19 +162,29 @@ export default {
   methods: {
     handleClick(tab, event) {
       this.page = 1; //tab改变，恢复为第一页
+      this.searchStr = ""; //清空搜索字符串
+      this.isSearchStu = false; //取消搜索学生模式
       this.getUser();
     },
     handleSizeChange(val) {
       //改变每页条数
       this.$refs.filterTable.clearFilter(); //清除过滤器
       this.limit = val;
-      this.getUser();
+      if (this.isSearchStu) {
+        this.searchStu();
+      } else {
+        this.getUser();
+      }
     },
     handleCurrentChange(val) {
       //改变当前页
       this.$refs.filterTable.clearFilter(); //清除过滤器
       this.page = val;
-      this.getUser();
+      if (this.isSearchStu) {
+        this.searchStu();
+      } else {
+        this.getUser();
+      }
     },
     filterClass(value, row, column) {
       return row.classname === value;
@@ -293,6 +304,7 @@ export default {
     searchStu() {
       if (this.searchStr.length > 0) {
         this.loading = true;
+        this.isSearchStu = true;
         allBySearch(this.page - 1, this.limit, this.searchStr)
           .then(res => {
             this.users.splice(0, this.users.length);
@@ -316,10 +328,15 @@ export default {
             this.loading = false;
             this.$message.error(error + " 数据获取失败");
           });
+      } else {
+        this.$message.warning("搜索内容不能为空");
       }
     },
     clearSearch() {
-      this.getUser();
+      if (this.isSearchStu) {
+        this.isSearchStu = false;
+        this.getUser();
+      }
     }
   },
   created() {
