@@ -102,6 +102,7 @@ export default {
 <style rel="stylesheet/scss" lang="scss" scoped>
 .navbar {
   position: relative;
+  z-index: 1;//for show box-shadow
   height: 50px;
   line-height: 50px;
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.08), 0 0 3px 0 rgba(0, 0, 0, 0.04);

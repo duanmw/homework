@@ -60,7 +60,7 @@ export const asyncRouterMap = [{
   },
   children: [{
     path: 'home',
-    component: () => import('@/views/home/teacher'),
+    component: () => import('@/views/home/teacher/index'),
     meta: {
       title: '首页'
     }

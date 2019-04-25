@@ -32,14 +32,17 @@
       <div class="split-line"></div>
 
       <div class="card-bottom text-overflow">
-        <el-tooltip
-          class="item"
-          :content="substrDate(courseData.lastwork.starttime)  + '开放，'+substrDate(courseData.lastwork.closetime)+'关闭'"
-          placement="bottom-start"
-        >
-          <span>最新作业：</span>
-        </el-tooltip>
-        {{courseData.lastwork.name}}，{{courseData.lastwork.starttime | substrDate}}开放，{{courseData.lastwork.closetime | substrDate}}关闭
+        <template v-if="courseData.lastwork">
+          <el-tooltip
+            class="item"
+            :content="substrDate(courseData.lastwork.starttime)  + '开放，'+substrDate(courseData.lastwork.closetime)+'关闭'"
+            placement="bottom-start"
+          >
+            <span>最新作业：</span>
+          </el-tooltip>
+          {{courseData.lastwork.name}}，{{courseData.lastwork.starttime | substrDate}}开放，{{courseData.lastwork.closetime | substrDate}}关闭
+        </template>
+        <template v-else>暂无作业</template>
       </div>
     </el-card>
   </div>
@@ -85,6 +88,16 @@ export default {
 </script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
+// @keyframes wordsLoop {
+//   0% {
+//   }
+//   50% {
+//     transform: translateX(-50%);
+//   }
+//   100% {
+//     transform: translateX(0);
+//   }
+// }
 .card {
   .el-card {
     border: 1px solid #dbdfe6;
@@ -94,7 +107,7 @@ export default {
       box-shadow: 0 2px 10px 1px rgba(0, 0, 0, 0.12);
       .course-name {
         color: #409eff;
-        transition: all 0.3s;
+        transition: all 0.4s;
       }
     }
   }
@@ -155,6 +168,7 @@ export default {
     padding-top: 6px;
     color: #666666;
     font-size: 13px;
+    transition: all 4s;
   }
 }
 </style>
