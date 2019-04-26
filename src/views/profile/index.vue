@@ -32,7 +32,7 @@
           用户名：
           <template v-if="edit">
             <el-input
-              v-model="form.name"
+              v-model.trim="form.name"
               minlength="2"
               maxlength="10"
               class="edit-input"
@@ -48,7 +48,7 @@
             size="small"
             @click="edit = true;form.name=name"
             style="margin-left:12px"
-          >修改</el-button>
+          >{{name==""||name=="null"?'设置': '修改'}}</el-button>
           <el-button
             v-if="edit"
             type="success"
@@ -155,8 +155,10 @@ export default {
       }
     },
     confirmEdit() {
-      if (this.form.name.trim().length <= 0) {
+      if (this.form.name.length <= 0) {
         this.$message.warning("用户名不能为空！");
+      } else if (this.form.name == "null") {
+        this.$message.warning("用户名不能设为null！");
       } else {
         this.loading = true;
         updateName(this.form.name, this.id)

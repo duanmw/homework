@@ -63,8 +63,7 @@ export default {
           subtext: chartdata.stucount,
           textStyle: {
             color: "#C0C4CC",
-            fontSize: 20
-            // align: 'center'
+            fontSize: 18
           },
           subtextStyle: {
             fontSize: 18,
@@ -81,8 +80,6 @@ export default {
           orient: "vertical",
           x: "left",
           y: "top",
-          // bottom: "10",
-          // data: ["Industries", "Technology", "Forex", "Gold", "Forecasts"]
           data: ["已提交", "未提交"]
         },
 
@@ -90,18 +87,11 @@ export default {
           {
             name: chartdata.wname,
             type: "pie",
-            // roseType: "radius",
-
             radius: [65, 95],
             minShowLabelAngle: 1,
             label: {
               fontSize: 13
             },
-            // labelLine: {
-            //   normal: {
-            //     show: false
-            //   }
-            // },
             data: chartdata.data,
             animationEasing: "cubicInOut",
             animationDuration: 2600

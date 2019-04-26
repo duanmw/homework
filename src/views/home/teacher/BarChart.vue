@@ -6,7 +6,6 @@
 import echarts from "echarts";
 require("echarts/theme/macarons"); // echarts theme
 import { debounce } from "@/utils";
-const animationDuration = 6000;
 export default {
   props: {
     className: {
@@ -31,6 +30,14 @@ export default {
       chart: null
     };
   },
+  watch: {
+    chartData: {
+      deep: true,
+      handler(val) {
+        this.setOptions(val);
+      }
+    }
+  },
   mounted() {
     this.initChart();
     this.__resizeHandler = debounce(() => {
@@ -49,15 +56,13 @@ export default {
     this.chart = null;
   },
   methods: {
-    initChart() {
-      this.chart = echarts.init(this.$el, "macarons");
+    setOptions(chartdata) {
       this.chart.setOption({
         title: {
-          text: "总分：" + 2 * this.chartData.quescount,
+          text: "各分数段人数分布",
           textStyle: {
-            color: "#C0C4CC",
-            fontSize: 20
-            // align: 'center'
+            fontSize: 18,
+            color: "#C0C4CC"
           },
           x: "center",
           y: "top"
@@ -69,17 +74,22 @@ export default {
             type: "shadow" // 默认为直线，可选为：'line' | 'shadow'
           }
         },
-        // grid: {
-        //   top: 10,
-        //   left: "2%",
-        //   right: "2%",
-        //   bottom: "3%",
-        //   containLabel: true
-        // },
         xAxis: [
           {
+            name: "*" + 2 * this.chartData.quescount + "分",
+            nameTextStyle: {
+              fontSize: 13,
+              padding: [8, 0, 0, 0]
+            },
+            nameGap:8,
             type: "category",
-            data: ["0%-20%", "20%-40%", "40%-60%", "60%-80%", "80%-100%"],
+            data: [
+              "[0%-20%]",
+              "(20%-40%]",
+              "(40%-60%]",
+              "(60%-80%]",
+              "(80%-100%]"
+            ],
             axisTick: {
               alignWithLabel: true
             }
@@ -87,23 +97,59 @@ export default {
         ],
         yAxis: [
           {
+            name: "(人)",
             type: "value",
             axisTick: {
               show: false
-            }
+            },
+            minInterval: 1
           }
         ],
         series: [
           {
-            name: "总分" + 2 * this.chartData.quescount + "人数",
+            name: "此分数段人数",
             type: "bar",
-            stack: "vistors",
-            barWidth: "60%",
+            barWidth: "50%",
             data: this.chartData.data,
-            animationDuration
+            label: {
+              normal: {
+                show: true,
+                position: "top",
+                textStyle: {
+                  color: "#C0C4CC",
+                  fontSize: 16
+                }
+              }
+            },
+            animationDuration: 3000, //初始动画的时长
+            itemStyle: {
+              normal: {
+                color: new echarts.graphic.LinearGradient(
+                  0,
+                  0,
+                  0,
+                  1,
+                  [
+                    {
+                      offset: 0,
+                      color: "#06ECFE"
+                    },
+                    {
+                      offset: 0.8,
+                      color: "#45B4FE"
+                    }
+                  ],
+                  false
+                )
+              }
+            }
           }
         ]
       });
+    },
+    initChart() {
+      this.chart = echarts.init(this.$el, "macarons");
+      this.setOptions(this.chartData);
     }
   }
 };

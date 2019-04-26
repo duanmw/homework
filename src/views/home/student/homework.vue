@@ -256,7 +256,7 @@ export default {
           this.timer2 = setInterval(() => {
             if (this.homeworks.length > 0) {
               getFunc().catch(err => {
-                console.log("timer2(30s)里", err);
+                console.log("timer2(60s)里", err);
                 clearInterval(this.timer2);
               });
             }
