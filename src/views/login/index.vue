@@ -13,7 +13,7 @@
             auto-complete="on"
             label-position="left"
           >
-            <h3 class="title">vue-admin-template</h3>
+            <h3 class="title"><svg-icon icon-class="logo"/><span>作业管理系统</span></h3>
             <div style="margin-top: 20px">
               <el-radio-group v-model="loginForm.role">
                 <el-radio-button v-waves label="student">学生</el-radio-button>
@@ -302,12 +302,18 @@ $dark_gray: #889aa4;
       display: inline-block;
     }
     .title {
-      font-size: 26px;
-      font-weight: 400;
+      font-size: 24px;
+      font-weight: normal;
       color: $light_gray;
-      margin: 0px auto 26px auto;
+      margin: 0px auto 28px;
       text-align: center;
-      font-weight: bold;
+      .svg-icon{
+        margin-right: 10px;
+      }
+      span{
+      font-size: 22px;
+
+      }
     }
     .show-pwd {
       position: absolute;

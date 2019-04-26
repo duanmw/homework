@@ -41,13 +41,6 @@ import PieChart from "./PieChart";
 import BarChart from "./BarChart";
 import { chartDataByTid } from "@/api/course";
 
-const lineChartData = {
-  newVisitis: {
-    expectedData: [100, 120, 161, 134, 105, 160, 165],
-    actualData: [120, 82, 91, 154, 162, 140, 145]
-  }
-};
-
 export default {
   name: "Dashboard",
   components: {
@@ -59,7 +52,6 @@ export default {
     return {
       startVal: 0,
       endVal: 27,
-      lineChartData: lineChartData.newVisitis,
       loading: false,
       chartData: [],
       courseCount: 0, //查询出来的课程数，以此判断是否用轮询的结果去更新数据

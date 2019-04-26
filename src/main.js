@@ -34,19 +34,6 @@ Vue.use(ElementUI, {
 
 Vue.config.productionTip = false
 
-// router.beforeEach((to, from, next) => {
-//   // console.log(to)
-
-//   if (to.path === '/login') {
-//     document.title = '登录 | 作业管理系统'
-//   } else if (to.path === '/register') {
-//     document.title = '注册 | 作业管理系统'
-//   } else {
-//     document.title = '作业管理系统'
-//   }
-//   next()
-// })
-
 Vue.filter('substrDate', function(value) { // 全局过滤器，19位日期取前16位
   if (!value) return ''
   if (value.length === 19) {

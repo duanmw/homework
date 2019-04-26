@@ -6,7 +6,7 @@
     :rules="registerRules"
     label-position="left"
   >
-    <h3 class="title">vue-Rigister</h3>
+    <h3 class="title"><svg-icon icon-class="logo"/>注册</h3>
 
     <el-form-item prop="email">
       <span class="svg-container">
@@ -124,13 +124,6 @@ export default {
       return isvalidEmail(this.registerForm.email);
     }
   },
-  // watch: {
-  //   "registerForm.email": {
-  //     handler: function(value) {
-  //     },
-  //     immediate: true
-  //   }
-  // },
   methods: {
     sendEmail() {
       sendVCode(this.registerForm.email)
@@ -157,7 +150,7 @@ export default {
 
           this.btnControll = false; // 禁用按钮
 
-          let num = 15; //num秒倒计时
+          let num = 60; //num 60s秒倒计时
           const timeId = setInterval(() => {
             //使用箭头函数避免this问题
             this.getBtn = `${--num}s`;
@@ -238,7 +231,7 @@ export default {
           });
           // if (this.judgeVCode())
         } else {
-          this.$message.info("error submit");
+          // this.$message.info("error submit");
           return false;
         }
       });

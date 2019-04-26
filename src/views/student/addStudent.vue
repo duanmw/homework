@@ -10,7 +10,7 @@
             <span class="classname">导入学生 - {{courseName?courseName:"无数据，请返回重试！"}}</span>
           </el-col>
           <el-col :xs="24" :sm="12">
-            学生总数：{{rightContent?tableData.length:"？？"}}
+            学生总数：{{rightContent?tableData.length:"？"}}
             &nbsp;&nbsp;&nbsp;
             <el-button
               :disabled="courseName==''||tableData.length==0 || !rightContent"
