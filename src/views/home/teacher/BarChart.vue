@@ -121,7 +121,7 @@ export default {
                 }
               }
             },
-            animationDuration: 3000, //初始动画的时长
+            animationDuration: 4000, //初始动画的时长
             itemStyle: {
               normal: {
                 color: new echarts.graphic.LinearGradient(
