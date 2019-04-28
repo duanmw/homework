@@ -130,7 +130,7 @@ export default {
         .then(res => {
           this.$message.success(res.message);
           // const data = res.data
-          console.log("res:", res);
+          // console.log("res:", res);
           localStorage.setItem("code", res.data.vcode + res.data.email);
           localStorage.setItem("time", res.data.lasttime);
         })
@@ -209,7 +209,7 @@ export default {
               register(this.registerForm.email, this.registerForm.password)
                 .then(res => {
                   this.loading = false;
-                  console.log("res:", res);
+                  // console.log("res:", res);
                   if (res.code == 20000) {
                     //只有注册成功才跳转
                     this.$message.success(res.message);
@@ -229,9 +229,7 @@ export default {
                 });
             }
           });
-          // if (this.judgeVCode())
         } else {
-          // this.$message.info("error submit");
           return false;
         }
       });

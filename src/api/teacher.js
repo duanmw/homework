@@ -41,6 +41,14 @@ export function updatePwd(pwd, tid) {
     })
   })
 }
+
+export function upgradeAdmin(tid) {
+  return request({
+    url: '/api/teacher/upgradeAdmin?tid=' + tid,
+    method: 'get'
+  })
+}
+
 export function deleteTeacher(teacher) {
   return request({
     url: '/api/teacher/deleteTeacher',

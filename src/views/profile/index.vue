@@ -14,6 +14,7 @@
               style="color: #FEDB25;border: 2px solid #FEDB25;"
             >管理员</div>
             <div
+              @click="handleUpgradeAdmin"
               v-else-if="roles.includes('teacher')"
               class="profile-role"
               style="color: #00cff7;border: 2px solid #00cff7;"
@@ -97,7 +98,12 @@
 
 <script>
 import { mapGetters } from "vuex";
-import { updateName, rightOldPwd, updatePwd } from "@/api/teacher";
+import {
+  updateName,
+  rightOldPwd,
+  updatePwd,
+  upgradeAdmin
+} from "@/api/teacher";
 import {
   rightOldPwd as rightOldPwd2,
   updatePwd as updatePwd2
@@ -142,7 +148,8 @@ export default {
         oldPwd: [{ required: true, trigger: "blur", validator: validatePass }],
         newPwd: [{ required: true, trigger: "blur", validator: validatePass }],
         newPwd2: [{ required: true, trigger: "blur", validator: validatePass2 }]
-      }
+      },
+      clickNum: 0
     };
   },
   computed: {
@@ -242,6 +249,30 @@ export default {
             });
         }
       });
+    },
+    handleUpgradeAdmin() {
+      if (this.clickNum <= 0) {
+        setTimeout(() => {
+          if (this.clickNum >= 4) {
+            //1s内点击4次即可
+            this.$prompt("若要升级管理员，请输入升级码", "提示", {
+              closeOnClickModal: false,
+              confirmButtonText: "确定",
+              cancelButtonText: "取消",
+              inputPattern: /^i don't know$/, //升级码
+              inputErrorMessage: "升级码不正确"
+            })
+              .then(({ value }) => {
+                return upgradeAdmin(this.id);
+              })
+              .then(res => {
+                this.$message.success("升级成功，重新登录即可");
+              })
+              .catch(() => {});
+          }
+        }, 1000);
+      }
+      this.clickNum++;
     }
   },
   created() {
