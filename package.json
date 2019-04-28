@@ -19,7 +19,7 @@
     "babel-polyfill": "^6.26.0",
     "blueimp-md5": "^2.10.0",
     "echarts": "^4.2.1",
-    "element-ui": "^2.4.11",
+    "element-ui": "^2.8.2",
     "file-saver": "^2.0.1",
     "js-cookie": "2.2.0",
     "mockjs": "1.0.1-beta3",

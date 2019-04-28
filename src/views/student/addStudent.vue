@@ -15,7 +15,7 @@
             <el-button
               :disabled="courseName==''||tableData.length==0 || !rightContent"
               size="medium"
-              icon="el-icon-circle-check-outline"
+              icon="el-icon-circle-check"
               @click="handleAdd()"
             >确认添加</el-button>
           </el-col>

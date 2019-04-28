@@ -15,7 +15,7 @@
             <el-button
               :disabled="courseName==''"
               size="medium"
-              icon="el-icon-circle-check-outline"
+              icon="el-icon-circle-check"
               @click="handleAdd()"
             >添加完成</el-button>
           </el-col>
@@ -42,6 +42,7 @@
             >
               <span class="left-name">{{'单选题 ' + (index+1)}}</span>
               <div class="right-btn">
+                <i class="el-icon-magic-stick" @click="autoOption(question)"></i>
                 <el-button
                   size="small"
                   type="primary"
@@ -60,6 +61,7 @@
               <el-input
                 type="textarea"
                 maxlength="300"
+                show-word-limit
                 :autosize="{ minRows: 2, maxRows: 4}"
                 placeholder="请输入题目"
                 v-model="question.title"
@@ -68,6 +70,7 @@
                 v-if="question.showDesc"
                 type="textarea"
                 maxlength="300"
+                show-word-limit
                 :autosize="{ minRows: 1, maxRows: 4}"
                 placeholder="请输入答案解析（选填）"
                 v-model="question.desc"
@@ -156,6 +159,7 @@
             >
               <span class="left-name">{{'多选题 ' + (index+1)}}</span>
               <div class="right-btn">
+                <i class="el-icon-magic-stick" @click="autoOption(question)"></i>
                 <el-button
                   size="small"
                   type="primary"
@@ -174,6 +178,7 @@
               <el-input
                 type="textarea"
                 maxlength="300"
+                show-word-limit
                 :autosize="{ minRows: 2, maxRows: 4}"
                 placeholder="请输入题目"
                 v-model="question.title"
@@ -182,6 +187,7 @@
                 v-if="question.showDesc"
                 type="textarea"
                 maxlength="300"
+                show-word-limit
                 :autosize="{ minRows: 1, maxRows: 4}"
                 placeholder="请输入答案解析（选填）"
                 v-model="question.desc"
@@ -288,6 +294,7 @@
               <el-input
                 type="textarea"
                 maxlength="300"
+                show-word-limit
                 :autosize="{ minRows: 1, maxRows: 4}"
                 placeholder="请输入题目"
                 v-model="question.title"
@@ -296,6 +303,7 @@
                 v-if="question.showDesc"
                 type="textarea"
                 maxlength="300"
+                show-word-limit
                 :autosize="{ minRows: 1, maxRows: 4}"
                 placeholder="请输入答案解析（选填）"
                 v-model="question.desc"
@@ -348,6 +356,7 @@
               <el-input
                 type="textarea"
                 maxlength="300"
+                show-word-limit
                 :autosize="{ minRows: 2, maxRows: 4}"
                 placeholder="请输入题目"
                 v-model="question.title"
@@ -356,6 +365,7 @@
                 v-if="question.showDesc"
                 type="textarea"
                 maxlength="300"
+                show-word-limit
                 :autosize="{ minRows: 1, maxRows: 4}"
                 placeholder="请输入答案解析（选填）"
                 v-model="question.desc"
@@ -475,9 +485,19 @@ export default {
         params: { courseId: this.courseId, courseName: this.courseName }
       });
     },
-    // handleClick(tab, event) {
-    //   // console.log(tab, event);
-    // },
+    autoOption(ques) {
+      if (ques.title) {
+        let reg = /A.(.*)B.(.*)C.(.*)D.(.*)/s;
+        let result = reg.exec(ques.title);
+        // console.log(result);
+        if (result && result.length > 1) {
+          ques.title = ques.title.replace(reg, "").trim();
+          for (let i = 0; i < 4; i++) {
+            ques.options[i].content = result[i + 1].trim();
+          }
+        }
+      }
+    },
     setOnlyOneCheckbox(ques, index, onlyOne = true) {
       if (ques.options[index].content == "") {
         this.$message.warning("请先输入选项内容再设置！");
@@ -710,6 +730,14 @@ export default {
   }
   .el-tabs {
     margin: 20px 30px;
+    .el-icon-magic-stick {
+      vertical-align: middle;
+      margin-right: 10px;
+      color: #79bbff;
+      &:hover {
+        color: #3198ff;
+      }
+    }
     .little-badge {
       position: absolute;
       top: 12px;

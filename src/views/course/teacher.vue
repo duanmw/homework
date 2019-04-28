@@ -3,7 +3,6 @@
     <h3>全部课程</h3>
     <div class="course">
       <el-row :gutter="24">
-        <!-- <transition-group enter-active-class="animated fadeInDown" tag="div" appear> -->
         <transition-group name="fade-up" tag="div" appear>
           <el-col
             v-for="(course,index) in courses"
@@ -36,7 +35,6 @@
           </el-col>
         </transition-group>
       </el-row>
-      <!-- <FormDialog :dialogFormVisible="false"></FormDialog> -->
       <el-dialog
         custom-class="my-dialog"
         title="添加课程"
@@ -49,7 +47,7 @@
           </el-form-item>
 
           <el-form-item label="课程简介：">
-            <el-input maxlength="50" type="textarea" v-model="form.info"></el-input>
+            <el-input maxlength="50" show-word-limit type="textarea" v-model="form.info"></el-input>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -62,11 +60,9 @@
 </template>
 
 <script>
-// import { mapGetters } from "vuex";
 import CourseCard from "./CourseCard";
 import { isExist, addCourse, allCourseByTid } from "@/api/course";
 
-// import FormDialog from "./FormDialog";
 export default {
   name: "Course",
   components: {
@@ -95,9 +91,6 @@ export default {
       courses: []
     };
   },
-  // computed: {
-  //   ...mapGetters(["name", "roles", "email", "number"])
-  // },
   methods: {
     handleAdd() {
       this.$refs.addCourseForm.validate(valid => {
@@ -121,7 +114,6 @@ export default {
             })
             .then(res => {
               this.courses = res.data.courses;
-              // console.log(this.courses);
               this.loading = false;
               this.$message.success("添加成功！"); //添加成功！
             })
@@ -144,6 +136,7 @@ export default {
       // this.$refs.addCourseForm.clearValidate();
       //移除校验结果并重置表单为初始值
       this.$refs.addCourseForm.resetFields();
+      this.form.info = "";
     },
     afterUpdate(val) {
       this.courses[val.index].name = val.data.name;
@@ -161,12 +154,8 @@ export default {
     allCourseByTid(this.$store.getters.id)
       .then(res => {
         this.courses = res.data.courses;
-        console.log(this.courses);
-        // this.loading = false;
-        // this.$message.success("添加成功!");
       })
       .catch(error => {
-        // this.loading = false;
         this.$message.error(error + " 数据获取失败");
       });
   }

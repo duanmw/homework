@@ -59,7 +59,7 @@
             v-if="row.edit"
             type="success"
             size="small"
-            icon="el-icon-circle-check-outline"
+            icon="el-icon-circle-check"
             @click="confirmEdit(row)"
           >确定</el-button>
           <el-button

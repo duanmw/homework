@@ -36,7 +36,7 @@
           :disabled="!quesCount"
           type="primary"
           @click="handleSubmit"
-          icon="el-icon-circle-check-outline"
+          icon="el-icon-circle-check"
         >提交作业</el-button>
       </el-col>
     </el-row>
@@ -241,7 +241,7 @@ export default {
           );
         })
         .then(res => {
-          fullLoading.spinner = "el-icon-circle-check-outline";
+          fullLoading.spinner = "el-icon-circle-check";
           fullLoading.text = "提交成功";
           this.$notify({
             title: "提交成功",
@@ -319,7 +319,7 @@ export default {
                   this.form
                 )
                   .then(res => {
-                    fullLoading.spinner = "el-icon-circle-check-outline";
+                    fullLoading.spinner = "el-icon-circle-check";
                     fullLoading.text = "已提交成功";
                     this.$notify({
                       title: "自动提交成功",

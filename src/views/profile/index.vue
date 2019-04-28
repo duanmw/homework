@@ -54,7 +54,7 @@
             v-if="edit"
             type="success"
             size="small"
-            icon="el-icon-circle-check-outline"
+            icon="el-icon-circle-check"
             @click="confirmEdit()"
           >确定</el-button>
           <el-button
