@@ -10,8 +10,9 @@
             <span class="classname">添加作业 - {{suggestName?suggestName:"无数据，请返回重试！"}}</span>
           </el-col>
           <el-col :xs="24" :sm="12">
-            习题总数：{{quesCount}}
-            &nbsp;&nbsp;&nbsp;
+            <el-tooltip :content="'默认每题2分，当前作业共'+quesCount*2+'分'" placement="top">
+              <span>习题总数：{{quesCount}}</span>
+            </el-tooltip>&nbsp;&nbsp;&nbsp;
             <el-button
               :disabled="courseName==''"
               size="medium"
@@ -42,7 +43,7 @@
             >
               <span class="left-name">{{'单选题 ' + (index+1)}}</span>
               <div class="right-btn">
-                <i class="el-icon-magic-stick" @click="autoOption(question)"></i>
+                <i class="el-icon-magic-stick func-icon" @click="autoOption(question)"></i>
                 <el-button
                   size="small"
                   type="primary"
@@ -159,7 +160,7 @@
             >
               <span class="left-name">{{'多选题 ' + (index+1)}}</span>
               <div class="right-btn">
-                <i class="el-icon-magic-stick" @click="autoOption(question)"></i>
+                <i class="el-icon-magic-stick func-icon" @click="autoOption(question)"></i>
                 <el-button
                   size="small"
                   type="primary"
@@ -383,6 +384,12 @@
                   v-model="question.options[index].content"
                   placeholder="请输入空位答案，多个空位的答案请使用空格分隔"
                 ></el-input>
+                <i
+                  class="el-icon-plus func-icon"
+                  v-if="index==0"
+                  @click="question.options.push({content:'',isRight:true})"
+                ></i>
+                <i class="el-icon-close func-icon" v-else @click="question.options.splice(index,1)"></i>
               </div>
             </div>
             <el-button
@@ -730,13 +737,16 @@ export default {
   }
   .el-tabs {
     margin: 20px 30px;
+    .func-icon {
+      color: #79bbff;
+      &:hover {
+        color: #0e87ff;
+        cursor: pointer;
+      }
+    }
     .el-icon-magic-stick {
       vertical-align: middle;
       margin-right: 10px;
-      color: #79bbff;
-      &:hover {
-        color: #3198ff;
-      }
     }
     .little-badge {
       position: absolute;
@@ -760,7 +770,6 @@ export default {
     }
     .question-box {
       padding: 12px 0;
-      // border-bottom: 1px dashed #d1d6e2;
       .left-name {
         display: inline-block;
         padding-top: 10px;
@@ -788,7 +797,7 @@ export default {
       .answer-box {
         color: #7a7a7a;
         .el-input {
-          width: calc(100% - 53px);
+          width: calc(100% - 76px);
         }
       }
     }

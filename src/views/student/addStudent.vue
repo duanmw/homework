@@ -170,6 +170,7 @@ export default {
         .then(() => {
           this.existSid.splice(0, this.existSid.length); //清空待添加关联的学号数组
           this.students.splice(0, this.students.length); //清空待添加关联的学号数组
+          // this.students = [];
           //添加前判断学号唯一！暂不实现
           this.loading = this.$loading({
             lock: true,
@@ -178,23 +179,26 @@ export default {
             background: "rgba(0, 0, 0, 0.6)"
           });
 
-          // let students = [];
+          let proArr = []; //存循环中的promise结果
           this.tableData.forEach(item => {
-            haveOne(item["学号"]).then(res => {
-              if (res.data && res.data.id) {
-                //如果存在则把学生id加到“待添加关联”数组
-                this.existSid.push({ sid: res.data.id, cid: this.courseId });
-              } else {
-                //如果不存在则把学生信息加到“待添加学生”数组
-                let obj = {};
-                obj.number = item["学号"];
-                obj.name = item["姓名"];
-                obj.classname = item["班级"];
-                obj.password = md5("123456"); //学生登录默认密码123456
-                this.students.push(obj);
-              }
-            });
+            proArr.push(
+              haveOne(item["学号"]).then(res => {
+                if (res.data && res.data.id) {
+                  //如果存在则把学生id加到“待添加关联”数组
+                  this.existSid.push({ sid: res.data.id, cid: this.courseId });
+                } else {
+                  //如果不存在则把学生信息加到“待添加学生”数组
+                  let obj = {};
+                  obj.number = item["学号"];
+                  obj.name = item["姓名"];
+                  obj.classname = item["班级"];
+                  obj.password = md5("123456"); //学生登录默认密码123456
+                  this.students.push(obj);
+                }
+              })
+            );
           });
+          return Promise.all(proArr); //确保循环中全部promise执行完毕
         })
         .then(() => {
           return addStudent(this.students);
@@ -209,9 +213,6 @@ export default {
               scArr.push({ sid: id, cid: this.courseId });
             }
           }
-          // else {
-          //   throw "作业ID获取失败";
-          // }
           return addSC(this.existSid.concat(scArr));
         })
         .then(res => {

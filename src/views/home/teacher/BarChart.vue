@@ -81,7 +81,10 @@ export default {
               fontSize: 13,
               padding: [8, 0, 0, 0]
             },
-            nameGap:8,
+            nameGap: 8,
+            axisLine: {
+              lineStyle: { color: "#21B4D8" }
+            },
             type: "category",
             data: [
               "[0%-20%]",
@@ -99,6 +102,9 @@ export default {
           {
             name: "(人)",
             type: "value",
+            axisLine: {
+              lineStyle: { color: "#21B4D8" }
+            },
             axisTick: {
               show: false
             },
@@ -132,11 +138,11 @@ export default {
                   [
                     {
                       offset: 0,
-                      color: "#06ECFE"
+                      color: "#91F2DE"
                     },
                     {
                       offset: 0.8,
-                      color: "#45B4FE"
+                      color: "#32C5E9"
                     }
                   ],
                   false

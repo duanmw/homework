@@ -2,7 +2,7 @@
   <div class="question-container">
     <div class="title-bar">
       <el-row>
-        <el-col :xs="24" :sm="12">
+        <el-col :xs="24">
           <router-link
             :to="{ name: routerName, params: { courseId,courseName,activeName:this.$route.params.activeName }}"
             tag="span"
@@ -10,11 +10,6 @@
             <el-button size="small" icon="el-icon-back">返回</el-button>
           </router-link>
           <span class="workname">作业：{{$route.params.wname?$route.params.wname:"无数据，请返回重试！"}}</span>
-        </el-col>
-        <el-col :xs="24" :sm="12">
-          <el-button size="medium" icon="el-icon-circle-plus-outline">添加习题</el-button>
-          <!-- <el-button size="medium" icon="el-icon-view">查看成绩</el-button> -->
-          <el-button size="medium" icon="el-icon-printer">统计成绩</el-button>
         </el-col>
       </el-row>
     </div>

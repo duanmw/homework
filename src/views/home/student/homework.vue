@@ -45,14 +45,12 @@
             </el-col>
             <el-col :xs="24" :sm="16">
               <el-popover trigger="hover" placement="right">
-                <!-- <div v-for="i in 4" :key="i"> -->
                 <div v-for="(sc,index) in i.scores" :key="sc.submittime">
                   {{sc.submittime}}提交，成绩：{{ sc.score}}分，耗时：{{Math.floor(sc.spendtime/60)}}min{{sc.spendtime%60}}s
                   <div class="split-line"></div>
                 </div>
                 <div v-if="i.scores&&i.scores.length==0">无提交信息</div>
 
-                <!-- </div> -->
                 <span slot="reference">
                   <span class="label-text">你已提交次数：</span>
                   {{i.scores?i.scores.length:0}}
@@ -69,7 +67,7 @@
               </router-link>
 
               <el-button
-                v-if="i.state===2"
+                v-if="i.state===2 && i.scores.length<i.maxsubmit"
                 size="small"
                 type="success"
                 plain
@@ -77,7 +75,7 @@
                 @click="handleStart(i)"
               >开始答题</el-button>
               <el-button
-                v-if="i.state===1"
+                v-if="i.state===1 || (i.state===2 && i.scores.length>=i.maxsubmit)"
                 disabled
                 size="small"
                 type="success"
@@ -131,7 +129,7 @@ export default {
           this.homeworks = res.data.works;
 
           let getState = function() {
-            console.log("定时器里getState执行");
+            // console.log("定时器里getState执行");
             let now = new Date();
             let clearflag = true; //是否执行定时器的标志,true要清除
             this.homeworks.forEach((item, index) => {
@@ -196,14 +194,19 @@ export default {
                 this.$router.push({
                   name: "DoWork",
                   // query: { work: work.id },
-                  params: { work, course: this.course, activeName: this.activeName }
+                  params: {
+                    work,
+                    course: this.course,
+                    activeName: this.activeName
+                  }
                 });
               })
               .catch(err => {
-                this.$message({
-                  type: "info",
-                  message: err
-                });
+                if (err != "cancel")
+                  this.$message({
+                    type: "info",
+                    message: err
+                  });
               });
           }
         })

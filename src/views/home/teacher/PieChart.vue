@@ -58,6 +58,15 @@ export default {
   methods: {
     setOptions(chartdata) {
       this.chart.setOption({
+        color: [
+          "#32C5E9",
+          "#91F2DE",
+          "#89C3F8",
+          "#F2A695",
+          "#FCC667",
+          "#AEB7F9",
+          "#748BFA"
+        ],
         title: {
           text: "学生总数",
           subtext: chartdata.stucount,

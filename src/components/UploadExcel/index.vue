@@ -13,7 +13,7 @@
       <el-button
         :loading="loading"
         style="margin-left:16px;"
-        icon="el-icon-upload"
+        icon="el-icon-folder-opened"
         size="small"
         type="primary"
         @click="handleUpload"

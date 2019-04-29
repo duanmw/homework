@@ -123,7 +123,7 @@
             v-if="row.edit"
             class="cancel-btn"
             size="small"
-            icon="el-icon-circle-close-outline"
+            icon="el-icon-circle-close"
             type="warning"
             @click="cancelEdit(row)"
           >取消</el-button>

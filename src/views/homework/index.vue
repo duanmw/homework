@@ -187,7 +187,7 @@ export default {
             });
             if (clearflag && this.timer2) {
               clearInterval(this.timer2);
-              console.log("clearflag为true,清除timer2");
+              // console.log("clearflag为true,清除timer2");
             }
           }
         });
@@ -208,7 +208,7 @@ export default {
               }
             }, 60 * 1000);
           }
-          console.log("timer2里发送请求---" + times);
+          // console.log("timer2里发送请求---" + times);
           getFunc().catch(err => {
             console.log("timer2里", err);
             times = 50;
@@ -239,7 +239,7 @@ export default {
           this.homeworks = res.data.works;
 
           let getState = function() {
-            console.log("定时器里getState执行");
+            // console.log("定时器里getState执行");
             let now = new Date();
             let clearflag = true; //是否执行定时器的标志,true要清除
             this.homeworks.forEach((item, index) => {
@@ -329,10 +329,8 @@ export default {
           });
           this.stuCount = obj.stucount; //设置当前课程学生人数
         }
-        // this.$set(this.thisCourse, stucount, obj.stucount);
       })
       .catch(error => {
-        // this.loading = false;
         this.$message.error(error + " 数据获取失败");
       });
   },
@@ -348,7 +346,6 @@ export default {
 <style lang="scss">
 .work-container {
   .el-collapse-item__header {
-    // font-size: 14px;
     &.is-active {
       .work-name {
         color: #409eff;

@@ -130,7 +130,6 @@ export default {
       return chartDataByTid(this.$store.getters.id).then(res => {
         if (this.courseCount === res.data.courses.length) {
           //此处暂时仅判断长度，不严谨
-
           // this.homeworks.forEach((item, index) => {
           //   this.$set(item, "submitcount", res.data.works[index].submitcount); //这样改变对象属性值才能触发视图更新
           //   this.$set(item, "starttime", res.data.works[index].starttime); //这样改变对象属性值才能触发视图更新
@@ -191,7 +190,6 @@ export default {
             }
           }, 60 * 1000);
         }
-        console.log("timer1里发送请求---" + times);
         getFunc().catch(err => {
           console.log("timer1里", err);
           times = 50;
@@ -226,7 +224,7 @@ export default {
     box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.07);
     .chart-title {
       font-size: 18px;
-      padding: 12px 20px 20px;
+      margin: 14px 20px 20px;
       color: #909399;
       transition: color 0.4s;
       span {

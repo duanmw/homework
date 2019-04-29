@@ -174,7 +174,7 @@ export default {
         item.options.forEach(i => {
           this.answers.push({
             number,
-            content: i.content,
+            content: i.content.trim(), //主要是填空题填的答案两端可能有空格
             correct: i.isRight ? "yes" : "no"
           });
         });
@@ -248,7 +248,6 @@ export default {
     width: 100%;
   }
 }
-
 </style>
 
 <style lang="scss" scoped>

@@ -100,7 +100,7 @@ export default {
     };
     return {
       registerForm: {
-        email: "505839245@qq.com",
+        email: "",
         verifyCode: "",
         password: ""
       },

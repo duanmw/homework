@@ -29,7 +29,7 @@ export function updatePwd(pwd, sid) {
  */
 export function haveOne(number) {
   return request({
-    url: '/api/student//oneByNumber?number=' + number,
+    url: '/api/student/oneByNumber?number=' + number,
     method: 'get'
   })
 }

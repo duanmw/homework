@@ -104,7 +104,7 @@
               v-if="row.edit"
               class="cancel-btn"
               size="small"
-              icon="el-icon-circle-close-outline"
+              icon="el-icon-circle-close"
               type="warning"
               @click="cancelEdit(row)"
             >取消</el-button>
@@ -287,8 +287,6 @@ export default {
         });
     },
     CurrentRowChange(row, oldRow) {
-      // console.log("row",row);
-      console.log("oldRow", oldRow);
       if (oldRow && oldRow.edit) {
         this.cancelEdit(oldRow);
       }

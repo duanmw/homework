@@ -3,12 +3,7 @@
     <el-row class="title-bar">
       <el-col :xs="24" :sm="12">
         <template v-if="$route.params.course">
-          <!-- <router-link
-            :to="{ name: 'StuHomework', params: { course:this.$route.params.course,activeName:this.$route.params.activeName } }"
-            tag="span"
-          >-->
           <el-button @click="handleReturn" size="small" icon="el-icon-back">返回</el-button>
-          <!-- </router-link> -->
           &nbsp;&nbsp;
           <span class="workname">作业：{{work.name}}</span>
         </template>
@@ -80,7 +75,7 @@
         </template>
         <template v-else-if="i.question.type==='d'">
           <div class="option-box">
-            <el-input clearable v-model.trim="form[index].answer"></el-input>
+            <el-input clearable v-model="form[index].answer"></el-input>
           </div>
         </template>
       </el-card>

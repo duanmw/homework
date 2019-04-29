@@ -73,7 +73,7 @@
         </el-form-item>
 
         <el-form-item label="课程简介：">
-          <el-input maxlength="50" type="textarea" v-model="form.info"></el-input>
+          <el-input maxlength="50" show-word-limit type="textarea" v-model="form.info"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">

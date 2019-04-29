@@ -14,7 +14,7 @@
         <el-col :xs="24" :sm="12">
           <el-button
             :disabled="this.students.length==0"
-            size="medium"
+            size="small"
             icon="el-icon-download"
             :loading="downloadLoading"
             @click="dialogFormVisible=true"
