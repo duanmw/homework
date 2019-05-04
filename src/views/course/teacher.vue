@@ -43,7 +43,7 @@
       >
         <el-form size="medium" :model="form" :rules="rules" ref="addCourseForm">
           <el-form-item label="课程名称：" prop="name">
-            <el-input clearable maxlength="20" v-model="form.name"></el-input>
+            <el-input clearable maxlength="20" v-model.trim="form.name"></el-input>
           </el-form-item>
 
           <el-form-item label="课程简介：">

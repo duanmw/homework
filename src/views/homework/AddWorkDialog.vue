@@ -10,7 +10,7 @@
   >
     <el-form :model="form" :rules="rules" ref="addWorkForm" size="medium" label-width="100px">
       <el-form-item label="作业名称：" prop="name">
-        <el-input clearable maxlength="20" v-model="form.name"></el-input>
+        <el-input clearable maxlength="20" v-model.trim="form.name"></el-input>
       </el-form-item>
       <el-form-item label="开放时间：" prop="startTime">
         <el-date-picker

@@ -54,8 +54,7 @@
           <svg-icon icon-class="nodata"/>
         </div>
         <el-table-column type="index" width="50"></el-table-column>
-        <!-- <el-table-column align="center" label="学号" width="80"> -->
-        <el-table-column align="center" label="学号">
+        <el-table-column align="center" sortable label="学号" prop="number">
           <template slot-scope="{row}">
             <template v-if="row.edit">
               <el-input v-model.trim="row.number" maxlength="10" class="edit-input" size="small"/>
@@ -65,20 +64,18 @@
         </el-table-column>
 
         <el-table-column align="center" label="班级">
-          <!-- <el-table-column width="120px" align="center" label="班级"> -->
           <template slot-scope="{row}">
             <template v-if="row.edit">
-              <el-input v-model="row.classname" maxlength="20" class="edit-input" size="small"/>
+              <el-input v-model.trim="row.classname" maxlength="20" class="edit-input" size="small"/>
             </template>
             <span v-else>{{ row.classname }}</span>
           </template>
         </el-table-column>
 
-        <!-- <el-table-column min-width="300px" label="姓名"> -->
         <el-table-column align="center" label="姓名">
           <template slot-scope="{row}">
             <template v-if="row.edit">
-              <el-input v-model="row.name" maxlength="10" class="edit-input" size="small"/>
+              <el-input v-model.trim="row.name" maxlength="10" class="edit-input" size="small"/>
             </template>
             <span v-else>{{ row.name }}</span>
           </template>
@@ -154,10 +151,10 @@
           <el-input maxlength="10" clearable v-model="form.number"></el-input>
         </el-form-item>
         <el-form-item label="班级：" prop="classname">
-          <el-input maxlength="20" clearable v-model="form.classname"></el-input>
+          <el-input maxlength="20" clearable v-model.trim="form.classname"></el-input>
         </el-form-item>
         <el-form-item label="姓名：" prop="name">
-          <el-input maxlength="10" clearable v-model="form.name"></el-input>
+          <el-input maxlength="10" clearable v-model.trim="form.name"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -302,6 +299,9 @@ export default {
       //先判断学号是否存在，确保唯一性
       if (!isvalidStudentID(row.number)) {
         this.$message.warning("请输入10位学号！");
+        return false;
+      } else if (row.classname == "" || row.name == "") {
+        this.$message.warning("输入不能为空！");
         return false;
       }
       isExist(row.number)

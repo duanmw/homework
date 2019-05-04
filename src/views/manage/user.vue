@@ -84,14 +84,6 @@
         ></el-table-column>
         <el-table-column key="col3" align="center" label="所属课程" min-width="260" prop="courses">
           <template slot-scope="{row}">
-            <!-- <el-popover v-for="c in row.courses" :key="c.id" trigger="hover" placement="top">
-              <div>邮箱：{{ }}</div>
-              <div class="split-line"></div>
-              <div>教师：{{ }}</div>
-              <div slot="reference">
-                <el-tag size="medium">{{ c.name}}</el-tag>
-              </div>
-            </el-popover>-->
             <el-tag v-for="c in row.courses" :key="c.id" size="medium">{{ c.name}}</el-tag>
             <span v-if="row.courses.length==0" class="null-tip">暂无</span>
           </template>

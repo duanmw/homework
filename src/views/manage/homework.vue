@@ -53,7 +53,7 @@
       <el-table-column align="center" label="作业名" min-width="120">
         <template slot-scope="{row}">
           <template v-if="row.edit">
-            <el-input v-model="row.name" maxlength="20" class="edit-input" size="small"/>
+            <el-input v-model.trim="row.name" maxlength="20" class="edit-input" size="small"/>
           </template>
           <span v-else>{{ row.name }}</span>
         </template>
@@ -246,9 +246,9 @@ export default {
     },
     confirmEdit(row) {
       //先判断作业名是否存在，暂时不做
-      if (row.name.trim() === "") {
+      if (row.name === "") {
         this.$message.warning("作业名不能为空！");
-      } else if (row.name.trim().length < 2) {
+      } else if (row.name.length < 2) {
         this.$message.warning("作业名不少于2个字符！");
       } else {
         updateWork(row)
