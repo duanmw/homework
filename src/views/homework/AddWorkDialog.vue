@@ -92,7 +92,7 @@ export default {
         startTime: "",
         closeTime: "",
         showAnswer: true,
-        maxSubmit: 1
+        maxSubmit: 2 //默认可以提交2次
       },
       pickerOptions0: {
         disabledDate(time) {

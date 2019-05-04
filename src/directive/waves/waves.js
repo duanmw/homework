@@ -7,7 +7,7 @@ export default{
       const opts = Object.assign({
         ele: el, // 波纹作用元素
         type: 'hit', // hit 点击位置扩散 center中心点扩展
-        color: 'rgba(0, 0, 0, 0.08)' // 波纹颜色
+        color: 'rgba(0, 0, 0, 0.09)' // 波纹颜色
       }, customOpts)
       const target = opts.ele
       if (target) {

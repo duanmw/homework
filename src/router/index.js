@@ -197,40 +197,6 @@ export const asyncRouterMap = [{
     }]
   }]
 },
-
-// children: [{
-//   path: 'index',
-//   name: 'Homework',
-//   component: () => import('@/views/homework/index'),
-//   meta: {
-//     title: '作业',
-//     icon: 'homework'
-//   }
-// },
-// {
-//   path: 'addhomework',
-//   // redirect: ':wid/question',
-//   name: 'addHomework',
-//   component: () => import('@/views/homework/addHomework'),
-//   hidden: true,
-//   meta: {
-//     title: '添加作业'
-//     // icon: 'homework'
-//   }
-// },
-// {
-//   path: ':wid',
-//   // redirect: ':wid/question',
-//   name: 'Question',
-//   component: () => import('@/views/homework/question'),
-//   hidden: true,
-//   meta: {
-//     title: '作业习题'
-//     // icon: 'homework'
-//   }
-// }
-// ]
-// },
 {
   path: '/student',
   redirect: '/student/index',

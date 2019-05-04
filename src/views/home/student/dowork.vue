@@ -397,6 +397,7 @@ export default {
   margin: 30px;
   .title-bar {
     .spendtime-text {
+      color: #606266;
       width: 90px;
       display: inline-block;
       // text-align: center;
@@ -454,7 +455,7 @@ export default {
   .el-card {
     margin-bottom: 10px;
     .ques-title {
-      user-select: none; //文字不可选中
+      user-select: none !important; //文字不可选中
       font-size: 16px;
       padding-bottom: 12px;
       border-bottom: 1px solid #ebeef5;

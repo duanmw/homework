@@ -109,7 +109,7 @@ html::-webkit-scrollbar {
   /*高宽分别对应横竖滚动条的尺寸*/
   // border: 1px solid #fcfcfc;
   // background: #EBEEF5;
-  -webkit-box-shadow: inset 1px 0 1px rgba(235, 238, 245, 0.8);
+  box-shadow: inset 1px 0 1px rgba(235, 238, 245, 0.8);
 }
 
 html::-webkit-scrollbar-thumb {

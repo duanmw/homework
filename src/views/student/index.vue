@@ -32,9 +32,9 @@
           >
             <el-button size="medium" icon="el-icon-upload2">导入学生</el-button>
           </router-link>
-          <el-button v-else disabled size="medium" icon="el-icon-upload2">导入学生</el-button>
-
-          <!-- <el-button :disabled="!courseId" size="medium" icon="el-icon-printer">统计成绩</el-button> -->
+          <span v-else>
+            <el-button disabled size="medium" icon="el-icon-upload2">导入学生</el-button>
+          </span>
         </el-col>
       </el-row>
     </div>
@@ -462,6 +462,9 @@ export default {
     padding: 0 0 20px;
     & > .el-row > .el-col {
       margin-bottom: 8px;
+      .el-button + span {
+        margin-left: 10px;
+      }
     }
   }
   .content-area {

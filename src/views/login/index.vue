@@ -43,7 +43,7 @@
                 v-model.trim="loginForm.email"
                 name="email"
                 type="text"
-                placeholder="教师账号"
+                placeholder="邮箱账号"
               />
             </el-form-item>
             <el-form-item prop="password">
@@ -156,7 +156,6 @@ export default {
   watch: {
     $route: {
       handler: function(route) {
-        // console.log("route",route);
         this.redirect = route.query && route.query.redirect;
         this.loginForm.email = route.query.email || "";
         if (route.path == "/register") {
@@ -170,24 +169,10 @@ export default {
     },
     "loginForm.role": function(val, old) {
       this.resetForm();
-
       if (val === "teacher") {
         localStorage.setItem("user", "teacher");
-        // this.$nextTick(() => { //点击角色按钮后重绘背景
-        //   particles([
-        //     "3,62,126",
-        //     "85,107,139",
-        //     "66,52,178",
-        //     "255,108,80",
-        //     "96, 100, 131",
-        //     "111,155,152"
-        //   ]);
-        // });
       } else {
         localStorage.setItem("user", "student");
-        // this.$nextTick(() => {
-        //   particles();
-        // });
       }
     }
   },
@@ -224,7 +209,6 @@ export default {
   },
 
   created() {
-    // console.log("--"+this.$route)
     this.loginForm.role = localStorage.getItem("user") || "student";
     this.$nextTick(() => {
       particles();
@@ -249,13 +233,11 @@ $dark_gray: #889aa4;
     }
   }
   .el-radio-button__inner {
-    // width: 100%;
     background: rgb(236, 236, 236);
   }
   .el-input {
     vertical-align: middle;
     display: inline-block;
-    // height: 47px;
     width: calc(100% - 35px);
     input {
       background: transparent;
@@ -263,12 +245,11 @@ $dark_gray: #889aa4;
       -webkit-appearance: none;
       border-radius: 0px;
       color: $light_gray;
-      // height: 47px;
       &:-webkit-autofill {
         -webkit-text-fill-color: #fff !important;
-        -webkit-transition-delay: 99999s;
-        -webkit-transition: color 99999s ease-out,
-          background-color 99999s ease-out;
+        transition-delay: 99999s;
+        transition: color 99999s ease-out,
+        background-color 99999s ease-out;
       }
     }
   }
@@ -286,9 +267,7 @@ $dark_gray: #889aa4;
     .tips {
       font-size: 14px;
       color: #409eff;
-
       text-align: center;
-      // margin-bottom: 10px;
       .link:hover {
         // cursor: pointer;
         color: $light_gray;
@@ -339,7 +318,6 @@ $light_gray: #eee;
     background: #0f5867;
   }
   50% {
-    // background: #0f5867;
     background: #174266;
   }
   75% {
@@ -352,7 +330,6 @@ $light_gray: #eee;
 .box-container {
   min-height: 100%;
   width: 100%;
-  // background-color: $bg;
   animation: bgcolor-change 15s linear infinite;
   display: flex;
   flex-direction: column;
@@ -365,16 +342,12 @@ $light_gray: #eee;
     width: 100%;
     height: 100%;
   }
-  // .login-form {
   .panel {
     position: relative;
-    // top: -16px;
     background: rgba(255, 255, 255, 0.1);
     border-radius: 8px;
-    // margin-bottom: 10%;
     padding: 20px;
     width: 420px;
-    // height: 380px;
     max-width: 100%;
     .el-radio-group {
       label {

@@ -27,7 +27,9 @@
           >
             <el-button size="medium" icon="el-icon-circle-plus-outline">添加作业</el-button>
           </router-link>
-          <el-button v-else disabled size="medium" icon="el-icon-circle-plus-outline">添加作业</el-button>
+          <span v-else>
+            <el-button disabled size="medium" icon="el-icon-circle-plus-outline">添加作业</el-button>
+          </span>
 
           <router-link
             v-if="courseId && homeworks.length>0"
@@ -36,7 +38,9 @@
           >
             <el-button size="medium" icon="el-icon-printer">统计成绩</el-button>
           </router-link>
-          <el-button v-else disabled size="medium" icon="el-icon-printer">统计成绩</el-button>
+          <span v-else>
+            <el-button disabled size="medium" icon="el-icon-printer">统计成绩</el-button>
+          </span>
         </el-col>
       </el-row>
     </div>
@@ -45,11 +49,8 @@
         <transition-group name="fade-up" tag="div" appear>
           <el-collapse-item v-for="i in homeworks" :key="'work'+i.id" :name="i.id">
             <div slot="title" class="panel-title">
-              <!-- <span v-if="i.state==1" class="wait-state">未开放</span> -->
               <el-tag v-if="i.state==1" type="warning" size="small">未开放</el-tag>
-              <!-- <span v-else-if="i.state==2" class="opening-state">开放中</span> -->
               <el-tag v-else-if="i.state==2" type="success" size="small">开放中</el-tag>
-              <!-- <span v-else class="closed-state">已关闭</span>-->
               <el-tag v-else type="info" size="small">已关闭</el-tag>
               <span class="work-name">{{i.name}}</span>
               <span class="create-time">创建于 {{i.createtime}}</span>
@@ -363,6 +364,9 @@ export default {
     padding: 0 0 20px;
     & > .el-row > .el-col {
       margin-bottom: 8px;
+      span + span {
+        margin-left: 10px;
+      }
     }
   }
   .content-area {
@@ -406,6 +410,9 @@ export default {
   }
   .el-collapse-item .el-col {
     margin-top: 12px;
+    span + .el-button {
+      margin-left: 10px;
+    }
   }
 }
 </style>

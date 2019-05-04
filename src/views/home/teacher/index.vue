@@ -229,7 +229,7 @@ export default {
       transition: color 0.4s;
       span {
         font-size: 12px;
-        margin-left: 8px;
+        margin-left: 12px;
       }
       &:hover {
         cursor: pointer;
