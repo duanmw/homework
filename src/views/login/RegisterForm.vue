@@ -55,7 +55,7 @@
         type="primary"
         style="width:100%;"
         @click.native.prevent="handleRegister"
-      >注 册</el-button>
+      >注&nbsp;&nbsp;册</el-button>
     </el-form-item>
     <div class="tips">
       <router-link to="/login" class="link">已有账号？前往登录</router-link>
@@ -220,7 +220,7 @@ export default {
                         query: { email: this.registerForm.email }
                       });
                       clearTimeout(tid);
-                    }, 1600);
+                    }, 1500);
                   }
                 })
                 .catch(error => {

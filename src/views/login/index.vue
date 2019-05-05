@@ -68,7 +68,7 @@
                 type="primary"
                 style="width:100%;"
                 @click.native.prevent="handleLogin"
-              >登 录</el-button>
+              >登&nbsp;&nbsp;录</el-button>
             </el-form-item>
 
             <div class="tips">
