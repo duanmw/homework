@@ -144,7 +144,7 @@ export default {
     },
     afterDelete(index) {
       this.loading = false;
-      if (index) {
+      if (index!=undefined) {
         this.courses.splice(index, 1); //删除一个
         this.$message.success("删除成功！"); //删除成功！
       }
