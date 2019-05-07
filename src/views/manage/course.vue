@@ -104,12 +104,10 @@
 </template>
 
 <script>
-import { allByPage, updateCourse, deleteCourse } from "@/api/course";
-// import Pagination from "@/components/Pagination"; // Secondary package based on el-pagination
+import { allByPage, updateCourse, deleteCourse, isExist } from "@/api/course";
 
 export default {
   name: "CourseManage",
-  // components: { Pagination },
   data() {
     return {
       loading: false,
@@ -167,19 +165,27 @@ export default {
       row.edit = false;
     },
     confirmEdit(row) {
-      //先判断课程名是否存在，暂时不做
       if (row.name === "") {
         this.$message.warning("课程名不能为空！");
       } else if (row.name.length < 2) {
         this.$message.warning("课程名不少于2个字符！");
       } else {
-        updateCourse({
-          id: row.id,
-          tid: row.tid,
-          name: row.name,
-          info: row.info,
-          createtime: row.createtime
-        })
+        isExist(row.tid, row.name) //先判断课程名是否存在
+          .then(res => {
+            if (res.message == "true" && row.name != row.originalName) {
+              //如果存在课程名且不跟修改前不一样，说明重复
+              this.$message.warning("此教师已存在此课程名！请更换");
+              return Promise.reject("exist");
+            } else {
+              return updateCourse({
+                id: row.id,
+                tid: row.tid,
+                name: row.name,
+                info: row.info,
+                createtime: row.createtime
+              });
+            }
+          })
           .then(res => {
             this.$message.success("更新成功！");
             row.edit = false;
@@ -187,8 +193,10 @@ export default {
             row.originalInfo = row.info;
           })
           .catch(error => {
-            this.cancelEdit(row); //出现错误就取消编辑
-            this.$message.error(error + " 更新失败！");
+            if (error != "exist") {
+              this.cancelEdit(row); //出现错误就取消编辑
+              this.$message.error(error + " 更新失败！");
+            }
           });
       }
     },
