@@ -67,7 +67,6 @@ export default {
       if (!value) {
         callback(new Error("请选择关闭时间"));
       } else if (value <= this.form.starttime) {
-        // } else if (value <= new Date(this.form.starttime)) {
         callback(new Error("关闭时间必须晚于开放时间"));
       } else if (value <= new Date()) {
         callback(new Error("关闭时间必须晚于当前时间"));
@@ -75,7 +74,7 @@ export default {
         //和原本的关闭时间作比较
         callback(new Error("关闭时间只能往后修改"));
       } else {
-        console.log("验证通过-----");
+        // console.log("验证通过-----");
         callback();
       }
     };
@@ -154,25 +153,14 @@ export default {
         if (valid) {
           this.dialogShow = false;
           this.$emit("beforeUpdate")
-          // const loading = this.$loading({
-          //   lock: true,
-          //   text: "Loading...",
-          //   spinner: "el-icon-loading",
-          //   background: "rgba(0, 0, 0, 0.6)"
-          // });
             updateWork(this.form)
-              .then(res => {
-                // loading.text = " 作业修改成功";
-                // loading.close();
+              .then(res => {  
                 this.$emit("afterUpdate")
                 this.$message.success("作业修改成功!");
-                // this.$emit("back");
               })
               .catch(error => {
-                // loading.close();
                 this.$emit("afterUpdate")
                 this.$message.error(error + " 修改失败");
-                // this.$emit("back");
               });
         }
       });

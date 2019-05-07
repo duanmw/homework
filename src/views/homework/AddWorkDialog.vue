@@ -92,7 +92,7 @@ export default {
         startTime: "",
         closeTime: "",
         showAnswer: true,
-        maxSubmit: 2 //默认可以提交2次
+        maxSubmit: 1 //默认可以提交1次
       },
       pickerOptions0: {
         disabledDate(time) {
@@ -190,7 +190,7 @@ export default {
           this.dialogShow = false;
           const loading = this.$loading({
             lock: true,
-            text: "正在添加...",
+            text: "正在添加... 请稍等",
             spinner: "el-icon-loading",
             background: "rgba(0, 0, 0, 0.6)"
           });
