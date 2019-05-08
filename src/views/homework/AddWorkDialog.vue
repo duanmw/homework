@@ -1,5 +1,4 @@
 <template>
-  <!-- <div> -->
   <!-- 类my-dialog宽度做了响应式,所以加上此类名 -->
   <el-dialog
     custom-class="my-dialog"
@@ -42,7 +41,6 @@
       <el-button size="medium" type="primary" @click="handleAdd">确 定</el-button>
     </div>
   </el-dialog>
-  <!-- </div> -->
 </template>
 <script>
 import { addWork, addQuestion, addWQ, addAnswer } from "@/api/homework";
@@ -140,6 +138,8 @@ export default {
       if (val) {
         //对话框显示
         this.form.startTime = new Date(); //设置默认开放时间
+        if (this.quesCount > 0)
+          this.form.name = this.suggestName + "(共" + this.quesCount + "题)"; //更新作业名
 
         this.questions.splice(0, this.questions.length); //清空原数组
         this.answers.splice(0, this.answers.length); //清空原数组
@@ -147,12 +147,8 @@ export default {
         this.forEachQuestion(this.typeTwo, "b");
         this.forEachQuestion(this.typeThree, "c");
         this.forEachQuestion(this.typeFour, "d");
-
-        console.log("遍历完了");
+        // console.log("遍历完了");
       }
-    },
-    quesCount(val) {
-      this.form.name = this.suggestName + "(共" + val + "题)";
     }
   },
   methods: {
