@@ -70,9 +70,9 @@ export default {
         callback(new Error("关闭时间必须晚于开放时间"));
       } else if (value <= new Date()) {
         callback(new Error("关闭时间必须晚于当前时间"));
-      } else if (value < new Date(this.homework.closetime)) {
+      } else if (this.state==2 && value < new Date(this.homework.closetime)) {
         //和原本的关闭时间作比较
-        callback(new Error("关闭时间只能往后修改"));
+        callback(new Error("关闭时间只能往后修改"));//若作业在开放中，关闭时间只能往后修改
       } else {
         // console.log("验证通过-----");
         callback();
