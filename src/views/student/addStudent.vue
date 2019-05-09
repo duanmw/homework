@@ -23,6 +23,33 @@
       </div>
     </sticky>
     <div class="content">
+      <transition enter-active-class="animated fadeInUp" appear>
+        <el-alert
+          v-if="showTip"
+          class="once-tip"
+          center
+          type="info"
+          @close="closeTip"
+          close-text="我知道了"
+          show-icon
+        >
+          <div>
+            <span>Excel内容格式要求：</span>
+            <table class="example-table" cellspacing="0" cellpadding="0">
+              <tr>
+                <td>学号</td>
+                <td>班级</td>
+                <td>姓名</td>
+              </tr>
+              <tr>
+                <td>xxx</td>
+                <td>xxx</td>
+                <td>xxx</td>
+              </tr>
+            </table>
+          </div>
+        </el-alert>
+      </transition>
       <upload-excel-component
         v-if="courseId"
         :on-success="handleSuccess"
@@ -74,10 +101,10 @@ export default {
       rightContent: false,
       loading: null,
       existSid: [],
-      students: []
+      students: [],
+      showTip: true //excel格式的alert提示
     };
   },
-  computed: {},
   watch: {
     tableData(val) {
       if (this.tableHeader.length > 0) {
@@ -114,6 +141,9 @@ export default {
     }
   },
   methods: {
+    closeTip() {
+      localStorage.setItem("showtip", 1); // !+'1'为false
+    },
     beforeUpload(file) {
       const isLt1M = file.size / 1024 / 1024 < 1;
       if (isLt1M) {
@@ -129,7 +159,6 @@ export default {
       this.tableData = results;
       this.tableHeader = header;
     },
-
     beforeBack() {
       if (this.tableData.length > 0) {
         this.$confirm("放弃添加，直接返回？", "提示", {
@@ -240,6 +269,7 @@ export default {
       this.courseName = this.$route.params.courseName;
       this.suggestName = this.$route.params.suggestName;
     }
+    this.showTip = !+localStorage.getItem("showtip"); // showtip默认true. !+'0'为true, !+'1'为false
   }
 };
 </script>
@@ -253,6 +283,12 @@ export default {
   td {
     border: 1px solid rgb(219, 221, 224);
     padding: 2px 10px;
+  }
+}
+.once-tip {
+  margin-bottom: 10px;
+  .el-alert__description {
+    margin: 0;
   }
 }
 </style>
@@ -279,9 +315,14 @@ export default {
 
   .content {
     padding: 30px;
-    .tip-content {
-      font-size: 16px;
-      margin-top: 1px;
+    .once-tip {
+      span {
+        font-size: 16px;
+        vertical-align: middle;
+      }
+      table {
+        display: inline-block;
+      }
     }
   }
 }

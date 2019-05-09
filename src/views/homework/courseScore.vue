@@ -28,7 +28,7 @@
           :indeterminate="isIndeterminate"
           v-model="checkAll"
           @change="handleCheckAllChange"
-        >全选(筛选列)</el-checkbox>
+        >全选(筛选作业)</el-checkbox>
         <el-checkbox-group v-model="checkboxVal" @change="handleCheckedChange">
           <el-checkbox v-for="i in works" :label="i.name" :key="'wname'+i.shortName">{{i.shortName}}</el-checkbox>
         </el-checkbox-group>
@@ -94,7 +94,7 @@
         <el-table-column
           align="center"
           v-if="checkboxVal.length>0&&checkboxVal.length<works.length"
-          label="选中项总成绩"
+          label="选中作业总成绩"
           prop="checkedScore"
         ></el-table-column>
 
@@ -266,7 +266,7 @@ export default {
           ) {
             checkedItem.header.splice(0, checkedItem.header.length);
             checkedItem.name.splice(0, checkedItem.name.length);
-            checkedItem.header.push("选中项总成绩");
+            checkedItem.header.push("选中作业总成绩");
             checkedItem.name.push("checkedScore");
           }
           const tHeader = ["学号", "班级", "姓名", "课程总成绩"]
