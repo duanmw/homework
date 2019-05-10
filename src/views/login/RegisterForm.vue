@@ -129,13 +129,12 @@ export default {
       sendVCode(this.registerForm.email)
         .then(res => {
           this.$message.success(res.message);
-          // const data = res.data
           // console.log("res:", res);
           localStorage.setItem("code", res.data.vcode + res.data.email);
           localStorage.setItem("time", res.data.lasttime);
         })
         .catch(error => {
-          this.$message.error(error);
+          this.$message.error(error+" 请稍后再试");
         });
     },
     getVCode() {
@@ -150,7 +149,7 @@ export default {
 
           this.btnControll = false; // 禁用按钮
 
-          let num = 60; //num 60s秒倒计时
+          let num = 30; //num s秒倒计时
           const timeId = setInterval(() => {
             //使用箭头函数避免this问题
             this.getBtn = `${--num}s`;

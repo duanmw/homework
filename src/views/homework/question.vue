@@ -149,6 +149,9 @@ export default {
       font-size: 15px;
       padding-bottom: 12px;
       border-bottom: 1px solid #ebeef5;
+      .text-title {
+        line-height: 1.4em;
+      }
       .right-percent {
         float: right;
         color: #606266;

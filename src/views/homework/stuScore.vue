@@ -246,6 +246,7 @@ export default {
   .title-bar {
     color: #444;
     padding: 0 0 20px;
+    border-bottom: 1px solid #ebeef5;
     .workname {
       // vertical-align: middle;
       margin-left: 20px;

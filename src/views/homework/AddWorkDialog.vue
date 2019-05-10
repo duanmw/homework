@@ -57,7 +57,8 @@ export default {
     typeOne: Object,
     typeTwo: Object,
     typeThree: Object,
-    typeFour: Object
+    typeFour: Object,
+    existQnumber: Array
   },
   data() {
     const validateStartTime = (rule, value, callback) => {
@@ -84,7 +85,7 @@ export default {
       questions: [],
       answers: [],
       newWorkId: "", //新添加的作业的id
-      w_q: [],
+      w_q: [], //作业与习题关联数据
       form: {
         name: this.suggestName + "(无习题)",
         startTime: "",
@@ -162,6 +163,7 @@ export default {
       obj.questions.forEach(item => {
         let number = tid + item.key; //3+13=16位字符串作为唯一问题编号（目前暂时采用）
         this.questions.push({
+          cid: this.courseId,
           number,
           type,
           title: item.title,
@@ -212,6 +214,9 @@ export default {
               this.questions.forEach(i => {
                 this.w_q.push({ wid: this.newWorkId, qnumber: i.number });
               });
+              this.existQnumber.forEach(number => {
+                this.w_q.push({ wid: this.newWorkId, qnumber: number });
+              });
               return addAnswer(this.answers);
             })
             .then(res => {
@@ -226,7 +231,7 @@ export default {
             })
             .catch(error => {
               loading.close();
-              this.$message.error(error + " 添加失败");
+              this.$message.error(error + "遇到问题，添加未完成");
               this.$emit("back");
             });
         }

@@ -85,6 +85,20 @@ export function allQByWid2(wid) { // 教师访问,有答案
   })
 }
 
+export function allQuesByCid(start, size, cid) { // 课程内全部习题，用于快速添加习题
+  return request({
+    url: '/api/question/allQuesByCid?start=' + start + '&size=' + size + '&cid=' + cid,
+    method: 'get'
+  })
+}
+
+export function allQuesBySearch(start, size, cid, str) { // 模糊搜索课程内习题，用于快速添加习题
+  return request({
+    url: '/api/question/allQuesBySearch?start=' + start + '&size=' + size + '&cid=' + cid + '&str=' + str,
+    method: 'get'
+  })
+}
+
 export function addQuestion(question) {
   return request({
     url: '/api/question/addQuestion',
