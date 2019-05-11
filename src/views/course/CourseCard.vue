@@ -143,7 +143,7 @@ export default {
           this.$confirm(
             "此操作将永久删除课程：" +
               this.courseData.name +
-              "，以及课程内的作业，是否继续？",
+              "，以及课程内的作业、习题，是否继续？",
             "提示",
             {
               confirmButtonText: "确定",
