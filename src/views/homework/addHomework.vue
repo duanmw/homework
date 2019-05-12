@@ -598,7 +598,7 @@ export default {
     },
     autoOption(ques) {
       if (ques.title) {
-        let reg = /A.(.*)B.(.*)C.(.*)D.(.*)/s; //正则匹配习题答案
+        let reg = /A[\.|\．](.*)B[\.|\．](.*)C[\.|\．](.*)D[\.|\．](.*)/s; //正则匹配习题答案
         let result = reg.exec(ques.title);
         // console.log(result);
         if (result && result.length > 1) {
