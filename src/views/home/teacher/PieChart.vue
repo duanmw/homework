@@ -99,7 +99,8 @@ export default {
             radius: [65, 95],
             minShowLabelAngle: 1,
             label: {
-              fontSize: 13
+              fontSize: 13,
+              formatter: '{b}: {c}'
             },
             data: chartdata.data,
             animationEasing: "cubicInOut",

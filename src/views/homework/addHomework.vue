@@ -626,10 +626,10 @@ export default {
     },
     validateFormOne() {
       return this.dynamicFormOne.questions.every(item => {
-        if (item.title != "") {
+        if (item.title.trim() != "") {
           let rightCount = 0;
           for (let i = 0; i < item.options.length; i++) {
-            if (item.options[i].content != "") {
+            if (item.options[i].content.trim() != "") {
               if (item.options[i].isRight) {
                 rightCount++;
               }
@@ -652,10 +652,10 @@ export default {
     },
     validateFormTwo() {
       return this.dynamicFormTwo.questions.every(item => {
-        if (item.title != "") {
+        if (item.title.trim() != "") {
           let rightCount = 0;
           for (let i = 0; i < item.options.length; i++) {
-            if (item.options[i].content != "") {
+            if (item.options[i].content.trim() != "") {
               if (item.options[i].isRight) {
                 rightCount++;
               }
@@ -681,7 +681,7 @@ export default {
     },
     validateFormThree() {
       return this.dynamicFormThree.questions.every(item => {
-        if (item.title != "") {
+        if (item.title.trim() != "") {
           return true;
         } else {
           this.$message.warning("存在判断题题目为空情况！请检查");
@@ -691,9 +691,9 @@ export default {
     },
     validateFormFour() {
       return this.dynamicFormFour.questions.every(item => {
-        if (item.title != "") {
+        if (item.title.trim() != "") {
           for (let i = 0; i < item.options.length; i++) {
-            if (item.options[i].content == "") {
+            if (item.options[i].content.trim() == "") {
               this.$message.warning("存在填空题答案为空情况！请检查");
               return false;
             }

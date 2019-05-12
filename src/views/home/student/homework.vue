@@ -265,7 +265,7 @@ export default {
             }
           }, 60 * 1000);
         }
-        console.log("timer2里发送请求---" + times);
+        // console.log("timer2里发送请求---" + times);
         getFunc().catch(err => {
           console.log("timer2里", err);
           times = 50;

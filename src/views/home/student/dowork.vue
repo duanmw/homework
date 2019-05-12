@@ -3,8 +3,7 @@
     <el-row class="title-bar">
       <el-col :xs="24" :sm="12">
         <template v-if="$route.params.course">
-          <el-button @click="handleReturn" size="small" icon="el-icon-back">返回</el-button>
-          &nbsp;&nbsp;
+          <el-button @click="handleReturn" size="small" icon="el-icon-back">返回</el-button>&nbsp;&nbsp;
           <span class="workname">作业：{{work.name}}</span>
         </template>
         <template v-else>
@@ -97,7 +96,7 @@ import { allCourseBySid } from "@/api/course";
 import { allQByWid1, submitWork, oneWork } from "@/api/homework";
 
 import waves from "@/directive/waves/index.js"; // 水波纹指令
-// import md5 from "blueimp-md5";
+import shuffle from "lodash/shuffle"; // 引入lodash.js里的shuffle
 
 export default {
   name: "DoWork",
@@ -156,7 +155,7 @@ export default {
       allQByWid1(this.work.id)
         .then(res => {
           this.loading = false;
-          this.questions = res.data.questions;
+          this.questions = shuffle(res.data.questions); //乱序
 
           this.questions.forEach(q => {
             if (q.question.type === "a") {
@@ -457,6 +456,7 @@ export default {
     .ques-title {
       user-select: none !important; //文字不可选中
       font-size: 16px;
+      line-height: 1.4em;
       padding-bottom: 12px;
       border-bottom: 1px solid #ebeef5;
     }

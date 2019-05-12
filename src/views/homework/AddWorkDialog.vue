@@ -166,13 +166,13 @@ export default {
           cid: this.courseId,
           number,
           type,
-          title: item.title,
+          title: item.title.trim(), //录入的题目两端可能有空格
           desc: item.desc
         });
         item.options.forEach(i => {
           this.answers.push({
             number,
-            content: i.content.trim(), //主要是填空题填的答案两端可能有空格
+            content: i.content.trim(), //主要是填空题填的答案两端可能有空格，这个影响评分判断
             correct: i.isRight ? "yes" : "no"
           });
         });
