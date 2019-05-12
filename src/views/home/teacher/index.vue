@@ -1,9 +1,9 @@
 <template>
   <div class="home-container">
-    <!-- <h3>laoshi</h3> -->
 
     <div class="just-loading" v-if="loading" v-loading="loading"></div>
-    <el-row v-for="(i,index) in chartData" :key="'chart'+index">
+    <!-- 对于还未开放的作业暂时用v-if隐藏 -->
+    <el-row v-for="(i,index) in chartData" :key="'chart'+index" v-if="new Date(i.lastwork.starttime).getTime()<new Date().getTime()">
       <router-link
         :to="{ name: 'Homework', params: { courseId:i.cid,courseName:i.cname ,activeName:i.lastwork.id}}"
         tag="a"
@@ -130,13 +130,7 @@ export default {
       return chartDataByTid(this.$store.getters.id).then(res => {
         if (this.courseCount === res.data.courses.length) {
           //此处暂时仅判断长度，不严谨
-          // this.homeworks.forEach((item, index) => {
-          //   this.$set(item, "submitcount", res.data.works[index].submitcount); //这样改变对象属性值才能触发视图更新
-          //   this.$set(item, "starttime", res.data.works[index].starttime); //这样改变对象属性值才能触发视图更新
-          //   this.$set(item, "closetime", res.data.works[index].closetime); //这样改变对象属性值才能触发视图更新
-          //   this.$set(item, "maxsubmit", res.data.works[index].maxsubmit); //这样改变对象属性值才能触发视图更新
-          //   this.$set(item, "name", res.data.works[index].name); //这样改变对象属性值才能触发视图更新
-          // });
+
           let tempArr = [];
           res.data.courses.forEach(c => {
             if (c.lastwork) {
