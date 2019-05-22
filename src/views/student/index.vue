@@ -66,7 +66,12 @@
         <el-table-column align="center" label="班级">
           <template slot-scope="{row}">
             <template v-if="row.edit">
-              <el-input v-model.trim="row.classname" maxlength="20" class="edit-input" size="small"/>
+              <el-input
+                v-model.trim="row.classname"
+                maxlength="20"
+                class="edit-input"
+                size="small"
+              />
             </template>
             <span v-else>{{ row.classname }}</span>
           </template>
@@ -398,14 +403,16 @@ export default {
                   });
               } else {
                 //学生不存在，则执行添加学生
+                this.dialogFormVisible = false;
+                this.loading = true;
                 return addStudent([this.form]);
               }
             })
             .then(res => {
-              console.log("res--res:", res);
+              // console.log("res--res:", res);
               if (res.data && res.data.sid) {
                 //若为添加完学生再返回的数据data，sid为res.sid[0]
-                return addSC([{ sid: res.sid[0], cid: this.courseId }]);
+                return addSC([{ sid: res.data.sid[0], cid: this.courseId }]);
               } else if (typeof res === "number") {
                 //已存在学生的情况，直接返回了sid, res为sid
                 return addSC([{ sid: res, cid: this.courseId }]);
@@ -416,7 +423,7 @@ export default {
             .then(res => {
               if (res) {
                 //以上return为空的将不执行
-                this.$message.success("添加成功！");
+                this.$message.success("添加成功！"); //不用设置loading，接下来获取数据有设置loading
                 this.getStudent(this.courseId); //添加后重新获取数据
               }
             })
