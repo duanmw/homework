@@ -30,7 +30,7 @@
         ></el-date-picker>
       </el-form-item>
       <el-form-item label-width="156px" label="作业允许提交次数：" prop="maxSubmit">
-        <el-input-number v-model="form.maxSubmit" :min="1" :max="9"></el-input-number>
+        <el-input-number v-model="form.maxSubmit" :min="1" :max="9" :step-strictly="true"></el-input-number>
       </el-form-item>
       <el-form-item label-width="170px" label="作业关闭后答案可见：">
         <el-switch v-model="form.showAnswer"></el-switch>
