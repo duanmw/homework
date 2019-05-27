@@ -8,15 +8,39 @@
 
 
 
-> 此项目前端基于[vue-admin-template](https://github.com/PanJiaChen/vue-admin-template/blob/master/README-zh.md)实现
+> 此项目基于模板[vue-admin-template](https://github.com/PanJiaChen/vue-admin-template/blob/master/README-zh.md)开发，[预览模板](https://panjiachen.gitee.io/vue-admin-template)
 >
 
 
 
-## Browsers support
+### 克隆项目
 
-Modern browsers and Internet Explorer 10+.
+``` 
+git clone git@github.com:duanmw/homework.git 
+```
 
-| [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/edge/edge_48x48.png" alt="IE / Edge" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>IE / Edge | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png" alt="Firefox" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Firefox | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png" alt="Chrome" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Chrome | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/safari/safari_48x48.png" alt="Safari" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Safari |
-| --------- | --------- | --------- | --------- |
-| IE10, IE11, Edge| last 2 versions| last 2 versions| last 2 versions
+### 进入项目目录
+```
+cd homework
+```
+
+### 安装依赖
+```
+npm install
+```
+
+建议不要用 cnpm 安装 会有各种诡异的bug 可以通过如下操作解决 npm 下载速度慢的问题
+```
+npm install --registry=https://registry.npm.taobao.org
+```
+
+### 本地开发 启动项目
+```
+npm run dev
+```
+
+
+### 构建和发布
+```
+npm run build
+```
