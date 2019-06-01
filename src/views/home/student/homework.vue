@@ -321,7 +321,7 @@ export default {
     margin: 16px 0 20px;
   }
   .content-area {
-    min-height: calc(100vh - 160px); // for-loading
+    min-height: calc(100vh - 180px); // for-loading
     .el-col {
       color: #606266;
       .label-text {

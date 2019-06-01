@@ -424,7 +424,7 @@ export default {
     }
   }
   .content-area {
-    min-height: calc(100vh - 150px); // for v-loading
+    min-height: calc(100vh - 170px); // for v-loading
     .overview {
       border: 1px solid #f5f5f5;
       text-align: center;

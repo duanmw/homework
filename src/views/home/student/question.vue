@@ -143,7 +143,7 @@ export default {
     }
   }
   .content-area {
-    min-height: calc(100vh - 150px); // for v-loading
+    min-height: calc(100vh - 180px); // for v-loading
   }
   .el-card {
     margin-bottom: 10px;
